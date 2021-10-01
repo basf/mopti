@@ -1,5 +1,9 @@
 # Opti
 
+![![Testing](https://github.com/basf/mopti/actions/workflows/main.yml)](https://github.com/basf/mopti/actions/workflows/main.yml/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/mopti.svg)](https://pypi.org/project/mopti)
+[![License](https://img.shields.io/badge/license-BSD-green.svg)](LICENSE)
+
 Opti is a Python package for specifying problems in a number of closely related fields, including experimental design, multiobjective optimization and decision making and Bayesion optimization.
 
 #### Why opti?
