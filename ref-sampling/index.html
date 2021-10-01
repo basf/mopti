@@ -1,0 +1,1628 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://basf.github.io/mopti/ref-sampling/">
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Sampling - Opti</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/style.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sampling" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Opti" class="md-header__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Opti
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sampling
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Opti" class="md-nav__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Opti
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Opti
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Code Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Code Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Code Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-problem/" class="md-nav__link">
+        Problem
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-parameter/" class="md-nav__link">
+        Parameter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-objective/" class="md-nav__link">
+        Objective
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-constraint/" class="md-nav__link">
+        Constraint
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-model/" class="md-nav__link">
+        Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-metric/" class="md-nav__link">
+        Metric
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Sampling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Sampling
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling" class="md-nav__link">
+    opti.sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.base" class="md-nav__link">
+    base
+  </a>
+  
+    <nav class="md-nav" aria-label="base">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.apply_nchoosek" class="md-nav__link">
+    apply_nchoosek()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.constrained_sampling" class="md-nav__link">
+    constrained_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.rejection_sampling" class="md-nav__link">
+    rejection_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.sobol_sampling" class="md-nav__link">
+    sobol_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.split_nchoosek" class="md-nav__link">
+    split_nchoosek()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.polytope" class="md-nav__link">
+    polytope
+  </a>
+  
+    <nav class="md-nav" aria-label="polytope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.polytope--references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.polytope.polytope_sampling" class="md-nav__link">
+    polytope_sampling()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.simplex" class="md-nav__link">
+    simplex
+  </a>
+  
+    <nav class="md-nav" aria-label="simplex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.simplex.grid" class="md-nav__link">
+    grid()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.simplex.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.sphere" class="md-nav__link">
+    sphere
+  </a>
+  
+    <nav class="md-nav" aria-label="sphere">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.sphere.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-tools/" class="md-nav__link">
+        Tools
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-problems/" class="md-nav__link">
+        Test Problems
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling" class="md-nav__link">
+    opti.sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.base" class="md-nav__link">
+    base
+  </a>
+  
+    <nav class="md-nav" aria-label="base">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.apply_nchoosek" class="md-nav__link">
+    apply_nchoosek()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.constrained_sampling" class="md-nav__link">
+    constrained_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.rejection_sampling" class="md-nav__link">
+    rejection_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.sobol_sampling" class="md-nav__link">
+    sobol_sampling()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.base.split_nchoosek" class="md-nav__link">
+    split_nchoosek()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.polytope" class="md-nav__link">
+    polytope
+  </a>
+  
+    <nav class="md-nav" aria-label="polytope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.polytope--references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.polytope.polytope_sampling" class="md-nav__link">
+    polytope_sampling()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.simplex" class="md-nav__link">
+    simplex
+  </a>
+  
+    <nav class="md-nav" aria-label="simplex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.simplex.grid" class="md-nav__link">
+    grid()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.simplex.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.sampling.sphere" class="md-nav__link">
+    sphere
+  </a>
+  
+    <nav class="md-nav" aria-label="sphere">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.sampling.sphere.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/basf/mopti/edit/master/docs/ref-sampling.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="sampling">Sampling</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="opti.sampling"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.sampling.base" class="doc doc-heading">
+        <code>base</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.base.apply_nchoosek" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">apply_nchoosek</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">constraint</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Apply an n-choose-k constraint in-place</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">apply_nchoosek</span><span class="p">(</span><span class="n">samples</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">constraint</span><span class="p">:</span> <span class="n">NChooseK</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply an n-choose-k constraint in-place&quot;&quot;&quot;</span>
+    <span class="n">n_zeros</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">constraint</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">-</span> <span class="n">constraint</span><span class="o">.</span><span class="n">max_active</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">constraint</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_zeros</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">samples</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.base.constrained_sampling" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">constrained_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Uniform sampling from a constrained space.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">constrained_sampling</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Uniform sampling from a constrained space.&quot;&quot;&quot;</span>
+    <span class="n">nchoosek_constraints</span><span class="p">,</span> <span class="n">other_constraints</span> <span class="o">=</span> <span class="n">split_nchoosek</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">rejection_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">other_constraints</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">polytope_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">other_constraints</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nchoosek_constraints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">samples</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nchoosek_constraints</span><span class="p">:</span>
+        <span class="n">apply_nchoosek</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="c1"># check if other constraints are still satisfied</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">constraints</span><span class="o">.</span><span class="n">satisfied</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="s2">&quot;Applying the n-choose-k constraint(s) violated another constraint.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">samples</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.base.rejection_sampling" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">rejection_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">max_iters</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Uniformly distributed samples from a constrained space via rejection sampling.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rejection_sampling</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+    <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">,</span>
+    <span class="n">max_iters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Uniformly distributed samples from a constrained space via rejection sampling.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">constraints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="c1"># check for equality constraints in combination with continuous parameters</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">LinearEquality</span><span class="p">,</span> <span class="n">NonlinearEquality</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s2">&quot;Rejection sampling doesn&#39;t work for equality constraints over continuous variables.&quot;</span>
+                    <span class="p">)</span>
+
+    <span class="n">n_iters</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_found</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">points_found</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">n_found</span> <span class="o">&lt;</span> <span class="n">n_samples</span><span class="p">:</span>
+        <span class="n">n_iters</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">n_iters</span> <span class="o">&gt;</span> <span class="n">max_iters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Maximum iterations exceeded in rejection sampling&quot;</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">constraints</span><span class="o">.</span><span class="n">satisfied</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">n_found</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+        <span class="n">points_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">valid</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">points_found</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n_samples</span><span class="p">]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.base.sobol_sampling" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sobol_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Super-uniform sampling from an unconstrained space using a Sobol sequence.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sobol_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Super-uniform sampling from an unconstrained space using a Sobol sequence.&quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">Sobol</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">from_unit_range</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">domain</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.base.split_nchoosek" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">split_nchoosek</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Split constraints in n-choose-k constraint and all other constraints.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">split_nchoosek</span><span class="p">(</span>
+    <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Constraints</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Constraints</span><span class="p">,</span> <span class="n">Constraints</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Split constraints in n-choose-k constraint and all other constraints.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">constraints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Constraints</span><span class="p">([]),</span> <span class="n">Constraints</span><span class="p">([])</span>
+    <span class="n">nchoosek_constraints</span> <span class="o">=</span> <span class="n">Constraints</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">constraints</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">NChooseK</span><span class="p">)]</span>
+    <span class="p">)</span>
+    <span class="n">other_constraints</span> <span class="o">=</span> <span class="n">Constraints</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">constraints</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">NChooseK</span><span class="p">)]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">nchoosek_constraints</span><span class="p">,</span> <span class="n">other_constraints</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.sampling.polytope" class="doc doc-heading">
+        <code>polytope</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>This module provides functions to uniformly sample points subject to a system of linear
+inequality constraints, :math:<code>Ax &lt;= b</code> (convex polytope), and linear equality
+constraints, :math:<code>Ax = b</code> (affine projection).</p>
+<p>A comparison of MCMC algorithms to generate uniform samples over a convex polytope is
+given in [Chen2018]<em>. Here, we use the Hit &amp; Run algorithm described in [Smith1984]</em>.
+The R-package <code>hitandrun</code>_ provides similar functionality to this module.</p>
+<h4 id="opti.sampling.polytope--references">References</h4>
+<p>.. [Chen2018] Chen Y., Dwivedi, R., Wainwright, M., Yu B. (2018) Fast MCMC Sampling
+    Algorithms on Polytopes. JMLR, 19(55):1−86
+    https://arxiv.org/abs/1710.08165
+.. [Smith1984] Smith, R. (1984). Efficient Monte Carlo Procedures for Generating
+    Points Uniformly Distributed Over Bounded Regions. Operations Research,
+    32(6), 1296-1308.
+    www.jstor.org/stable/170949
+.. _<code>hitandrun</code>: https://cran.r-project.org/web/packages/hitandrun/index.html</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.polytope.polytope_sampling" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">polytope_sampling</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Hit-and-run method to sample uniformly under linear constraints.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n_samples</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of samples.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>parameters</code></td>
+        <td><code>opti.Parameters</code></td>
+        <td><p>Parameter space.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>constraints</code></td>
+        <td><code>opti.Constraints</code></td>
+        <td><p>Constraints on the parameters.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>thin</code></td>
+        <td><code>int</code></td>
+        <td><p>Thinning factor of the generated samples.</p></td>
+        <td><code>100</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>array, shape=(n_samples, dimension)</code></td>
+      <td><p>Randomly sampled points.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/polytope.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">polytope_sampling</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="n">Constraints</span><span class="p">,</span> <span class="n">thin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Hit-and-run method to sample uniformly under linear constraints.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        n_samples (int): Number of samples.</span>
+<span class="sd">        parameters (opti.Parameters): Parameter space.</span>
+<span class="sd">        constraints (opti.Constraints): Constraints on the parameters.</span>
+<span class="sd">        thin (int, optional): Thinning factor of the generated samples.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array, shape=(n_samples, dimension): Randomly sampled points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">LinearEquality</span><span class="p">,</span> <span class="n">LinearInequality</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Polytope sampling only works for linear constraints.&quot;</span><span class="p">)</span>
+
+    <span class="n">At</span><span class="p">,</span> <span class="n">bt</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">xp</span> <span class="o">=</span> <span class="n">_get_AbNx</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+
+    <span class="c1"># hit &amp; run sampling</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">_chebyshev_center</span><span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">bt</span><span class="p">)</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">_hitandrun</span><span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">bt</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">At</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">thin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
+
+    <span class="c1"># project back</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">N</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">xp</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.sampling.simplex" class="doc doc-heading">
+        <code>simplex</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.simplex.grid" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">grid</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Construct a regular grid on the unit simplex.</p>
+<p>The number of grid points is L = (n+m-1)!/(n!*(m-1)!)
+where m is the dimension and n+1 is the number of levels.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>dimension</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of variables.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>levels</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of levels for each variable.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>array</code></td>
+      <td><p>Regularily spaced points on the unit simplex.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">simplex_grid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">1.</span> <span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">1.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">]</span>
+<span class="p">])</span>
+</code></pre></div>
+      <p>!!! references
+    Nijenhuis and Wilf, Combinatorial Algorithms, Chapter 5, Academic Press, 1978.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/simplex.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">levels</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Construct a regular grid on the unit simplex.</span>
+
+<span class="sd">    The number of grid points is L = (n+m-1)!/(n!*(m-1)!)</span>
+<span class="sd">    where m is the dimension and n+1 is the number of levels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dimension (int): Number of variables.</span>
+<span class="sd">        levels (int): Number of levels for each variable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       array: Regularily spaced points on the unit simplex.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; simplex_grid(3, 3)</span>
+<span class="sd">        array([</span>
+<span class="sd">            [0. , 0. , 1. ],</span>
+<span class="sd">            [0. , 0.5, 0.5],</span>
+<span class="sd">            [0. , 1. , 0. ],</span>
+<span class="sd">            [0.5, 0. , 0.5],</span>
+<span class="sd">            [0.5, 0.5, 0. ],</span>
+<span class="sd">            [1. , 0. , 0. ]</span>
+<span class="sd">        ])</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        Nijenhuis and Wilf, Combinatorial Algorithms, Chapter 5, Academic Press, 1978.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">dimension</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">levels</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">comb</span><span class="p">(</span><span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">levels</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">L</span><span class="p">,</span> <span class="n">m</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">h</span><span class="p">]</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">m</span>
+
+        <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="k">return</span> <span class="n">out</span> <span class="o">/</span> <span class="n">n</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.simplex.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Sample uniformly from the unit simplex.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>dimension</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of dimensions.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>n_samples</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of samples to draw.</p></td>
+        <td><code>1</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>array, shape=(n_samples, dimesnion)</code></td>
+      <td><p>Random samples from the unit simplex.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/simplex.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sample uniformly from the unit simplex.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dimension (int): Number of dimensions.</span>
+<span class="sd">        n_samples (int): Number of samples to draw.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array, shape=(n_samples, dimesnion): Random samples from the unit simplex.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_exponential</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dimension</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">s</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.sampling.sphere" class="doc doc-heading">
+        <code>sphere</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.sampling.sphere.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Sample uniformly from the unit hypersphere.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>dimension</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of dimensions.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>n_samples</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of samples to draw.</p></td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>positive</code></td>
+        <td><code>bool</code></td>
+        <td><p>Sample from the non-negative unit-sphere.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>array, shape=(n_samples, dimesnion)</code></td>
+      <td><p>Random samples from the unit simplex.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/sampling/sphere.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sample uniformly from the unit hypersphere.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dimension (int): Number of dimensions.</span>
+<span class="sd">        n_samples (int): Number of samples to draw.</span>
+<span class="sd">        positive (bool): Sample from the non-negative unit-sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array, shape=(n_samples, dimesnion): Random samples from the unit simplex.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dimension</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="k">if</span> <span class="n">positive</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../ref-metric/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metric" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Metric
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ref-tools/" class="md-footer__link md-footer__link--next" aria-label="Next: Tools" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Tools
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

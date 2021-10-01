@@ -1,0 +1,2562 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://basf.github.io/mopti/ref-parameter/">
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Parameter - Opti</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/style.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#parameters" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Opti" class="md-header__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Opti
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Parameter
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Opti" class="md-nav__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Opti
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Opti
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Code Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Code Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Code Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-problem/" class="md-nav__link">
+        Problem
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Parameter
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Parameter
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter" class="md-nav__link">
+    opti.parameter
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical" class="md-nav__link">
+    Categorical
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.from_label_encoding" class="md-nav__link">
+    from_label_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.from_onehot_encoding" class="md-nav__link">
+    from_onehot_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.to_label_encoding" class="md-nav__link">
+    to_label_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.to_onehot_encoding" class="md-nav__link">
+    to_onehot_encoding()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous" class="md-nav__link">
+    Continuous
+  </a>
+  
+    <nav class="md-nav" aria-label="Continuous">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.from_unit_range" class="md-nav__link">
+    from_unit_range()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.to_unit_range" class="md-nav__link">
+    to_unit_range()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete" class="md-nav__link">
+    Discrete
+  </a>
+  
+    <nav class="md-nav" aria-label="Discrete">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.is_integer" class="md-nav__link">
+    is_integer()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.to_unit_range" class="md-nav__link">
+    to_unit_range()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Parameter" class="md-nav__link">
+    Parameter
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameter.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.make_parameter" class="md-nav__link">
+    make_parameter()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-objective/" class="md-nav__link">
+        Objective
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-constraint/" class="md-nav__link">
+        Constraint
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-model/" class="md-nav__link">
+        Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-metric/" class="md-nav__link">
+        Metric
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-sampling/" class="md-nav__link">
+        Sampling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-tools/" class="md-nav__link">
+        Tools
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-problems/" class="md-nav__link">
+        Test Problems
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter" class="md-nav__link">
+    opti.parameter
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical" class="md-nav__link">
+    Categorical
+  </a>
+  
+    <nav class="md-nav" aria-label="Categorical">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.from_label_encoding" class="md-nav__link">
+    from_label_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.from_onehot_encoding" class="md-nav__link">
+    from_onehot_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.to_label_encoding" class="md-nav__link">
+    to_label_encoding()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Categorical.to_onehot_encoding" class="md-nav__link">
+    to_onehot_encoding()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous" class="md-nav__link">
+    Continuous
+  </a>
+  
+    <nav class="md-nav" aria-label="Continuous">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.from_unit_range" class="md-nav__link">
+    from_unit_range()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Continuous.to_unit_range" class="md-nav__link">
+    to_unit_range()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete" class="md-nav__link">
+    Discrete
+  </a>
+  
+    <nav class="md-nav" aria-label="Discrete">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.is_integer" class="md-nav__link">
+    is_integer()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Discrete.to_unit_range" class="md-nav__link">
+    to_unit_range()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Parameter" class="md-nav__link">
+    Parameter
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameter.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.bounds" class="md-nav__link">
+    bounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.contains" class="md-nav__link">
+    contains()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.round" class="md-nav__link">
+    round()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.sample" class="md-nav__link">
+    sample()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.to_config" class="md-nav__link">
+    to_config()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.parameter.make_parameter" class="md-nav__link">
+    make_parameter()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/basf/mopti/edit/master/docs/ref-parameter.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="parameters">Parameters</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="opti.parameter"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="opti.parameter.Categorical" class="doc doc-heading">
+        <code>
+Categorical            (<a title="opti.parameter.Parameter" href="#opti.parameter.Parameter">Parameter</a>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Categorical parameter (nominal scale, values cannot be put into order).</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>name of the parameter</p></td>
+      </tr>
+      <tr>
+        <td><code>domain</code></td>
+        <td><code>list</code></td>
+        <td><p>list possible values</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.contains" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Check if a point is in contained in the domain.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code> with boolean datatype.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if a point is in contained in the domain.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point` with boolean datatype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.from_label_encoding" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">from_label_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert points back from label-encoding.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">from_label_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert points back from label-encoding.&quot;&quot;&quot;</span>
+    <span class="n">enc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">enc</span><span class="p">[</span><span class="n">points</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">points</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.from_onehot_encoding" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">from_onehot_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert points brack from one-hot encoding.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">from_onehot_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert points brack from one-hot encoding.&quot;&quot;&quot;</span>
+    <span class="n">cat_cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">_CAT_SEP</span><span class="si">}{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cat_cols</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">columns</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Column names don&#39;t match categorical levels: </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">columns</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">cat_cols</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_CAT_SEP</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">return</span> <span class="n">s</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.round" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Round a point to the closest contained values.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code>.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Round a point to the closest contained values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">point</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot round categorical variable&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">point</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Draw random samples from the domain.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Draw random samples from the domain.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.to_label_encoding" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_label_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert points to label-encoding.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_label_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert points to label-encoding.&quot;&quot;&quot;</span>
+    <span class="n">enc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">))</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">enc</span><span class="p">[</span><span class="n">points</span><span class="p">]</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">return</span> <span class="n">s</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Categorical.to_onehot_encoding" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_onehot_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert points to a one-hot encoding.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_onehot_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert points to a one-hot encoding.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">_CAT_SEP</span><span class="si">}{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">points</span> <span class="o">==</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">},</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="opti.parameter.Continuous" class="doc doc-heading">
+        <code>
+Continuous            (<a title="opti.parameter.Parameter" href="#opti.parameter.Parameter">Parameter</a>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parameter that can take on any real value in the specified domain.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>name of the parameter</p></td>
+      </tr>
+      <tr>
+        <td><code>domain</code></td>
+        <td><code>list</code></td>
+        <td><p>[lower bound, upper bound]</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="opti.parameter.Continuous.bounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bounds</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return the domain bounds.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.contains" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Check if a point is in contained in the domain.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code> with boolean datatype.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if a point is in contained in the domain.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point` with boolean datatype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="o">&lt;=</span> <span class="n">point</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">point</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.from_unit_range" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">from_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Transform points from the unit range: [0-1] -&gt; [low, high].</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">from_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform points from the unit range: [0-1] -&gt; [low, high].&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">points</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.round" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Round a point to the closest contained values.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code> with values clipped to parameter bounds.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Round a point to the closest contained values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point` with values clipped to parameter bounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Draw random samples from the domain.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Draw random samples from the domain.&quot;&quot;&quot;</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">)</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.to_config" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return a json-serializable configuration dict.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a json-serializable configuration dict.&quot;&quot;&quot;</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">])</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_fields</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">conf</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Continuous.to_unit_range" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Transform points to the unit range: [low, high] -&gt; [0, 1].</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform points to the unit range: [low, high] -&gt; [0, 1].&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">points</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="opti.parameter.Discrete" class="doc doc-heading">
+        <code>
+Discrete            (<a title="opti.parameter.Parameter" href="#opti.parameter.Parameter">Parameter</a>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Discrete parameter (ordinal scale).</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>name of the parameter</p></td>
+      </tr>
+      <tr>
+        <td><code>domain</code></td>
+        <td><code>list</code></td>
+        <td><p>list of possible numeric values</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="opti.parameter.Discrete.bounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bounds</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return the domain bounds.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Discrete.contains" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Check if a point is in contained in the domain.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code> with boolean datatype.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if a point is in contained in the domain.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point` with boolean datatype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Discrete.is_integer" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">is_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Check if the domain is an integer range, such as [1, 2, 3]</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the domain is an integer range, such as [1, 2, 3]&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Discrete.round" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Round a point to the closest contained values.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>point</code></td>
+        <td><code>float, np.ndarray, pd.Series or pd.Dataframe</code></td>
+        <td><p>parameter value(s).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>Object of the same type as <code>point</code> with values clipped to parameter bounds.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Round a point to the closest contained values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        point (float, np.ndarray, pd.Series or pd.Dataframe): parameter value(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Object of the same type as `point` with values clipped to parameter bounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span> <span class="o">-</span> <span class="n">point</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">closest</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">point</span><span class="p">]</span>
+    <span class="n">rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)[</span><span class="n">closest</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rounded</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">rounded</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">point</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">rounded</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">point</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Discrete.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Draw random samples from the domain.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Draw random samples from the domain.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Discrete.to_unit_range" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Transform points to the unit range.</p>
+<p>Note, if the given points are not inside the domain of the parameter, the
+transformed will not be inside the unit range.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_unit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform points to the unit range.</span>
+
+<span class="sd">    Note, if the given points are not inside the domain of the parameter, the</span>
+<span class="sd">    transformed will not be inside the unit range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">points</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="opti.parameter.Parameter" class="doc doc-heading">
+        <code>
+Parameter        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parameter base class.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameter.to_config" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return a json-serializable configuration dict.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a json-serializable configuration dict.&quot;&quot;&quot;</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_fields</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">conf</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="opti.parameter.Parameters" class="doc doc-heading">
+        <code>
+Parameters        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set of parameters representing either the input or the output space.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="opti.parameter.Parameters.bounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bounds</span><span class="p">:</span> <span class="n">DataFrame</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return the parameter bounds.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>It can be constructed either from a list / tuple (of at least one) Parameter objects
+<div class="highlight"><pre><span></span><code>Space([
+    Continuous(name=&quot;foo&quot;, domain=[1, 10]),
+    Discrete(name=&quot;bar&quot;, domain=[1, 2, 3, 4]),
+    Categorical(name=&quot;baz&quot;, domain=[&quot;A&quot;, &quot;B&quot;, 3]),
+])
+</code></pre></div>
+or from a list / tuple of dicts
+<div class="highlight"><pre><span></span><code>Space([
+    {&quot;name&quot;: &quot;foo&quot;, &quot;type&quot;: &quot;continuous&quot;, &quot;domain&quot;: [1, 10]},
+    {&quot;name&quot;: &quot;bar&quot;, &quot;type&quot;: &quot;discrete&quot;, &quot;domain&quot;: [1, 2, 3, 4]},
+    {&quot;name&quot;: &quot;baz&quot;, &quot;type&quot;: &quot;categorical&quot;, &quot;domain&quot;: [&quot;A&quot;, &quot;B&quot;, 3]},
+    {&quot;name&quot;: &quot;baz&quot;, &quot;type&quot;: &quot;categorical&quot;, &quot;domain&quot;: [&quot;A&quot;, &quot;B&quot;, 3], extra=&quot;info&quot;},
+])
+</code></pre></div>
+In particular, Parameters().<strong>init</strong> and the to_config method of each Parameter type are inverses.
+Parameters(conf).to_config() == conf</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    It can be constructed either from a list / tuple (of at least one) Parameter objects</span>
+<span class="sd">    ```</span>
+<span class="sd">    Space([</span>
+<span class="sd">        Continuous(name=&quot;foo&quot;, domain=[1, 10]),</span>
+<span class="sd">        Discrete(name=&quot;bar&quot;, domain=[1, 2, 3, 4]),</span>
+<span class="sd">        Categorical(name=&quot;baz&quot;, domain=[&quot;A&quot;, &quot;B&quot;, 3]),</span>
+<span class="sd">    ])</span>
+<span class="sd">    ```</span>
+<span class="sd">    or from a list / tuple of dicts</span>
+<span class="sd">    ```</span>
+<span class="sd">    Space([</span>
+<span class="sd">        {&quot;name&quot;: &quot;foo&quot;, &quot;type&quot;: &quot;continuous&quot;, &quot;domain&quot;: [1, 10]},</span>
+<span class="sd">        {&quot;name&quot;: &quot;bar&quot;, &quot;type&quot;: &quot;discrete&quot;, &quot;domain&quot;: [1, 2, 3, 4]},</span>
+<span class="sd">        {&quot;name&quot;: &quot;baz&quot;, &quot;type&quot;: &quot;categorical&quot;, &quot;domain&quot;: [&quot;A&quot;, &quot;B&quot;, 3]},</span>
+<span class="sd">        {&quot;name&quot;: &quot;baz&quot;, &quot;type&quot;: &quot;categorical&quot;, &quot;domain&quot;: [&quot;A&quot;, &quot;B&quot;, 3], extra=&quot;info&quot;},</span>
+<span class="sd">    ])</span>
+<span class="sd">    ```</span>
+<span class="sd">    In particular, Parameters().__init__ and the to_config method of each Parameter type are inverses.</span>
+<span class="sd">    Parameters(conf).to_config() == conf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Space expects a list or tuple of parameters.&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Parameter</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">make_parameter</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate parameter name </span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.contains" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Check if points are inside the space in each parameter.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if points are inside the space in each parameter.&quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.round" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Round points to the closest contained values.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Round points to the closest contained values.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.sample" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Draw uniformly distributed random samples.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Draw uniformly distributed random samples.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">param</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.to_config" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Configuration of the parameter space.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Configuration of the parameter space.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">to_config</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="opti.parameter.make_parameter" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">make_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Make a parameter object from a configuration</p>
+<p>p = make_parameter(**config)</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>type</code></td>
+        <td><code>str</code></td>
+        <td><p>"continuous", "discrete" or "categorical"</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>Name of the parameter</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>domain</code></td>
+        <td><code>list</code></td>
+        <td><p>Domain, e.g, [0, 1], [1, 2.5, 5] or ["A", "B", "C"]</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">make_parameter</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">domain</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a parameter object from a configuration</span>
+
+<span class="sd">    p = make_parameter(**config)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        type (str): &quot;continuous&quot;, &quot;discrete&quot; or &quot;categorical&quot;</span>
+<span class="sd">        name (str): Name of the parameter</span>
+<span class="sd">        domain (list): Domain, e.g, [0, 1], [1, 2.5, 5] or [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parameter</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;continuous&quot;</span><span class="p">:</span> <span class="n">Continuous</span><span class="p">,</span>
+        <span class="s2">&quot;discrete&quot;</span><span class="p">:</span> <span class="n">Discrete</span><span class="p">,</span>
+        <span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">,</span>
+    <span class="p">}[</span><span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">domain</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Continuous</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;domain not given for parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parameter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../ref-problem/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Problem" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Problem
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ref-objective/" class="md-footer__link md-footer__link--next" aria-label="Next: Objective" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Objective
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

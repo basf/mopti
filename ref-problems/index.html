@@ -1,0 +1,2690 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://basf.github.io/mopti/ref-problems/">
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Test Problems - Opti</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/style.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#test-problems" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Opti" class="md-header__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Opti
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Test Problems
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Opti" class="md-nav__button md-logo" aria-label="Opti" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Opti
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/basf/mopti/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    basf/mopti
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Opti
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Code Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Code Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Code Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-problem/" class="md-nav__link">
+        Problem
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-parameter/" class="md-nav__link">
+        Parameter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-objective/" class="md-nav__link">
+        Objective
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-constraint/" class="md-nav__link">
+        Constraint
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-model/" class="md-nav__link">
+        Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-metric/" class="md-nav__link">
+        Metric
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-sampling/" class="md-nav__link">
+        Sampling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ref-tools/" class="md-nav__link">
+        Tools
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Test Problems
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Test Problems
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems" class="md-nav__link">
+    opti.problems
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.baking" class="md-nav__link">
+    baking
+  </a>
+  
+    <nav class="md-nav" aria-label="baking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.baking.Bread" class="md-nav__link">
+    Bread
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.benchmark" class="md-nav__link">
+    benchmark
+  </a>
+  
+    <nav class="md-nav" aria-label="benchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert1" class="md-nav__link">
+    Daechert1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert2" class="md-nav__link">
+    Daechert2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert3" class="md-nav__link">
+    Daechert3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Hyperellipsoid" class="md-nav__link">
+    Hyperellipsoid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Qapi1" class="md-nav__link">
+    Qapi1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.detergent" class="md-nav__link">
+    detergent
+  </a>
+  
+    <nav class="md-nav" aria-label="detergent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent" class="md-nav__link">
+    Detergent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent_NChooseKConstraint" class="md-nav__link">
+    Detergent_NChooseKConstraint
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent_OutputConstraint" class="md-nav__link">
+    Detergent_OutputConstraint
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.mixed" class="md-nav__link">
+    mixed
+  </a>
+  
+    <nav class="md-nav" aria-label="mixed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.mixed.DiscreteFuelInjector" class="md-nav__link">
+    DiscreteFuelInjector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.mixed.DiscreteVLMOP2" class="md-nav__link">
+    DiscreteVLMOP2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity" class="md-nav__link">
+    multi_fidelity
+  </a>
+  
+    <nav class="md-nav" aria-label="multi_fidelity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity" class="md-nav__link">
+    create_multi_fidelity()
+  </a>
+  
+    <nav class="md-nav" aria-label="create_multi_fidelity()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity--we-apply-two-gaussians-as-two-fidelities-to-the-zdt1-problem" class="md-nav__link">
+    We apply two Gaussians as two fidelities to the zdt1-problem.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity--when-calling-subsequently-we-obtain" class="md-nav__link">
+    when calling subsequently we obtain
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.noisify" class="md-nav__link">
+    noisify
+  </a>
+  
+    <nav class="md-nav" aria-label="noisify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.NoiseType" class="md-nav__link">
+    NoiseType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem" class="md-nav__link">
+    noisify_problem()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem_with_gaussian" class="md-nav__link">
+    noisify_problem_with_gaussian()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem_with_scipy_stats" class="md-nav__link">
+    noisify_problem_with_scipy_stats()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.single" class="md-nav__link">
+    single
+  </a>
+  
+    <nav class="md-nav" aria-label="single">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_Categorical" class="md-nav__link">
+    Zakharov_Categorical
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_Constrained" class="md-nav__link">
+    Zakharov_Constrained
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_NChooseKConstraint" class="md-nav__link">
+    Zakharov_NChooseKConstraint
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.univariate" class="md-nav__link">
+    univariate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.zdt" class="md-nav__link">
+    zdt
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems" class="md-nav__link">
+    opti.problems
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.baking" class="md-nav__link">
+    baking
+  </a>
+  
+    <nav class="md-nav" aria-label="baking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.baking.Bread" class="md-nav__link">
+    Bread
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.benchmark" class="md-nav__link">
+    benchmark
+  </a>
+  
+    <nav class="md-nav" aria-label="benchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert1" class="md-nav__link">
+    Daechert1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert2" class="md-nav__link">
+    Daechert2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Daechert3" class="md-nav__link">
+    Daechert3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Hyperellipsoid" class="md-nav__link">
+    Hyperellipsoid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.benchmark.Qapi1" class="md-nav__link">
+    Qapi1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.detergent" class="md-nav__link">
+    detergent
+  </a>
+  
+    <nav class="md-nav" aria-label="detergent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent" class="md-nav__link">
+    Detergent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent_NChooseKConstraint" class="md-nav__link">
+    Detergent_NChooseKConstraint
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.detergent.Detergent_OutputConstraint" class="md-nav__link">
+    Detergent_OutputConstraint
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.mixed" class="md-nav__link">
+    mixed
+  </a>
+  
+    <nav class="md-nav" aria-label="mixed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.mixed.DiscreteFuelInjector" class="md-nav__link">
+    DiscreteFuelInjector
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.mixed.DiscreteVLMOP2" class="md-nav__link">
+    DiscreteVLMOP2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity" class="md-nav__link">
+    multi_fidelity
+  </a>
+  
+    <nav class="md-nav" aria-label="multi_fidelity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity" class="md-nav__link">
+    create_multi_fidelity()
+  </a>
+  
+    <nav class="md-nav" aria-label="create_multi_fidelity()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity--we-apply-two-gaussians-as-two-fidelities-to-the-zdt1-problem" class="md-nav__link">
+    We apply two Gaussians as two fidelities to the zdt1-problem.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.multi_fidelity.create_multi_fidelity--when-calling-subsequently-we-obtain" class="md-nav__link">
+    when calling subsequently we obtain
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.noisify" class="md-nav__link">
+    noisify
+  </a>
+  
+    <nav class="md-nav" aria-label="noisify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.NoiseType" class="md-nav__link">
+    NoiseType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem" class="md-nav__link">
+    noisify_problem()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem_with_gaussian" class="md-nav__link">
+    noisify_problem_with_gaussian()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.noisify.noisify_problem_with_scipy_stats" class="md-nav__link">
+    noisify_problem_with_scipy_stats()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.single" class="md-nav__link">
+    single
+  </a>
+  
+    <nav class="md-nav" aria-label="single">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_Categorical" class="md-nav__link">
+    Zakharov_Categorical
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_Constrained" class="md-nav__link">
+    Zakharov_Constrained
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opti.problems.single.Zakharov_NChooseKConstraint" class="md-nav__link">
+    Zakharov_NChooseKConstraint
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.univariate" class="md-nav__link">
+    univariate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opti.problems.zdt" class="md-nav__link">
+    zdt
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/basf/mopti/edit/master/docs/ref-problems.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="test-problems">Test Problems</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="opti.problems"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.baking" class="doc doc-heading">
+        <code>baking</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.baking.Bread" class="doc doc-heading">
+        <code>
+Bread            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Dummy problem with mixed inputs and outputs.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.benchmark" class="doc doc-heading">
+        <code>benchmark</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.benchmark.Daechert1" class="doc doc-heading">
+        <code>
+Daechert1            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Problem with a non-convex Pareto front.</p>
+<p>The ideal point is [-1.37, -1.61, -4] and the nadir is [0, 0, -1.44].</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.benchmark.Daechert2" class="doc doc-heading">
+        <code>
+Daechert2            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Unconstrained problem with a Pareto front resembling a comet.</p>
+<p>minimize
+    f1(x) = (1 + x3) (x1^3 x2^2 - 10 x1 - 4 x2)
+    f2(x) = (1 + x3) (x1^3 x2^2 - 10 x1 + 4 x2)
+    f3(x) = 3 (1 + x3) x1^2
+s.t.
+     1 &lt;= x1 &lt;= 3.5
+    -2 &lt;= x2 &lt;= 2
+     0 &lt;= x3 &lt;= 1</p>
+<p>The ideal point is [-70.19, -70.19, 3] and the nadir is [4, 4, 73.5].</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.benchmark.Daechert3" class="doc doc-heading">
+        <code>
+Daechert3            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Modification of DTLZ7, with a Pareto consisting of 4 disconnected parts.</p>
+<p>The ideal point is [0, 0, 2.61] and the nadir is [0.86, 0.86, 6].</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.benchmark.Hyperellipsoid" class="doc doc-heading">
+        <code>
+Hyperellipsoid            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Hyperellipsoid in n dimensions</p>
+<p>minimize
+    f_m(x) = x_m    m = 1, ... n
+for
+    x in R^n
+s.t.
+    sum((x / a)^2) - 1 &lt;= 0</p>
+<p>The ideal point is -a and the is nadir 0^n.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n</code></td>
+        <td><code>int</code></td>
+        <td><p>Dimension of the hyperellipsoid. Defaults to 5.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>a</code></td>
+        <td><code>list-like</code></td>
+        <td><p>Half length of principal axes. a = None or a = [1, ...] results in a hypersphere.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.benchmark.Qapi1" class="doc doc-heading">
+        <code>
+Qapi1            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Constrained problem from the Qriteria API tests.
+Note that while the function is convex, the constraints are not.</p>
+<p>minimize
+    f1(x) = (x1 - 2)^2 + (x2 - 1)^2
+    f2(x) = x1^2 + (x2 - 3)^2
+for
+    x1 in [0, inf)
+    x2 in (-inf, inf)
+s.t.
+    0 &lt;= x1
+    c1(x) = - x1^2 + x2 &lt;= 0
+    c2(x) = - x1 - x2 + 2 &lt;= 0</p>
+<p>The ideal point is [0, 0] and the nadir is [8, 8].</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.detergent" class="doc doc-heading">
+        <code>detergent</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.detergent.Detergent" class="doc doc-heading">
+        <code>
+Detergent            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Constrained problem with 5 inputs and 5 outputs.</p>
+<p>Each output is modeled as a second degree polynomial.</p>
+<p>The sixth input is a filler (water) and is factored out using the formulation
+constraint sum x = 1, and it's parameter bounds 0.6 &lt; water &lt; 0.8 result in 2 linear
+inequality constraints for the other parameters.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.detergent.Detergent_NChooseKConstraint" class="doc doc-heading">
+        <code>
+Detergent_NChooseKConstraint            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Variant of the Detergent problem with an n-choose-k constraint</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.detergent.Detergent_OutputConstraint" class="doc doc-heading">
+        <code>
+Detergent_OutputConstraint            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Variant of the Detergent problem with an output constraint.</p>
+<p>There are 5 inputs, 6 outputs:
+- 3 outputs are to be maximized
+- 1 output represents the stability of the formulation
+    (0: not stable, 1: stable)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.mixed" class="doc doc-heading">
+        <code>mixed</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Mixed variables single and multi-objective test problems.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.mixed.DiscreteFuelInjector" class="doc doc-heading">
+        <code>
+DiscreteFuelInjector            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Fuel injector test problem, modified to contain an integer variable.</p>
+<p>!!! see
+    Manson2021, MVMOO: Mixed variable multi-objective optimisation
+    https://doi.org/10.1007/s10898-021-01052-9
+!!! properties
+    4 objectives, mixed variables, unconstrained</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.mixed.DiscreteVLMOP2" class="doc doc-heading">
+        <code>
+DiscreteVLMOP2            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>VLMOP2 problem (also known as Fonzeca &amp; Fleming), modified to contain a discrete variable.</p>
+<p>!!! see
+    Manson2021, MVMOO: Mixed variable multi-objective optimisation
+    https://doi.org/10.1007/s10898-021-01052-9
+!!! properties
+    bi-objective, mixed variables, unconstrained</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.multi_fidelity" class="doc doc-heading">
+        <code>multi_fidelity</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.problems.multi_fidelity.create_multi_fidelity" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_multi_fidelity</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">fidelities</span><span class="p">,</span> <span class="n">predicates</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Based on a given problem, this creates a new problem with different fidelities.
+Internally, a counter is increased on every call.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>problem</code></td>
+        <td><code>Problem</code></td>
+        <td><p>base problem</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>fidelities</code></td>
+        <td><code>Sequence[Callable[[numpy.ndarray], numpy.ndarray]]</code></td>
+        <td><p>callables that evaluate the problem with different fidelities</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>predicates</code></td>
+        <td><code>Sequence[Callable[[int, numpy.ndarray], bool]]</code></td>
+        <td><p>callables that decide which fidelity is active at the current call
+        depending on the counter and the inputs</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>name of the new multi-fidelity instance</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Returns: new problem with different fidelities</p>
+
+<p><strong>Examples:</strong></p>
+    <h4 id="opti.problems.multi_fidelity.create_multi_fidelity--we-apply-two-gaussians-as-two-fidelities-to-the-zdt1-problem">We apply two Gaussians as two fidelities to the zdt1-problem.</h4>
+<p>zdt1 = opti.problems.ZDT1(n_inputs=n_inputs)
+first_fidelity = noisify_problem_with_gaussian(zdt1, mu=0, sigma=0.01)
+second_fidelity = noisify_problem_with_gaussian(zdt1, mu=0.1, sigma=0.5)</p>
+<p>def pred_second(counter, X):
+    return counter % 3 == 0</p>
+<p>def pred_first(counter, X):
+    return not pred_second(counter, _)</p>
+<p>mf_zdt = create_multi_fidelity(
+    zdt1, [first_fidelity.f, second_fidelity.f], [pred_first, pred_second]
+)</p>
+<p>[...]</p>
+<h4 id="opti.problems.multi_fidelity.create_multi_fidelity--when-calling-subsequently-we-obtain">when calling subsequently we obtain</h4>
+<p>mf_zdt.f(X)  # first fidelity
+mf_zdt.f(X)  # first fidelity
+mf_zdt.f(X)  # second fidelity
+mf_zdt.f(X)  # first fidelity
+mf_zdt.f(X)  # first fidelity
+mf_zdt.f(X)  # second fidelity
+mf_zdt.f(X)  # first fidelity
+...</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/problems/multi_fidelity.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_multi_fidelity</span><span class="p">(</span>
+    <span class="n">problem</span><span class="p">:</span> <span class="n">Problem</span><span class="p">,</span>
+    <span class="n">fidelities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+    <span class="n">predicates</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]],</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Based on a given problem, this creates a new problem with different fidelities.</span>
+<span class="sd">    Internally, a counter is increased on every call.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        problem: base problem</span>
+<span class="sd">        fidelities: callables that evaluate the problem with different fidelities</span>
+<span class="sd">        predicates: callables that decide which fidelity is active at the current call</span>
+<span class="sd">                    depending on the counter and the inputs</span>
+<span class="sd">        name: name of the new multi-fidelity instance</span>
+
+<span class="sd">    Returns: new problem with different fidelities</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        # We apply two Gaussians as two fidelities to the zdt1-problem.</span>
+
+<span class="sd">        zdt1 = opti.problems.ZDT1(n_inputs=n_inputs)</span>
+<span class="sd">        first_fidelity = noisify_problem_with_gaussian(zdt1, mu=0, sigma=0.01)</span>
+<span class="sd">        second_fidelity = noisify_problem_with_gaussian(zdt1, mu=0.1, sigma=0.5)</span>
+
+<span class="sd">        def pred_second(counter, X):</span>
+<span class="sd">            return counter % 3 == 0</span>
+
+<span class="sd">        def pred_first(counter, X):</span>
+<span class="sd">            return not pred_second(counter, _)</span>
+
+<span class="sd">        mf_zdt = create_multi_fidelity(</span>
+<span class="sd">            zdt1, [first_fidelity.f, second_fidelity.f], [pred_first, pred_second]</span>
+<span class="sd">        )</span>
+
+<span class="sd">        [...]</span>
+
+<span class="sd">        # when calling subsequently we obtain</span>
+
+<span class="sd">        mf_zdt.f(X)  # first fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # first fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # second fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # first fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # first fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # second fidelity</span>
+<span class="sd">        mf_zdt.f(X)  # first fidelity</span>
+<span class="sd">        ...</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">MultiFidelityF</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">fidelity</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fidelities</span><span class="p">,</span> <span class="n">predicates</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">pred</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">fidelity</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;no predicate returned true&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Problem</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">outputs</span><span class="p">,</span>
+        <span class="n">objectives</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">objectives</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">constraints</span><span class="p">,</span>
+        <span class="n">output_constraints</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">output_constraints</span><span class="p">,</span>
+        <span class="n">f</span><span class="o">=</span><span class="n">MultiFidelityF</span><span class="p">(),</span>
+        <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.noisify" class="doc doc-heading">
+        <code>noisify</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.noisify.NoiseType" class="doc doc-heading">
+        <code>
+NoiseType            (<span title="enum.Enum">Enum</span>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>An enumeration.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.problems.noisify.noisify_problem" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">noisify_problem</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">noisifiers</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a new problem that is based on the given one plus noise on the outputs.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>problem</code></td>
+        <td><code>Problem</code></td>
+        <td><p>given problem where we will add noise</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>noisifiers</code></td>
+        <td><code>Union[Callable, List[Callable]]</code></td>
+        <td><p>function or list of functions that add noise to the outputs</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>name of the new problem</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Returns: new problem with noise on the output</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/problems/noisify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">noisify_problem</span><span class="p">(</span>
+    <span class="n">problem</span><span class="p">:</span> <span class="n">Problem</span><span class="p">,</span>
+    <span class="n">noisifiers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]],</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Problem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates a new problem that is based on the given one plus noise on the outputs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        problem: given problem where we will add noise</span>
+<span class="sd">        noisifiers: function or list of functions that add noise to the outputs</span>
+<span class="sd">        name: name of the new problem</span>
+
+<span class="sd">    Returns: new problem with noise on the output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">noisy_f</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">noisifiers</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">noisifiers</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
+            <span class="n">noisifiers</span> <span class="o">=</span> <span class="p">[</span><span class="n">noisifiers</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">n_outputs</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_add_noise_to_data</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">noisifiers</span><span class="p">,</span> <span class="n">problem</span><span class="o">.</span><span class="n">outputs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">problem</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noisy_Y</span> <span class="o">=</span> <span class="n">_add_noise_to_data</span><span class="p">(</span>
+            <span class="n">problem</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">problem</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">names</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">noisifiers</span><span class="p">,</span> <span class="n">problem</span><span class="o">.</span><span class="n">outputs</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">problem</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">problem</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">names</span><span class="p">],</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">names</span><span class="p">,</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">noisy_Y</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">Problem</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">outputs</span><span class="p">,</span>
+        <span class="n">objectives</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">objectives</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">constraints</span><span class="p">,</span>
+        <span class="n">output_constraints</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">output_constraints</span><span class="p">,</span>
+        <span class="n">f</span><span class="o">=</span><span class="n">noisy_f</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.problems.noisify.noisify_problem_with_gaussian" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">noisify_problem_with_gaussian</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Given an instance of a problem, this returns the problem with additive Gaussian noise</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>problem</code></td>
+        <td><code>Problem</code></td>
+        <td><p>problem instance where we add the noise</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>mu</code></td>
+        <td><code>float</code></td>
+        <td><p>mean of the Gaussian noise to be added</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>sigma</code></td>
+        <td><code>float</code></td>
+        <td><p>standard deviation of the Gaussian noise to be added</p></td>
+        <td><code>0.05</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Returns: input problem with additive Gaussian noise</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/problems/noisify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">noisify_problem_with_gaussian</span><span class="p">(</span><span class="n">problem</span><span class="p">:</span> <span class="n">Problem</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given an instance of a problem, this returns the problem with additive Gaussian noise</span>
+<span class="sd">    Args:</span>
+<span class="sd">        problem: problem instance where we add the noise</span>
+<span class="sd">        mu: mean of the Gaussian noise to be added</span>
+<span class="sd">        sigma: standard deviation of the Gaussian noise to be added</span>
+
+<span class="sd">    Returns: input problem with additive Gaussian noise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rv_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="n">mu</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">}</span>
+    <span class="n">noise_type</span> <span class="o">=</span> <span class="n">NoiseType</span><span class="o">.</span><span class="n">ADDITIVE</span>
+    <span class="k">return</span> <span class="n">noisify_problem_with_scipy_stats</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">,</span> <span class="n">rv_kwargs</span><span class="p">,</span> <span class="n">noise_type</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="opti.problems.noisify.noisify_problem_with_scipy_stats" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">noisify_problem_with_scipy_stats</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">random_variables</span><span class="p">,</span> <span class="n">rv_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_types</span><span class="o">=&lt;</span><span class="n">NoiseType</span><span class="o">.</span><span class="n">ADDITIVE</span><span class="p">:</span> <span class="mi">1</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Add additive or multiplicative noise drawn from a distribution in scipy.stats
+https://docs.scipy.org/doc/scipy/reference/stats.html</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>problem</code></td>
+        <td><code>Problem</code></td>
+        <td><p>problem instance where we want to add noise to</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>random_variables</code></td>
+        <td><code>Union[list, Any]</code></td>
+        <td><p>list of instances or instance of random variables, e.g.,
+              [scipy.stats.beta, scipy.stats.cauchy], each element of the
+              list is applied to the corresponding data column</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>rv_kwargs</code></td>
+        <td><code>Union[NoneType, dict, List[dict]]</code></td>
+        <td><p>keyword arguments for the random variables, type must correspond to
+       the on of random_variables if given.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>noise_types</code></td>
+        <td><code>Union[List[opti.problems.noisify.NoiseType], opti.problems.noisify.NoiseType]</code></td>
+        <td><p>list of the same length as random_variables or single value,
+         decides whether the noise is added or multiplied</p></td>
+        <td><code>&lt;NoiseType.ADDITIVE: 1&gt;</code></td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>name of the noisy problem</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Returns: noisy problem instance</p>
+
+<p><strong>Examples:</strong></p>
+    <p>To see how to obtain noisy flow-reactor-problems check the following examples.</p>
+<p>1.) Additive Gaussian noise for all output columns</p>
+<p>from scipy import stats
+from opti.problems.flow_reactor_unconstrained import get_problem_pareto
+flow = get_problem_pareto()
+rv = stats.norm
+noisy_flow = noisify_problem_with_scipy_stats(flow, rv)</p>
+<p>2.) Additive Gaussian noise for all output columns with non-standard parameters</p>
+<p>from scipy import stats
+from opti.problems.flow_reactor_unconstrained import get_problem_pareto
+flow = get_problem_pareto()
+rv = stats.norm
+rv_kwargs = {"loc": 0.5, "scale": 0.3}
+noisy_flow = noisify_problem_with_scipy_stats(flow, rv, rv_kwargs=rv_kwargs)</p>
+<p>3.) Different noise distributions and types for the different output columns</p>
+<p>from scipy import stats
+from opti.problems.flow_reactor_unconstrained import get_problem_pareto
+flow = get_problem_pareto()
+rvs = [stats.truncnorm, stats.norm, stats.gamma]
+rv_kwargs = [{"a": 0.1, "b": 2}, {"loc": 0.5, "scale": 0.3}, {"a": 1.99}]
+noise_types = [NoiseType.ADDITIVE, NoiseType.ADDITIVE, NoiseType.MULTIPLICATIVE]
+noisy_flow = noisify_problem_with_scipy_stats(
+    flow, rvs, rv_kwargs=rv_kwargs, noise_types=noise_types
+)</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/problems/noisify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">noisify_problem_with_scipy_stats</span><span class="p">(</span>
+    <span class="n">problem</span><span class="p">:</span> <span class="n">Problem</span><span class="p">,</span>
+    <span class="n">random_variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">rv_kwargs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">noise_types</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">NoiseType</span><span class="p">],</span> <span class="n">NoiseType</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoiseType</span><span class="o">.</span><span class="n">ADDITIVE</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Problem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add additive or multiplicative noise drawn from a distribution in scipy.stats</span>
+<span class="sd">    https://docs.scipy.org/doc/scipy/reference/stats.html</span>
+<span class="sd">    Args:</span>
+<span class="sd">        problem: problem instance where we want to add noise to</span>
+<span class="sd">        random_variables: list of instances or instance of random variables, e.g.,</span>
+<span class="sd">                          [scipy.stats.beta, scipy.stats.cauchy], each element of the</span>
+<span class="sd">                          list is applied to the corresponding data column</span>
+<span class="sd">        rv_kwargs: keyword arguments for the random variables, type must correspond to</span>
+<span class="sd">                   the on of random_variables if given.</span>
+<span class="sd">        noise_types: list of the same length as random_variables or single value,</span>
+<span class="sd">                     decides whether the noise is added or multiplied</span>
+<span class="sd">        name: name of the noisy problem</span>
+
+<span class="sd">    Returns: noisy problem instance</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        To see how to obtain noisy flow-reactor-problems check the following examples.</span>
+
+<span class="sd">        1.) Additive Gaussian noise for all output columns</span>
+
+<span class="sd">        from scipy import stats</span>
+<span class="sd">        from opti.problems.flow_reactor_unconstrained import get_problem_pareto</span>
+<span class="sd">        flow = get_problem_pareto()</span>
+<span class="sd">        rv = stats.norm</span>
+<span class="sd">        noisy_flow = noisify_problem_with_scipy_stats(flow, rv)</span>
+
+<span class="sd">        2.) Additive Gaussian noise for all output columns with non-standard parameters</span>
+
+<span class="sd">        from scipy import stats</span>
+<span class="sd">        from opti.problems.flow_reactor_unconstrained import get_problem_pareto</span>
+<span class="sd">        flow = get_problem_pareto()</span>
+<span class="sd">        rv = stats.norm</span>
+<span class="sd">        rv_kwargs = {&quot;loc&quot;: 0.5, &quot;scale&quot;: 0.3}</span>
+<span class="sd">        noisy_flow = noisify_problem_with_scipy_stats(flow, rv, rv_kwargs=rv_kwargs)</span>
+
+<span class="sd">        3.) Different noise distributions and types for the different output columns</span>
+
+<span class="sd">        from scipy import stats</span>
+<span class="sd">        from opti.problems.flow_reactor_unconstrained import get_problem_pareto</span>
+<span class="sd">        flow = get_problem_pareto()</span>
+<span class="sd">        rvs = [stats.truncnorm, stats.norm, stats.gamma]</span>
+<span class="sd">        rv_kwargs = [{&quot;a&quot;: 0.1, &quot;b&quot;: 2}, {&quot;loc&quot;: 0.5, &quot;scale&quot;: 0.3}, {&quot;a&quot;: 1.99}]</span>
+<span class="sd">        noise_types = [NoiseType.ADDITIVE, NoiseType.ADDITIVE, NoiseType.MULTIPLICATIVE]</span>
+<span class="sd">        noisy_flow = noisify_problem_with_scipy_stats(</span>
+<span class="sd">            flow, rvs, rv_kwargs=rv_kwargs, noise_types=noise_types</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># listify single element inputs</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">random_variables</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">random_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">random_variables</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">n_outputs</span>
+        <span class="n">rv_kwargs</span> <span class="o">=</span> <span class="p">[</span><span class="n">rv_kwargs</span><span class="p">]</span> <span class="k">if</span> <span class="n">rv_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[{}]</span>
+        <span class="n">rv_kwargs</span> <span class="o">=</span> <span class="n">rv_kwargs</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">n_outputs</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">noise_types</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">noise_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">noise_types</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">n_outputs</span>
+
+    <span class="n">ops</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">NoiseType</span><span class="o">.</span><span class="n">ADDITIVE</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span>
+        <span class="n">NoiseType</span><span class="o">.</span><span class="n">MULTIPLICATIVE</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">op_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">NoiseType</span><span class="o">.</span><span class="n">ADDITIVE</span><span class="p">:</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+        <span class="n">NoiseType</span><span class="o">.</span><span class="n">MULTIPLICATIVE</span><span class="p">:</span> <span class="s2">&quot;mul&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">apply_noise</span><span class="p">(</span><span class="n">data_column</span><span class="p">,</span> <span class="n">noise_type</span><span class="p">,</span> <span class="n">random_variable</span><span class="p">,</span> <span class="n">rv_kwargs</span><span class="p">):</span>
+        <span class="n">sampled_noise</span> <span class="o">=</span> <span class="n">random_variable</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">data_column</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="o">**</span><span class="n">rv_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ops</span><span class="p">[</span><span class="n">noise_type</span><span class="p">](</span><span class="n">data_column</span><span class="p">,</span> <span class="n">sampled_noise</span><span class="p">)</span>
+
+    <span class="n">noisifiers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">apply_noise</span><span class="p">,</span> <span class="n">noise_type</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span> <span class="n">random_variable</span><span class="o">=</span><span class="n">rv</span><span class="p">,</span> <span class="n">rv_kwargs</span><span class="o">=</span><span class="n">rvk</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">nt</span><span class="p">,</span> <span class="n">rv</span><span class="p">,</span> <span class="n">rvk</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">noise_types</span><span class="p">,</span> <span class="n">random_variables</span><span class="p">,</span> <span class="n">rv_kwargs</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rv_type_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rv</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_names</span><span class="p">[</span><span class="n">nt</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">rv</span><span class="p">,</span> <span class="n">nt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">random_variables</span><span class="p">,</span> <span class="n">noise_types</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">problem</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with rvs </span><span class="si">{</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rv_type_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">noisify_problem</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">noisifiers</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.single" class="doc doc-heading">
+        <code>single</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.single.Zakharov_Categorical" class="doc doc-heading">
+        <code>
+Zakharov_Categorical            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Variant of the Zakharov problem with one categorical input</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.single.Zakharov_Constrained" class="doc doc-heading">
+        <code>
+Zakharov_Constrained            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Variant of the Zakharov problem with one linear constraint</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="opti.problems.single.Zakharov_NChooseKConstraint" class="doc doc-heading">
+        <code>
+Zakharov_NChooseKConstraint            (<a title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Variant of the Zakharov problem with an n-choose-k constraint</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.univariate" class="doc doc-heading">
+        <code>univariate</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Simple 1D problems for visually assessing probabilistic surrogate models.
+Note: these problems should be output-noisified, e.g.
+<div class="highlight"><pre><span></span><code>import opti
+
+problem = opti.problems.noisify_problem_with_gaussian(
+    opti.problems.Line1D(),
+    sigma=0.1
+)
+</code></pre></div></p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="opti.problems.zdt" class="doc doc-heading">
+        <code>zdt</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>ZDT problem test suite.
+Reference: Zitzler, Eckart, Kalyanmoy Deb, and Lothar Thiele. “Comparison of multiobjective evolutionary algorithms: Empirical results.” Evolutionary computation 8.2 (2000): 173-195. doi: 10.1.1.30.5848
+Adapted from https://github.com/msu-coinlab/pymoo/blob/master/pymoo/problems/multi/zdt.py</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../ref-tools/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tools" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Tools
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
