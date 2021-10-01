@@ -1,0 +1,3 @@
+# Objectives
+
+::: opti.objective
