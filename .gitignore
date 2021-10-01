@@ -9,5 +9,5 @@ __pycache__
 *.mip
 .idea
 examples
-notebooks
-mlruns
+build
+dist
