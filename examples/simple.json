@@ -1,0 +1,19 @@
+{
+  "name": "Univariate biobjective problem",
+  "inputs": [
+    {"name": "x", "type": "continuous", "domain": [0, 1]}
+  ],
+  "outputs": [
+    {"name": "y1", "type": "continuous"},
+    {"name": "y2", "type": "continuous"}
+  ],
+  "objectives": [
+    {"name": "y1", "type": "minimize"},
+    {"name": "y2", "type": "minimize"}
+  ],
+  "optima": {
+    "index": [1, 2],
+    "columns": ["x", "y1", "y2"],
+    "data": [[0, 0, 1], [1, 1, 0]]
+  }
+}

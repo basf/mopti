@@ -1,0 +1,68 @@
+{
+    "author": "Duff Goldman",
+    "name": "Baguette",
+    "timestamp": "2019-07-01T06:00:01Z",
+    "inputs": [
+        {"name": "flour", "type": "continuous", "domain": [600, 1000]},
+        {"name": "water", "type": "continuous", "domain": [200, 600]},
+        {"name": "salt", "type": "continuous", "domain": [10, 50]},
+        {"name": "yeast", "type": "continuous", "domain": [5, 100]},
+        {"name": "yeast_type", "type": "categorical", "domain": ["A", "B", "C"]},
+        {"name": "yeast_age", "type": "continuous", "domain": [0, 52]},
+        {"name": "kneading", "type": "discrete", "domain": [1, 2, 3, 4]},
+        {"name": "kneading_time", "type": "continuous", "domain": [0, 120]},
+        {"name": "resting_time", "type": "continuous", "domain": [0, 120]},
+        {"name": "baking_time", "type": "continuous", "domain": [0, 120]},
+        {"name": "baking_temperature", "type": "continuous", "domain": [90, 250]}
+    ],
+    "outputs": [
+        {"name": "crust", "type": "continuous", "domain": [0, 10]},
+        {"name": "elasticity", "type": "continuous", "domain": [0, null]},
+        {"name": "taste", "type": "discrete", "domain": [1, 2, 3, 4, 5]},
+        {"name": "appearance", "type": "discrete", "domain": [1, 2, 3, 4, 5]}
+    ],
+    "objectives": [
+        {"name": "crust", "type": "maximize"},
+        {"name": "elasticity", "type": "close-to-target", "target": 1000, "exponent": 2},
+        {"name": "taste", "type": "maximize"},
+        {"name": "appearance", "type": "maximize"}
+    ],
+    "constraints": [
+        {
+            "type": "linear-equality",
+            "names": ["flour", "water", "salt", "yeast"],
+            "rhs": 1
+        },
+        {
+            "type": "linear-inequality",
+            "names": ["kneading_time", "resting_time", "baking_time"],
+            "lhs": [1, 1, 1],
+            "rhs": 240
+        }
+    ],
+    "data": {
+        "index": ["experiment 1", "experiment 2", "experiment 3"],
+        "columns": [
+            "flour",
+            "water",
+            "salt",
+            "yeast",
+            "yeast_type",
+            "yeast_age",
+            "kneading",
+            "kneading_time",
+            "resting_time",
+            "baking_time",
+            "baking_temperature",
+            "crust",
+            "elasticity",
+            "taste",
+            "appearance"
+        ],
+        "data": [
+          [700, 250, 25, 25, "A", 2, 1, 20, 90, 45, 180, 4, null, 3, 3],
+          [800, 150, 25, 25, "B", 4, 2, 30, 90, 45, 180, 1, 1500, 5, 2],
+          [900,  50, 25, 25, "C", 2, 3, 20, 90, 45, 180, 3, 150, null, 5]
+        ]
+      }
+}
