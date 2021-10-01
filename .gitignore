@@ -1,0 +1,13 @@
+__pycache__
+.vscode
+.coverage
+.ipynb_checkpoints
+*.code-workspace
+*.egg-info/
+*.png
+*.zip
+*.mip
+.idea
+examples
+notebooks
+mlruns
