@@ -8,7 +8,7 @@ from pandas.api.types import is_numeric_dtype
 
 from opti.constraint import Constraint, Constraints
 from opti.model import LinearModel, Model, Models
-from opti.objective import Minimize, Objective, Objectives, make_objective
+from opti.objective import Minimize, Objective, Objectives
 from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
 from opti.sampling import constrained_sampling
 from opti.sampling.base import sobol_sampling
@@ -33,6 +33,7 @@ class Problem:
         data: Optional[pd.DataFrame] = None,
         optima: Optional[pd.DataFrame] = None,
         name: Optional[str] = None,
+        **kwargs,
     ):
         """An optimization problem.
 
@@ -85,7 +86,12 @@ class Problem:
         if f is not None:
             self.f = f
 
-        # checks
+        if isinstance(data, dict):
+            data = pd.DataFrame(**data)
+
+        if isinstance(optima, dict):
+            optima = pd.DataFrame(**optima)
+
         self.set_data(data)
         self.set_optima(optima)
         self.check_problem()
@@ -120,47 +126,6 @@ class Problem:
             s += f"optima=\n{self.optima.head()}\n"
         return s + ")"
 
-    @staticmethod
-    def from_config(config: dict) -> "Problem":
-        """Create a Problem instance from a configuration dict."""
-        outputs = Parameters(config["outputs"])
-
-        objectives = config.get("objectives", None)
-        if objectives is not None:
-            objectives = [make_objective(**o) for o in config["objectives"]]
-        else:
-            objectives = Objectives([Minimize(d.name) for d in outputs])
-
-        output_constraints = config.get("output_constraints", None)
-        if output_constraints is not None:
-            output_constraints = [
-                make_objective(**o) for o in config["output_constraints"]
-            ]
-
-        models = config.get("models", None)
-        if models is not None:
-            models = Models(models)
-
-        data = config.get("data", None)
-        if data:
-            data = pd.DataFrame(**config["data"])
-
-        optima = config.get("optima", None)
-        if optima:
-            optima = pd.DataFrame(**config["optima"])
-
-        return Problem(
-            inputs=config["inputs"],
-            outputs=outputs,
-            objectives=objectives,
-            constraints=config.get("constraints", None),
-            output_constraints=output_constraints,
-            models=models,
-            data=data,
-            optima=optima,
-            name=config.get("name", None),
-        )
-
     def to_config(self) -> Dict:
         """Return json-serializable configuration dict."""
 
@@ -187,7 +152,7 @@ class Problem:
         """Read a problem from a JSON file."""
         with open(fname, "rb") as infile:
             config = json.loads(infile.read())
-        return Problem.from_config(config)
+        return Problem(**config)
 
     def to_json(self, fname: PathLike) -> None:
         """Save a problem from a JSON file."""

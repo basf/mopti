@@ -57,7 +57,7 @@ def test_problem():
     # objectives are optional and should be set to minimize if not given
     config = json.load(open("examples/bread.json"))
     config.pop("objectives")
-    problem = opti.Problem.from_config(config)
+    problem = opti.Problem(**config)
     assert len(problem.objectives) == len(problem.outputs)
     for obj in problem.objectives:
         assert isinstance(obj, opti.objective.Minimize)
@@ -65,7 +65,7 @@ def test_problem():
     # constraints are optional
     config = json.load(open("examples/bread.json"))
     config.pop("constraints")
-    problem = opti.Problem.from_config(config)
+    problem = opti.Problem(**config)
     assert problem.constraints is None
 
 
@@ -234,7 +234,17 @@ def test_empty_constraints():
         "outputs": [{"type": "continuous", "name": "y", "domain": [0, 1]}],
         "constraints": [],
     }
-    problem = opti.Problem.from_config(config)
+    problem = opti.Problem(**config)
+    assert problem.constraints is None
+
+    config = {
+        "inputs": [{"type": "continuous", "name": "x"}],
+        "outputs": [{"type": "continuous", "name": "y"}],
+        "constraints": [
+            {"names": [], "lhs": [], "rhs": 1, "type": "linear-inequality"}
+        ],
+    }
+    problem = opti.Problem(**config)
     assert problem.constraints is None
 
 
@@ -290,25 +300,9 @@ def test_json(tmpdir):
     assert np.all(problem2.outputs.names == problem.outputs.names)
 
 
-def test_qritos():
-    # test if empty constraints coming from Qritos are ignored
-    problem = opti.Problem.from_config(
-        {
-            "inputs": [{"type": "continuous", "name": "x"}],
-            "outputs": [{"type": "continuous", "name": "y"}],
-            "constraints": [
-                {"names": [], "lhs": [], "rhs": 1, "type": "linear-inequality"}
-            ],
-        }
-    )
-    assert problem.constraints is None
-
-
 def test_optima():
     problem = opti.read_json("examples/simple.json")
-    front = problem.optima
-    assert len(front) == 2
-    problem.set_optima(front)
+    assert len(problem.optima) == 2
 
 
 def test_models():
