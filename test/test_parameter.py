@@ -448,9 +448,25 @@ class TestParameters:
             ]
         )
         X = params.sample(20)
-        Xt = params.transform(X, continuous="normalize", discrete="normalize")
+
+        # one-hot
+        Xt = params.transform(
+            X, continuous="normalize", discrete="normalize", categorical="onehot-encode"
+        )
         assert Xt.shape == (20, 5)
         assert np.all(Xt >= 0) and np.all(Xt <= 1)
+
+        # label-encode
+        Xt = params.transform(X, categorical="label-encode")
+        assert Xt.shape == (20, 3)
+
+        # unkown transforms
+        with pytest.raises(ValueError):
+            params.transform(X, continuous="foo")
+        with pytest.raises(ValueError):
+            params.transform(X, discrete="foo")
+        with pytest.raises(ValueError):
+            params.transform(X, categorical="foo")
 
     def test_duplicate_names(self):
         # test handling of duplicate parameter names

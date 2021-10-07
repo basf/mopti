@@ -403,14 +403,14 @@ class Parameters:
                 elif continuous == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    ValueError(f"Unknown continuous transform {continuous}")
+                    raise ValueError(f"Unknown continuous transform {continuous}")
             if isinstance(p, Discrete):
                 if discrete == "none":
                     transformed.append(s)
                 elif discrete == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    ValueError(f"Unknown discrete transform {continuous}")
+                    raise ValueError(f"Unknown discrete transform {continuous}")
             if isinstance(p, Categorical):
                 if categorical == "none":
                     transformed.append(s)
@@ -419,7 +419,7 @@ class Parameters:
                 elif categorical == "label-encode":
                     transformed.append(p.to_label_encoding(s))
                 else:
-                    ValueError(f"Unknown categorical transform {continuous}")
+                    raise ValueError(f"Unknown categorical transform {continuous}")
         return pd.concat(transformed, axis=1)
 
     def to_config(self) -> List[Dict]:
