@@ -126,6 +126,11 @@ class Problem:
             s += f"optima=\n{self.optima.head()}\n"
         return s + ")"
 
+    @staticmethod
+    def from_config(config: dict) -> "Problem":
+        """Create a Problem instance from a configuration dict."""
+        return Problem(**config)
+
     def to_config(self) -> Dict:
         """Return json-serializable configuration dict."""
 

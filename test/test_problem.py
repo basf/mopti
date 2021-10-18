@@ -57,7 +57,7 @@ def test_problem():
     # objectives are optional and should be set to minimize if not given
     config = json.load(open("examples/bread.json"))
     config.pop("objectives")
-    problem = opti.Problem(**config)
+    problem = opti.Problem.from_config(config)
     assert len(problem.objectives) == len(problem.outputs)
     for obj in problem.objectives:
         assert isinstance(obj, opti.objective.Minimize)
@@ -65,7 +65,7 @@ def test_problem():
     # constraints are optional
     config = json.load(open("examples/bread.json"))
     config.pop("constraints")
-    problem = opti.Problem(**config)
+    problem = opti.Problem.from_config(config)
     assert problem.constraints is None
 
 
@@ -234,7 +234,7 @@ def test_empty_constraints():
         "outputs": [{"type": "continuous", "name": "y", "domain": [0, 1]}],
         "constraints": [],
     }
-    problem = opti.Problem(**config)
+    problem = opti.Problem.from_config(config)
     assert problem.constraints is None
 
     config = {
@@ -244,7 +244,7 @@ def test_empty_constraints():
             {"names": [], "lhs": [], "rhs": 1, "type": "linear-inequality"}
         ],
     }
-    problem = opti.Problem(**config)
+    problem = opti.Problem.from_config(config)
     assert problem.constraints is None
 
 
