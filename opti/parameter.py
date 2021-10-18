@@ -258,12 +258,32 @@ class Categorical(Parameter):
         )
 
     def from_onehot_encoding(self, points: pd.DataFrame) -> pd.Series:
-        """Convert points brack from one-hot encoding."""
+        """Convert points back from one-hot encoding."""
         cat_cols = [f"{self.name}{_CAT_SEP}{c}" for c in self.domain]
         if np.any([c not in cat_cols for c in points.columns]):
             raise ValueError(
                 f"Column names don't match categorical levels: {points.columns}, {cat_cols}"
             )
+        s = points.idxmax(1).str.split(_CAT_SEP, expand=True)[1]
+        s.name = self.name
+        return s
+
+    def to_dummy_encoding(self, points: pd.Series) -> pd.DataFrame:
+        """Convert points to a dummy-hot encoding, dropping the first categorical level."""
+        return pd.DataFrame(
+            {f"{self.name}{_CAT_SEP}{c}": points == c for c in self.domain[1:]},
+            dtype=float,
+        )
+
+    def from_dummy_encoding(self, points: pd.DataFrame) -> pd.Series:
+        """Convert points back from dummy encoding."""
+        cat_cols = [f"{self.name}{_CAT_SEP}{c}" for c in self.domain]
+        if np.any([c not in cat_cols[1:] for c in points.columns]):
+            raise ValueError(
+                f"Column names don't match categorical levels: {points.columns}, {cat_cols}"
+            )
+        points = points.copy()
+        points[cat_cols[0]] = 1 - points[cat_cols[1:]].sum(axis=1)
         s = points.idxmax(1).str.split(_CAT_SEP, expand=True)[1]
         s.name = self.name
         return s
@@ -416,6 +436,8 @@ class Parameters:
                     transformed.append(s)
                 elif categorical == "onehot-encode":
                     transformed.append(p.to_onehot_encoding(s))
+                elif categorical == "dummy-encode":
+                    transformed.append(p.to_dummy_encoding(s))
                 elif categorical == "label-encode":
                     transformed.append(p.to_label_encoding(s))
                 else:

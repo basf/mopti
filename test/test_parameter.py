@@ -317,6 +317,17 @@ class TestCategorical:
         untransformed = p.from_onehot_encoding(transformed)
         assert np.all(points == untransformed)
 
+    def test_dummy_encoding(self):
+        p = Categorical(name="x", domain=["B", "A", "C"])
+        points = pd.Series(["A", "A", "C", "B"])
+        transformed = p.to_dummy_encoding(points)
+        # the first level "B" is dropped
+        assert np.allclose(transformed["x§A"], [1, 1, 0, 0])
+        assert np.allclose(transformed["x§C"], [0, 0, 1, 0])
+
+        untransformed = p.from_dummy_encoding(transformed)
+        assert np.all(points == untransformed)
+
     def test_label_encoding(self):
         p = Categorical(name="x", domain=["B", "A", "C"])
         points = pd.Series(["A", "A", "C", "B"])
