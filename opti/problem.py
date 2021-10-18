@@ -17,6 +17,7 @@ ParametersLike = Union[Parameters, List[Parameter], List[Dict]]
 ObjectivesLike = Union[Objectives, List[Objective], List[Dict]]
 ConstraintsLike = Union[Constraints, List[Constraint], List[Dict]]
 ModelsLike = Union[Models, List[Model], List[Dict]]
+DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
 
@@ -30,8 +31,8 @@ class Problem:
         output_constraints: Optional[ObjectivesLike] = None,
         f: Optional[Callable] = None,
         models: Optional[ModelsLike] = None,
-        data: Optional[pd.DataFrame] = None,
-        optima: Optional[pd.DataFrame] = None,
+        data: Optional[DataFrameLike] = None,
+        optima: Optional[DataFrameLike] = None,
         name: Optional[str] = None,
         **kwargs,
     ):
@@ -131,7 +132,7 @@ class Problem:
         """Create a Problem instance from a configuration dict."""
         return Problem(**config)
 
-    def to_config(self) -> Dict:
+    def to_config(self) -> dict:
         """Return json-serializable configuration dict."""
 
         config = {
