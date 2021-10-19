@@ -109,6 +109,10 @@ class TestContinuous:
         # pd.Series
         assert np.allclose(p.round(pd.Series([0, 0, 0])), 1)
 
+        # parameter without bounds
+        p = Continuous(name="x")
+        assert p.round(-10) == -10
+
     def test_contains(self):
         p = Continuous(name="x", domain=[1, 10])
         # scalar
@@ -416,6 +420,18 @@ class TestParameters:
         )
         rounded = self.mixed_parameters.round(points)
         assert self.mixed_parameters.contains(rounded).all()
+
+        # test rounding for unbouned parameters
+        parameters = Parameters([Continuous("x1"), Continuous("x2", [0, 10])])
+        points = pd.DataFrame(
+            {
+                "x1": [-1, 2, 999],
+                "x2": [-1, 2, 999],
+            }
+        )
+        rounded = parameters.round(points)
+        assert np.allclose(rounded["x1"], [-1, 2, 999])
+        assert np.allclose(rounded["x2"], [0, 2, 10])
 
     def test_bounds(self):
         # test parameter bounds
