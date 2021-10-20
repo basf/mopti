@@ -4,6 +4,7 @@
 __version__ = "0.9.2"
 
 from opti import (
+    bayesopt,
     constraint,
     metric,
     model,
