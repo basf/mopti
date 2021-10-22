@@ -373,7 +373,7 @@ def test_multi_fidelity():
 
 def test_sanitize_problem():
     empty = Problem([], [], name="")
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         opti.problems.sanitize_problem(empty, "")
 
     cake = opti.problems.Cake()
