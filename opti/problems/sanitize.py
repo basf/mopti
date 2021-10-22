@@ -54,10 +54,15 @@ def _sanitize_objective(i: int, o):
 def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
     """
     The resulting problem has the following properties:
-    - inputs named `input_0`, `input_1`, ..., and outputs analogously
-    - data is scaled per feature to [0, 1]
-    - coefficients of linear constraints are adapted according to the data scaling
-    - models are dropped if any
+    - Inputs are named `input_0`, `input_1`, ..., and outputs analogously.
+    - The data is scaled per feature to [0, 1].
+    - Coefficients of linear constraints are adapted to the data scaling.
+    - Models are dropped if there are any.
+
+    Currently unsuported are problems with
+    - discrete or categorical variables,
+    - input constraints that are neither linear nor n-choose-k, or
+    - output constraints.
 
     Args:
         problem: to be sanitized
