@@ -149,10 +149,10 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
         domains = zip(normalized_out_data.min(), normalized_out_data.max())
         outputs = _sanitize_params(problem.outputs, InOrOut.OUT, names, domains)
 
-    normalized_in_data.columns = [i.name for i in inputs]
-    normalized_out_data.columns = [o.name for o in outputs]
+    normalized_in_data.columns = inputs.names
+    normalized_out_data.columns = outputs.names
     normalized_data = pd.concat([normalized_in_data, normalized_out_data], axis=1)
-    normalized_data.reset_index(inplace=True)
+    normalized_data.reset_index(inplace=True, drop=True)
     objectives = Objectives(
         [
             _sanitize_objective(i, obj, s_output, p_output, problem.data)

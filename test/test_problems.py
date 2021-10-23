@@ -387,8 +387,7 @@ def test_sanitize_problem():
         if test_data:
             for p in params:
                 assert np.linalg.norm((p.bounds[0], p.bounds[1] - 1)) < 1e-12
-                assert (data[[p.name]].min() >= 0).item()
-                assert (data[[p.name]].max() <= 1).item()
+            assert params.contains(data[params.names]).all()
 
     def test(problem, sanitized_name="some_name"):
         assert problem.data is not None
@@ -403,14 +402,11 @@ def test_sanitize_problem():
             assert_parameters(
                 sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=False
             )
-            np.min(
-                np.abs(
-                    (
-                        sanitized.data[sanitized.outputs.names]
-                        - problem.data[problem.outputs.names]
-                    ).values
-                )
-            ) > 1e-4
+            output_value_Δ = (
+                sanitized.data[sanitized.outputs.names].values
+                - problem.data[problem.outputs.names].values
+            )
+            assert np.min(np.abs((output_value_Δ))) > 1e-4
         assert sanitized.name == sanitized_name
         assert (sanitized.data.index == pd.RangeIndex(sanitized.data.shape[0])).all()
         return sanitized
