@@ -92,9 +92,14 @@ def _sanitize_objective(
 
 def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
     """
-    The resulting problem has the following properties:
-    - Inputs are named `input_0`, `input_1`, ..., and outputs analogously.
-    - The data is scaled per feature to [0, 1].
+    This creates a transformation of the problem with sanitized data. Thereby, we try
+    to preserve relationships between inputs, outputs, and objectives.
+
+    More precisely, the resulting problem has the following properties:
+    - Inputs are named `input_0`, `input_1`, .... Outputs are named analogously.
+    - The input-data is scaled per feature to `[0, 1]`.
+    - If the problem can be evaluated, the output-data are the evaluations of the scaled inputs.
+    - If the problem cannot be evaluated, the output-data is scaled to `[0, 1]`.
     - Coefficients of linear constraints are adapted to the data scaling.
     - Models are dropped if there are any.
 
