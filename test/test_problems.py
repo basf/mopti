@@ -430,12 +430,20 @@ def test_sanitize_problem():
         ):
             s_lo, s_hi = s_output.domain
             p_lo, p_hi = p_output.domain
+            if np.isneginf(p_lo):
+                p_lo = problem.data[p_output.name].min()
+            if np.isinf(p_hi):
+                p_hi = problem.data[p_output.name].max()
+
             s_Δ = s_hi - s_lo
             p_Δ = p_hi - p_lo
             assert s_obj.target <= s_hi
             assert s_obj.target >= s_lo
-            assert np.allclose((s_obj.target - s_lo) / s_Δ, (p_obj.target - p_lo) / p_Δ)
+            assert (
+                np.abs((s_obj.target - s_lo) / s_Δ - (p_obj.target - p_lo) / p_Δ) < 1e-5
+            )
         assert sanitized.data is not None
+        return sanitized
 
     tp = Problem(
         inputs=[
@@ -471,9 +479,8 @@ def test_sanitize_problem():
     )
     tp.create_initial_data(n_samples=100)
     test_constrained_targets(tp)
-
     test(opti.problems.Cake())
     z = Zakharov_Constrained()
     z.create_initial_data(n_samples=5000)
-    test_constrained(z)
+    test_constrained_targets(z)
     test_constrained(Photodegradation())

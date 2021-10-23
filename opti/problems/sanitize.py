@@ -63,22 +63,29 @@ def _sanitize_params(
 
 def _sanitize_objective(
     i: int,
-    obj: Union[Minimize, Maximize, CloseToTarget],
+    problem_obj: Union[Minimize, Maximize, CloseToTarget],
     sanitized_output: Parameter,
     problem_output: Parameter,
+    problem_data: pd.DataFrame,
 ):
     s_lo, s_hi = sanitized_output.domain
     p_lo, p_hi = problem_output.domain
-    target = (obj.target - p_lo) / (p_hi - p_lo) * (s_hi - s_lo) + s_lo
-
-    tolerance = getattr(obj, "tolerance", None)
+    if np.isneginf(p_lo):
+        p_lo = problem_data[problem_output.name].min(axis=0)
+    if np.isinf(p_hi):
+        p_hi = problem_data[problem_output.name].max(axis=0)
+    target = (problem_obj.target - p_lo) / (p_hi - p_lo) * (s_hi - s_lo) + s_lo
+    target = min(max(target, s_lo), s_hi)
+    tolerance = getattr(problem_obj, "tolerance", None)
     if tolerance is not None:
         tolerance = tolerance / (s_hi - s_lo)
 
     kwargs = dict(
-        target=target, exponent=getattr(obj, "exponent", None), tolerance=tolerance
+        target=target,
+        exponent=getattr(problem_obj, "exponent", None),
+        tolerance=tolerance,
     )
-    return type(obj)(
+    return type(problem_obj)(
         parameter=f"output_{i}", **{k: v for k, v in kwargs.items() if v is not None}
     )
 
@@ -143,7 +150,7 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
     normalized_data.reset_index(inplace=True)
     objectives = Objectives(
         [
-            _sanitize_objective(i, obj, s_output, p_output)
+            _sanitize_objective(i, obj, s_output, p_output, problem.data)
             for i, (obj, s_output, p_output) in enumerate(
                 zip(problem.objectives, outputs, problem.outputs)
             )
