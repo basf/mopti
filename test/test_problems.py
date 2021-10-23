@@ -453,13 +453,15 @@ def test_sanitize_problem():
         ],
         outputs=[
             Continuous("ultimate_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
-            Continuous("mega_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
-            Continuous("super_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
+            Continuous("mega_goal", domain=[0, np.sum(np.square([150, 50, 34.3]))]),
+            Continuous(
+                "super_goal", domain=[0, np.linalg.norm([150, 50, 34.3]) ** 0.5]
+            ),
         ],
         objectives=[
             CloseToTarget("ultimate_goal", target=100),
-            Minimize("mega_goal", target=100),
-            Maximize("super_goal", target=100),
+            Minimize("mega_goal", target=1000),
+            Maximize("super_goal", target=10),
         ],
         constraints=[
             LinearEquality(
@@ -471,7 +473,7 @@ def test_sanitize_problem():
         f=lambda x: np.stack(
             [
                 np.linalg.norm(x, axis=1),
-                np.linalg.norm(x, axis=1) ** 2,
+                np.sum(np.square(x), axis=1),
                 np.linalg.norm(x, axis=1) ** 0.5,
             ],
             axis=1,
