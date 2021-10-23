@@ -1,17 +1,17 @@
 import warnings
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Iterable, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
 from opti.constraint import LinearEquality, LinearInequality, NChooseK
-from opti.objective import Objectives
-from opti.parameter import Parameters
+from opti.objective import CloseToTarget, Maximize, Minimize, Objectives
+from opti.parameter import Parameter, Parameters
 from opti.problem import Problem
 
 
-def _normalize_parameter(
+def _normalize_parameters_data(
     data: pd.DataFrame, params: Parameters
 ) -> Tuple[pd.DataFrame, np.ndarray, np.ndarray]:
     """Transform the inputs from the domain bounds to the unit range"""
@@ -32,21 +32,53 @@ class InOrOut(str, Enum):
     OUT = "output"
 
 
-def _sanitize_params(parameters: Parameters, in_or_out: InOrOut):
+def _sanitize_names(
+    n_params: int,
+    in_or_out: InOrOut,
+) -> Iterable[str]:
+    return (f"{in_or_out}_{i}" for i in range(n_params))
+
+
+def _sanitize_params(
+    parameters: Parameters,
+    in_or_out: InOrOut,
+    sanitized_names: Optional[Iterable[str]] = None,
+    domains: Optional[Iterable[Sequence]] = None,
+):
     """Sets parameter boundaries to 0 and 1 and replaces parameter names"""
+    if sanitized_names is None:
+        sanitized_names = _sanitize_names(len(parameters), in_or_out)
+    if domains is None:
+        domains = ((0, 1) for _ in range(len(parameters)))
     return Parameters(
         [
-            type(p)(name=f"{in_or_out}_{i}", domain=[0, 1])
-            for i, p in enumerate(parameters)
+            type(p)(
+                name=s_name,
+                domain=d,
+            )
+            for (s_name, d, p) in zip(sanitized_names, domains, parameters)
         ]
     )
 
 
-def _sanitize_objective(i: int, o):
+def _sanitize_objective(
+    i: int,
+    obj: Union[Minimize, Maximize, CloseToTarget],
+    sanitized_output: Parameter,
+    problem_output: Parameter,
+):
+    s_lo, s_hi = sanitized_output.domain
+    p_lo, p_hi = problem_output.domain
+    target = (obj.target - p_lo) / (p_hi - p_lo) * (s_hi - s_lo) + s_lo
+
+    tolerance = getattr(obj, "tolerance", None)
+    if tolerance is not None:
+        tolerance = tolerance / (s_hi - s_lo)
+
     kwargs = dict(
-        target=getattr(o, "target", None), exponent=getattr(o, "exponent", None)
+        target=target, exponent=getattr(obj, "exponent", None), tolerance=tolerance
     )
-    return type(o)(
+    return type(obj)(
         parameter=f"output_{i}", **{k: v for k, v in kwargs.items() if v is not None}
     )
 
@@ -82,20 +114,40 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
         name_of_sanitized = "Sanitized"
     inputs = _sanitize_params(problem.inputs, InOrOut.IN)
     input_name_map = {pi.name: i.name for pi, i in zip(problem.inputs, inputs)}
-    outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
+
     if problem.models is not None:
         warnings.warn("models are not sanitized but dropped")
 
-    normalized_in_data, min_val, normalization_denominator = _normalize_parameter(
+    normalized_in_data, min_val, normalization_denominator = _normalize_parameters_data(
         problem.data, problem.inputs
     )
-    normalized_out_data, _, _ = _normalize_parameter(problem.data, problem.outputs)
+    if not hasattr(problem, "f") or problem.f is None:
+        outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
+        normalized_out_data, _, _ = _normalize_parameters_data(
+            problem.data, problem.outputs
+        )
+    else:
+        names = list(_sanitize_names(problem.n_outputs, InOrOut.OUT))
+
+        normalized_out_data = pd.DataFrame(
+            problem.f(normalized_in_data.values),
+            index=normalized_in_data.index,
+            columns=names,
+        )
+        domains = zip(normalized_out_data.min(), normalized_out_data.max())
+        outputs = _sanitize_params(problem.outputs, InOrOut.OUT, names, domains)
+
     normalized_in_data.columns = [i.name for i in inputs]
     normalized_out_data.columns = [o.name for o in outputs]
     normalized_data = pd.concat([normalized_in_data, normalized_out_data], axis=1)
-
+    normalized_data.reset_index(inplace=True)
     objectives = Objectives(
-        [_sanitize_objective(i, o) for i, o in enumerate(problem.objectives)]
+        [
+            _sanitize_objective(i, obj, s_output, p_output)
+            for i, (obj, s_output, p_output) in enumerate(
+                zip(problem.objectives, outputs, problem.outputs)
+            )
+        ]
     )
     constraints = [] if problem.constraints is None else problem.constraints
 

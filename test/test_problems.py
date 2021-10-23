@@ -8,6 +8,7 @@ from scipy import stats
 import opti
 from opti import Categorical, Continuous, Discrete, Problem
 from opti.constraint import LinearEquality
+from opti.objective import CloseToTarget, Maximize, Minimize
 from opti.problems.datasets import Photodegradation
 from opti.problems.multi_fidelity import create_multi_fidelity
 from opti.problems.noisify import (
@@ -17,6 +18,7 @@ from opti.problems.noisify import (
     noisify_problem_with_gaussian,
     noisify_problem_with_scipy_stats,
 )
+from opti.problems.sanitize import InOrOut
 from opti.problems.single import Zakharov_Constrained
 from opti.sampling import constrained_sampling
 
@@ -372,47 +374,68 @@ def test_multi_fidelity():
 
 
 def test_sanitize_problem():
+
     empty = Problem([], [], name="")
     with pytest.raises(TypeError):
         opti.problems.sanitize_problem(empty, "")
 
-    cake = opti.problems.Cake()
-    sanitized_cake = opti.problems.sanitize_problem(cake, "sanitized_cake")
-    assert sanitized_cake.name == "sanitized_cake"
-    assert sanitized_cake.inputs.names == [f"input_{i}" for i in range(cake.n_inputs)]
-    assert sanitized_cake.outputs.names == [
-        f"output_{i}" for i in range(cake.n_outputs)
-    ]
+    def assert_parameters(
+        data, params: opti.Parameters, in_our_out: InOrOut, test_data=True
+    ):
+        assert params.names == [f"{in_our_out}_{i}" for i in range(len(params))]
 
-    def assert_parameters(params: opti.Parameters):
-        assert sanitized_cake.data is not None
-        for p in params:
-            assert np.linalg.norm((p.bounds[0], p.bounds[1] - 1)) < 1e-12
-            assert (sanitized_cake.data[[p.name]].min() >= 0).item()
-            assert (sanitized_cake.data[[p.name]].max() <= 1).item()
+        if test_data:
+            for p in params:
+                assert np.linalg.norm((p.bounds[0], p.bounds[1] - 1)) < 1e-12
+                assert (data[[p.name]].min() >= 0).item()
+                assert (data[[p.name]].max() <= 1).item()
 
-    assert_parameters(sanitized_cake.inputs)
-    assert_parameters(sanitized_cake.outputs)
+    def test(problem, sanitized_name="some_name"):
+        assert problem.data is not None
+        sanitized = opti.problems.sanitize_problem(problem, sanitized_name)
+        assert sanitized.data is not None
+        assert_parameters(sanitized.data, sanitized.inputs, InOrOut.IN)
+        if not hasattr(problem, "f") or problem.f is None:
+            assert_parameters(
+                sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=True
+            )
+        else:
+            assert_parameters(
+                sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=False
+            )
+            np.min(
+                np.abs(
+                    (
+                        sanitized.data[sanitized.outputs.names]
+                        - problem.data[problem.outputs.names]
+                    ).values
+                )
+            ) > 1e-4
+        assert sanitized.name == sanitized_name
+        assert (sanitized.data.index == pd.RangeIndex(sanitized.data.shape[0])).all()
+        return sanitized
 
-    z = Zakharov_Constrained()
-    z.create_initial_data(n_samples=5000)
-    assert z.data is not None
-    z.data[z.outputs.names] = z.eval(z.data[z.inputs.names])
-    sanitized_z = opti.problems.sanitize_problem(z)
-    assert sanitized_z.name == "Sanitized"
-    assert sanitized_z.constraints is not None
-    assert sanitized_z.data is not None
-    assert sanitized_z.constraints.satisfied(sanitized_z.data).all()
+    def test_constrained(problem, sanitized_name="constrained_prb"):
+        sanitized = test(problem, sanitized_name)
+        assert sanitized.constraints is not None
+        assert sanitized.data is not None
+        assert sanitized.constraints.satisfied(sanitized.data).all()
+        return sanitized
 
-    photo_deg = Photodegradation()
-    assert photo_deg.constraints is not None
-    assert photo_deg.data is not None
-    assert photo_deg.constraints.satisfied(photo_deg.data).all()
-    sanitized_photo = opti.problems.sanitize_problem(photo_deg)
-    assert sanitized_photo.name == "Sanitized"
-    assert sanitized_photo.constraints is not None
-    assert sanitized_photo.data is not None
-    assert sanitized_photo.constraints.satisfied(sanitized_photo.data).all()
+    def test_constrained_targets(problem):
+        sanitized_name = "w_targets"
+        sanitized = test_constrained(problem, sanitized_name)
+        for s_obj, s_output, p_obj, p_output in zip(
+            sanitized.objectives, sanitized.outputs, problem.objectives, problem.outputs
+        ):
+            s_lo, s_hi = s_output.domain
+            p_lo, p_hi = p_output.domain
+            s_Δ = s_hi - s_lo
+            p_Δ = p_hi - p_lo
+            assert s_obj.target <= s_hi
+            assert s_obj.target >= s_lo
+            assert np.allclose((s_obj.target - s_lo) / s_Δ, (p_obj.target - p_lo) / p_Δ)
+        assert sanitized.data is not None
 
     tp = Problem(
         inputs=[
@@ -421,9 +444,14 @@ def test_sanitize_problem():
             Continuous("secret_ingredient_3", domain=[0, 34.3]),
         ],
         outputs=[
-            Continuous(
-                "the_ultimate_property", domain=[0, np.linalg.norm([150, 50, 34.3])]
-            )
+            Continuous("ultimate_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
+            Continuous("mega_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
+            Continuous("super_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
+        ],
+        objectives=[
+            CloseToTarget("ultimate_goal", target=100),
+            Minimize("mega_goal", target=100),
+            Maximize("super_goal", target=100),
         ],
         constraints=[
             LinearEquality(
@@ -432,15 +460,20 @@ def test_sanitize_problem():
                 rhs=153.1,
             )
         ],
-        f=lambda x: np.linalg.norm(x),
+        f=lambda x: np.stack(
+            [
+                np.linalg.norm(x, axis=1),
+                np.linalg.norm(x, axis=1) ** 2,
+                np.linalg.norm(x, axis=1) ** 0.5,
+            ],
+            axis=1,
+        ),
     )
     tp.create_initial_data(n_samples=100)
-    assert tp.constraints is not None
-    assert tp.data is not None
-    assert tp.constraints.satisfied(tp.data).all()
-    tp.data[tp.outputs.names] = tp.eval(tp.data[tp.inputs.names])
-    sanitized_tp = opti.problems.sanitize_problem(tp)
-    assert sanitized_tp.name == "Sanitized"
-    assert sanitized_tp.constraints is not None
-    assert sanitized_tp.data is not None
-    assert sanitized_tp.constraints.satisfied(sanitized_tp.data).all()
+    test_constrained_targets(tp)
+
+    test(opti.problems.Cake())
+    z = Zakharov_Constrained()
+    z.create_initial_data(n_samples=5000)
+    test_constrained(z)
+    test_constrained(Photodegradation())
