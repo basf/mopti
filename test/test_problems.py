@@ -394,19 +394,9 @@ def test_sanitize_problem():
         sanitized = opti.problems.sanitize_problem(problem, sanitized_name)
         assert sanitized.data is not None
         assert_parameters(sanitized.data, sanitized.inputs, InOrOut.IN)
-        if not hasattr(problem, "f") or problem.f is None:
-            assert_parameters(
-                sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=True
-            )
-        else:
-            assert_parameters(
-                sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=False
-            )
-            output_value_Δ = (
-                sanitized.data[sanitized.outputs.names].values
-                - problem.data[problem.outputs.names].values
-            )
-            assert np.min(np.abs((output_value_Δ))) > 1e-4
+        assert_parameters(
+            sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=True
+        )
         assert sanitized.name == sanitized_name
         assert (sanitized.data.index == pd.RangeIndex(sanitized.data.shape[0])).all()
         return sanitized
@@ -480,5 +470,5 @@ def test_sanitize_problem():
     test(opti.problems.Cake())
     z = Zakharov_Constrained()
     z.create_initial_data(n_samples=5000)
-    test_constrained_targets(z)
+    test_constrained_targets(z).to_json("z.json")
     test_constrained(Photodegradation())

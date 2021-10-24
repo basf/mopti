@@ -97,11 +97,9 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
 
     More precisely, the resulting problem has the following properties:
     - Inputs are named `input_0`, `input_1`, .... Outputs are named analogously.
-    - The input-data is scaled per feature to `[0, 1]`.
-    - If the problem can be evaluated, the output-data are the evaluations of the scaled inputs.
-    - If the problem cannot be evaluated, the output-data is scaled to `[0, 1]`.
+    - The data is scaled per feature to `[0, 1]`.
     - Coefficients of linear constraints are adapted to the data scaling.
-    - Models are dropped if there are any.
+    - Models and evaluatons in terms of `f` are dropped if there are any.
 
     Currently unsuported are problems with
     - discrete or categorical variables,
@@ -133,21 +131,10 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
     normalized_in_data, min_val, normalization_denominator = _normalize_parameters_data(
         problem.data, problem.inputs
     )
-    if not hasattr(problem, "f") or problem.f is None:
-        outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
-        normalized_out_data, _, _ = _normalize_parameters_data(
-            problem.data, problem.outputs
-        )
-    else:
-        names = list(_sanitize_names(problem.n_outputs, InOrOut.OUT))
-
-        normalized_out_data = pd.DataFrame(
-            problem.f(normalized_in_data.values),
-            index=normalized_in_data.index,
-            columns=names,
-        )
-        domains = zip(normalized_out_data.min(), normalized_out_data.max())
-        outputs = _sanitize_params(problem.outputs, InOrOut.OUT, names, domains)
+    outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
+    normalized_out_data, _, _ = _normalize_parameters_data(
+        problem.data, problem.outputs
+    )
 
     normalized_in_data.columns = inputs.names
     normalized_out_data.columns = outputs.names
