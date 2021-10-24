@@ -470,5 +470,5 @@ def test_sanitize_problem():
     test(opti.problems.Cake())
     z = Zakharov_Constrained()
     z.create_initial_data(n_samples=5000)
-    test_constrained_targets(z).to_json("z.json")
+    test_constrained_targets(z)
     test_constrained(Photodegradation())
