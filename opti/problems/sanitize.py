@@ -1,7 +1,7 @@
 import warnings
 from copy import deepcopy
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -47,7 +47,7 @@ def _sanitize_params(parameters: Parameters, in_or_out: InOrOut):
     return Parameters(sanitized)
 
 
-def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
+def sanitize_problem(problem: Problem):
     """
     This creates a transformation of the problem with sanitized data. Thereby, we try
     to preserve relationships between inputs, outputs, and objectives.
@@ -65,7 +65,6 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
 
     Args:
         problem: to be sanitized
-        name_of_sanitized: name of the resulting problem
 
     Raises:
         TypeError: in case there are unsupported constraints, data is None, or there are output constraints
@@ -77,8 +76,8 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
         raise TypeError("we cannot sanitize a problem without data")
     if problem.output_constraints is not None:
         raise TypeError("output constraints are currently not supported")
-    if name_of_sanitized is None:
-        name_of_sanitized = "Sanitized"
+    if getattr(problem, "f", None) is not None:
+        warnings.warn("f is not sanitized but dropped")
     if problem.models is not None:
         warnings.warn("models are not sanitized but dropped")
 
@@ -125,7 +124,6 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
                 )
 
     normalized_problem = Problem(
-        name=name_of_sanitized,
         inputs=inputs,
         outputs=outputs,
         objectives=objectives,

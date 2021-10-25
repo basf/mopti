@@ -465,6 +465,6 @@ def test_sanitize_problem():
     tp.create_initial_data(n_samples=100)
     _test(tp)
 
-    empty = Problem([], [], name="")
+    empty = Problem([], [])  # this should not be possible
     with pytest.raises(TypeError):
-        opti.problems.sanitize_problem(empty, "")
+        opti.problems.sanitize_problem(empty)
