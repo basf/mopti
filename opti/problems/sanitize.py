@@ -1,4 +1,5 @@
 import warnings
+from copy import deepcopy
 from enum import Enum
 from typing import Iterable, Optional, Sequence, Tuple, Union
 
@@ -148,21 +149,24 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
             )
         ]
     )
-    constraints = [] if problem.constraints is None else problem.constraints
 
-    for c in constraints:
-        c.names = [input_name_map[n] for n in c.names]
-        if isinstance(c, (LinearEquality, LinearInequality)):
-            c.lhs = (c.lhs + min_val) * normalization_denominator
-            if c.rhs > 1e-5:
-                c.lhs = c.lhs / c.rhs
-                c.rhs = 1.0
-        elif isinstance(c, NChooseK):
-            pass
-        else:
-            raise TypeError(
-                "sanitizer only supports only linear and n-choose-k constraints"
-            )
+    constraints = deepcopy(
+        problem.constraints
+    )  # copy to not modify the original problem
+    if constraints is not None:
+        for c in constraints:
+            c.names = [input_name_map[n] for n in c.names]
+            if isinstance(c, (LinearEquality, LinearInequality)):
+                c.lhs = (c.lhs + min_val) * normalization_denominator
+                if c.rhs > 1e-5:
+                    c.lhs = c.lhs / c.rhs
+                    c.rhs = 1.0
+            elif isinstance(c, NChooseK):
+                pass
+            else:
+                raise TypeError(
+                    "sanitizer only supports only linear and n-choose-k constraints"
+                )
 
     normalized_problem = Problem(
         name=name_of_sanitized,
