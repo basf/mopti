@@ -14,7 +14,7 @@ from opti.problem import Problem
 def _normalize_parameters_data(
     data: pd.DataFrame, params: Parameters
 ) -> Tuple[pd.DataFrame, np.ndarray, np.ndarray]:
-    """Transform the inputs from the domain bounds to the unit range"""
+    """Transform data from the domain bounds to the unit range"""
 
     lo = params.bounds.loc["min"]
     hi = params.bounds.loc["max"]
