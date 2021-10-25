@@ -22,9 +22,11 @@ def _normalize_parameters_data(
     lo[lo == -np.inf] = data[lo[lo == -np.inf].index].min(axis=0)
     hi[hi == np.inf] = data[hi[hi == np.inf].index].max(axis=0)
 
-    param_names = [p.name for p in params]
+    data = (data[params.names] - lo) / (hi - lo)
+    min_vals = lo.values
+    delta_vals = (hi - lo).values
 
-    return (data[param_names] - lo) / (hi - lo), lo.values, (hi - lo).values
+    return data, min_vals, delta_vals
 
 
 class InOrOut(str, Enum):
