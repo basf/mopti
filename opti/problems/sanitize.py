@@ -1,14 +1,13 @@
 import warnings
 from copy import deepcopy
 from enum import Enum
-from typing import Iterable, Optional, Sequence, Tuple, Union
+from typing import Iterable, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 
 from opti.constraint import LinearEquality, LinearInequality, NChooseK
-from opti.objective import CloseToTarget, Maximize, Minimize, Objectives
-from opti.parameter import Parameter, Parameters
+from opti.parameter import Parameters
 from opti.problem import Problem
 
 
@@ -49,46 +48,14 @@ def _sanitize_params(
     """Sets parameter boundaries to 0 and 1 and replaces parameter names"""
     if sanitized_names is None:
         sanitized_names = _sanitize_names(len(parameters), in_or_out)
-    if domains is None:
-        domains = ((0, 1) for _ in range(len(parameters)))
-    return Parameters(
-        [
-            type(p)(
-                name=s_name,
-                domain=d,
-            )
-            for (s_name, d, p) in zip(sanitized_names, domains, parameters)
-        ]
-    )
 
-
-def _sanitize_objective(
-    i: int,
-    problem_obj: Union[Minimize, Maximize, CloseToTarget],
-    sanitized_output: Parameter,
-    problem_output: Parameter,
-    problem_data: pd.DataFrame,
-):
-    s_lo, s_hi = sanitized_output.domain
-    p_lo, p_hi = problem_output.domain
-    if np.isneginf(p_lo):
-        p_lo = problem_data[problem_output.name].min(axis=0)
-    if np.isinf(p_hi):
-        p_hi = problem_data[problem_output.name].max(axis=0)
-    target = (problem_obj.target - p_lo) / (p_hi - p_lo) * (s_hi - s_lo) + s_lo
-    target = min(max(target, s_lo), s_hi)
-    tolerance = getattr(problem_obj, "tolerance", None)
-    if tolerance is not None:
-        tolerance = tolerance / (s_hi - s_lo)
-
-    kwargs = dict(
-        target=target,
-        exponent=getattr(problem_obj, "exponent", None),
-        tolerance=tolerance,
-    )
-    return type(problem_obj)(
-        parameter=f"output_{i}", **{k: v for k, v in kwargs.items() if v is not None}
-    )
+    sanitized = []
+    for i, p in enumerate(parameters):
+        name = f"{in_or_out}_{i}"
+        low = -np.inf if np.isneginf(p.low) else 0
+        high = np.inf if np.isinf(p.high) else 1
+        sanitized.append(type(p)(name, domain=[low, high]))
+    return Parameters(sanitized)
 
 
 def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
@@ -123,17 +90,17 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
         raise TypeError("output constraints are currently not supported")
     if name_of_sanitized is None:
         name_of_sanitized = "Sanitized"
-    inputs = _sanitize_params(problem.inputs, InOrOut.IN)
-    input_name_map = {pi.name: i.name for pi, i in zip(problem.inputs, inputs)}
-
     if problem.models is not None:
         warnings.warn("models are not sanitized but dropped")
 
-    normalized_in_data, min_val, normalization_denominator = _normalize_parameters_data(
+    inputs = _sanitize_params(problem.inputs, InOrOut.IN)
+    input_name_map = {pi.name: i.name for pi, i in zip(problem.inputs, inputs)}
+    normalized_in_data, xmin, Δx = _normalize_parameters_data(
         problem.data, problem.inputs
     )
     outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
-    normalized_out_data, _, _ = _normalize_parameters_data(
+    output_name_map = {pi.name: i.name for pi, i in zip(problem.outputs, outputs)}
+    normalized_out_data, ymin, Δy = _normalize_parameters_data(
         problem.data, problem.outputs
     )
 
@@ -141,23 +108,23 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
     normalized_out_data.columns = outputs.names
     normalized_data = pd.concat([normalized_in_data, normalized_out_data], axis=1)
     normalized_data.reset_index(inplace=True, drop=True)
-    objectives = Objectives(
-        [
-            _sanitize_objective(i, obj, s_output, p_output, problem.data)
-            for i, (obj, s_output, p_output) in enumerate(
-                zip(problem.objectives, outputs, problem.outputs)
-            )
-        ]
-    )
 
-    constraints = deepcopy(
-        problem.constraints
-    )  # copy to not modify the original problem
+    objectives = deepcopy(problem.objectives)
+    for obj in objectives:
+        sanitized_name = output_name_map[obj.name]
+        i = outputs.names.index(sanitized_name)
+        obj.name = sanitized_name
+        obj.parameter = sanitized_name
+        obj.target = (obj.target - ymin[i]) / Δy[i]
+        if hasattr(obj, "tolerance"):
+            obj.tolerance /= Δy[i]
+
+    constraints = deepcopy(problem.constraints)
     if constraints is not None:
         for c in constraints:
             c.names = [input_name_map[n] for n in c.names]
             if isinstance(c, (LinearEquality, LinearInequality)):
-                c.lhs = (c.lhs + min_val) * normalization_denominator
+                c.lhs = (c.lhs + xmin) * Δx
                 if c.rhs > 1e-5:
                     c.lhs = c.lhs / c.rhs
                     c.rhs = 1.0
@@ -165,7 +132,7 @@ def sanitize_problem(problem: Problem, name_of_sanitized: Optional[str] = None):
                 pass
             else:
                 raise TypeError(
-                    "sanitizer only supports only linear and n-choose-k constraints"
+                    "sanitizer only supports linear and n-choose-k constraints"
                 )
 
     normalized_problem = Problem(

@@ -9,7 +9,6 @@ import opti
 from opti import Categorical, Continuous, Discrete, Problem
 from opti.constraint import LinearEquality
 from opti.objective import CloseToTarget, Maximize, Minimize
-from opti.problems.datasets import Photodegradation
 from opti.problems.multi_fidelity import create_multi_fidelity
 from opti.problems.noisify import (
     NoiseType,
@@ -18,8 +17,6 @@ from opti.problems.noisify import (
     noisify_problem_with_gaussian,
     noisify_problem_with_scipy_stats,
 )
-from opti.problems.sanitize import InOrOut
-from opti.problems.single import Zakharov_Constrained
 from opti.sampling import constrained_sampling
 
 
@@ -374,62 +371,62 @@ def test_multi_fidelity():
 
 
 def test_sanitize_problem():
+    def _test(original):
+        sanitized = opti.problems.sanitize_problem(original)
 
-    empty = Problem([], [], name="")
-    with pytest.raises(TypeError):
-        opti.problems.sanitize_problem(empty, "")
+        # check inputs
+        for p1, p2 in zip(original.inputs, sanitized.inputs):
+            assert type(p1) == type(p2)
+            if isinstance(p2, Continuous):
+                p2.bounds == (0, 1)  # continuous input bounds are [0, 1]
+            assert p2.name.startswith("input")
 
-    def assert_parameters(
-        data, params: opti.Parameters, in_our_out: InOrOut, test_data=True
-    ):
-        assert params.names == [f"{in_our_out}_{i}" for i in range(len(params))]
+        # check outputs
+        for p1, p2 in zip(original.outputs, sanitized.outputs):
+            assert type(p1) == type(p2)
+            if isinstance(
+                p2, Continuous
+            ):  # continuous output bounds are [0, 1] if specified and [-inf, inf] if not
+                if np.isneginf(p1.low):
+                    assert np.isneginf(p2.low)
+                else:
+                    assert np.isclose(p2.low, 0)
+                if np.isinf(p1.high):
+                    assert np.isinf(p2.high)
+                else:
+                    assert np.isclose(p2.high, 1)
+            assert p2.name.startswith("output")
 
-        if test_data:
-            for p in params:
-                assert np.linalg.norm((p.bounds[0], p.bounds[1] - 1)) < 1e-12
-            assert params.contains(data[params.names]).all()
+        # check objectives
+        for (p1, p2) in zip(original.objectives, sanitized.objectives):
+            assert type(p1) == type(p2)
+            assert p2.name.startswith("output")
+            assert np.isfinite(p2.target)
 
-    def test(problem, sanitized_name="some_name"):
-        assert problem.data is not None
-        sanitized = opti.problems.sanitize_problem(problem, sanitized_name)
-        assert sanitized.data is not None
-        assert_parameters(sanitized.data, sanitized.inputs, InOrOut.IN)
-        assert_parameters(
-            sanitized.data, sanitized.outputs, InOrOut.OUT, test_data=True
+        # check constraints
+        if original.constraints is not None:
+            for c1, c2 in zip(original.constraints, sanitized.constraints):
+                # sanitizing should not modify the original problem
+                assert c1.names != c2.names
+
+        # check data
+        assert original.data.shape == sanitized.data.shape
+        assert set(sanitized.data.columns) == set(
+            sanitized.inputs.names + sanitized.outputs.names
         )
-        assert sanitized.name == sanitized_name
-        assert (sanitized.data.index == pd.RangeIndex(sanitized.data.shape[0])).all()
-        return sanitized
-
-    def test_constrained(problem, sanitized_name="constrained_prb"):
-        sanitized = test(problem, sanitized_name)
-        assert sanitized.constraints is not None
-        assert sanitized.data is not None
+        assert sanitized.inputs.contains(sanitized.data[sanitized.inputs.names]).all()
         assert sanitized.constraints.satisfied(sanitized.data).all()
-        return sanitized
 
-    def test_constrained_targets(problem):
-        sanitized_name = "w_targets"
-        sanitized = test_constrained(problem, sanitized_name)
-        for s_obj, s_output, p_obj, p_output in zip(
-            sanitized.objectives, sanitized.outputs, problem.objectives, problem.outputs
-        ):
-            s_lo, s_hi = s_output.domain
-            p_lo, p_hi = p_output.domain
-            if np.isneginf(p_lo):
-                p_lo = problem.data[p_output.name].min()
-            if np.isinf(p_hi):
-                p_hi = problem.data[p_output.name].max()
+        # problem.f is dropped
+        assert not hasattr(sanitized, "f")
 
-            s_Δ = s_hi - s_lo
-            p_Δ = p_hi - p_lo
-            assert s_obj.target <= s_hi
-            assert s_obj.target >= s_lo
-            assert (
-                np.abs((s_obj.target - s_lo) / s_Δ - (p_obj.target - p_lo) / p_Δ) < 1e-5
-            )
-        assert sanitized.data is not None
-        return sanitized
+    _test(opti.problems.Cake())
+
+    _test(opti.problems.Photodegradation())
+
+    z = opti.problems.Zakharov_Constrained()
+    z.create_initial_data(n_samples=1000)
+    _test(z)
 
     tp = Problem(
         inputs=[
@@ -466,63 +463,8 @@ def test_sanitize_problem():
         ),
     )
     tp.create_initial_data(n_samples=100)
-    test_constrained_targets(tp)
-    test(opti.problems.Cake())
-    z = Zakharov_Constrained()
-    z.create_initial_data(n_samples=5000)
-    test_constrained_targets(z)
-    test_constrained(Photodegradation())
+    _test(tp)
 
-
-def test_sanitize_cake():
-    original = opti.problems.Cake()
-    sanitized = opti.problems.sanitize_problem(original)
-
-    # check inputs
-    for p1, p2 in zip(original.inputs, sanitized.inputs):
-        assert type(p1) == type(p2)
-        if isinstance(p2, Continuous):
-            p2.bounds == (0, 1)  # continuous input bounds are [0, 1]
-        assert p2.name.startswith("input")
-
-    # check outputs
-    for p1, p2 in zip(original.outputs, sanitized.outputs):
-        assert type(p1) == type(p2)
-        if isinstance(
-            p2, Continuous
-        ):  # continuous output bounds are [0, 1] if specified
-            if np.isneginf(p1.low):
-                assert np.isneginf(p2.low)
-            else:
-                assert np.isclose(p2.low, 0)
-            if np.isinf(p1.high):
-                assert np.isneginf(p2.high)
-            else:
-                assert np.isclose(p2.high, 1)
-        assert p2.name.startswith("output")
-
-    # check objectives
-    for (p1, p2) in zip(original.objectives, sanitized.objectives):
-        assert type(p1) == type(p2)
-        assert p2.name.startswith("output")
-
-    # check constraints
-    if original.constraints is not None:
-        for c1, c2 in zip(original.constraints, sanitized.constraints):
-            assert (
-                c1.names != c2.names
-            )  # sanitizing should not modify the original problem
-        assert np.allclose(
-            original.constraints.eval(original.data),
-            sanitized.constraints.eval(sanitized.data),
-        )  # evaluating the constraints should give the same values
-
-    # check data
-    assert original.data.shape == sanitized.data.shape
-    assert set(sanitized.data.columns) == set(
-        sanitized.inputs.names + sanitized.outputs.names
-    )
-    assert sanitized.inputs.contains(sanitized.data[sanitized.inputs.names]).all()
-
-    # problem.f is dropped
-    assert not hasattr(sanitized, "f")
+    empty = Problem([], [], name="")
+    with pytest.raises(TypeError):
+        opti.problems.sanitize_problem(empty, "")
