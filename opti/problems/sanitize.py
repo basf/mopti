@@ -1,13 +1,13 @@
 import warnings
 from copy import deepcopy
 from enum import Enum
-from typing import Iterable, Optional, Sequence, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
 from opti.constraint import LinearEquality, LinearInequality, NChooseK
-from opti.parameter import Parameters
+from opti.parameter import Continuous, Parameters
 from opti.problem import Problem
 
 
@@ -32,29 +32,18 @@ class InOrOut(str, Enum):
     OUT = "output"
 
 
-def _sanitize_names(
-    n_params: int,
-    in_or_out: InOrOut,
-) -> Iterable[str]:
-    return (f"{in_or_out}_{i}" for i in range(n_params))
-
-
-def _sanitize_params(
-    parameters: Parameters,
-    in_or_out: InOrOut,
-    sanitized_names: Optional[Iterable[str]] = None,
-    domains: Optional[Iterable[Sequence]] = None,
-):
+def _sanitize_params(parameters: Parameters, in_or_out: InOrOut):
     """Sets parameter boundaries to 0 and 1 and replaces parameter names"""
-    if sanitized_names is None:
-        sanitized_names = _sanitize_names(len(parameters), in_or_out)
-
     sanitized = []
     for i, p in enumerate(parameters):
         name = f"{in_or_out}_{i}"
-        low = -np.inf if np.isneginf(p.low) else 0
-        high = np.inf if np.isinf(p.high) else 1
-        sanitized.append(type(p)(name, domain=[low, high]))
+        if isinstance(p, Continuous):
+            low = -np.inf if np.isneginf(p.low) else 0
+            high = np.inf if np.isinf(p.high) else 1
+            domain = [low, high]
+        else:
+            raise TypeError("currently only continuous parameters are supported")
+        sanitized.append(type(p)(name, domain))
     return Parameters(sanitized)
 
 
