@@ -30,6 +30,7 @@ from opti.problems.noisify import (
     noisify_problem_with_gaussian,
     noisify_problem_with_scipy_stats,
 )
+from opti.problems.sanitize import sanitize_problem
 from opti.problems.single import (
     Ackley,
     Himmelblau,
