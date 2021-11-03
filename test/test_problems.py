@@ -22,32 +22,30 @@ from opti.sampling import constrained_sampling
 
 def test_single_objective_problems():
     for problem in (
-        opti.problems.single.Ackley(),
-        opti.problems.single.Himmelblau(),
-        opti.problems.single.Rastrigin(),
-        opti.problems.single.Rosenbrock(),
-        opti.problems.single.Schwefel(),
-        opti.problems.single.Sphere(),
-        opti.problems.single.Zakharov(),
-        opti.problems.single.Zakharov_Categorical(),
-        opti.problems.single.Zakharov_Constrained(),
-        opti.problems.single.Zakharov_NChooseKConstraint(),
+        opti.problems.Ackley(),
+        opti.problems.Himmelblau(),
+        opti.problems.Rastrigin(),
+        opti.problems.Rosenbrock(),
+        opti.problems.Schwefel(),
+        opti.problems.Sphere(),
+        opti.problems.Zakharov(),
+        opti.problems.Zakharov_Categorical(),
+        opti.problems.Zakharov_Constrained(),
+        opti.problems.Zakharov_NChooseKConstraint(),
     ):
         # test json-serializability
         json.dumps(problem.to_config())
 
         # test function evaluations
-        x = problem.sample_inputs(10)
-        y1 = problem.f(x.values)
-        y2 = problem.eval(x)
-        assert np.allclose(y1, y2["y"])
-        assert np.all(problem.outputs.contains(y2))
+        X = problem.sample_inputs(10)
+        Y = problem.f(X)
+        assert np.all(problem.outputs.contains(Y))
 
         # test the optima
         optima = problem.get_optima()
         px = optima[problem.inputs.names]
         py = optima[problem.outputs.names]
-        assert np.allclose(problem.eval(px), py, atol=1e-04)
+        assert np.allclose(problem.f(px), py, atol=1e-04)
 
 
 def test_multi_objective_problems():
