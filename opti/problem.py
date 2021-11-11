@@ -45,8 +45,7 @@ class Problem:
             constraints: Constraints on the inputs.
             output_constraints: Constraints on the outputs.
             f: Function to evaluate the outputs for given inputs.
-                Signature: f(x: np.ndarray) -> np.ndarray where both x and f(x) are 2D arrays
-                for vectorized evaluation.
+                Must have the signature: f(x: pd.DataFrame) -> pd.DataFrame
             data: Experimental data.
             optima: Pareto optima.
             name: Name of the problem.
@@ -165,14 +164,6 @@ class Problem:
         with open(fname, "wb") as outfile:
             b = json.dumps(self.to_config(), ensure_ascii=False, indent=2)
             outfile.write(b.encode("utf-8"))
-
-    def eval(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Evaluate the function on a DataFrame"""
-        x = data[self.inputs.names].values
-        y = self.f(x)
-        if y.ndim == 1:
-            y = y[:, None]
-        return pd.DataFrame(y, index=data.index, columns=self.outputs.names)
 
     def check_problem(self) -> None:
         """Check if input and output parameters are consistent."""
@@ -313,8 +304,11 @@ class Problem:
         """Create an initial data set by sampling uniformly from the input space and
         evaluating f(x) at the sampled inputs.
         """
+        if self.f is None:
+            raise NotImplementedError("problem.f is not implemented for the problem.")
         X = self.sample_inputs(n_samples)
-        self.data = pd.concat([X, self.eval(X)], axis=1)
+        Y = self.f(X)
+        self.data = pd.concat([X, Y], axis=1)
 
 
 def read_json(filepath: PathLike) -> Problem:

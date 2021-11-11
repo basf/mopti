@@ -52,7 +52,7 @@ def test_overview():
         [Minimize("y1"), Maximize("y2"), CloseToTarget("y3", target=7)]
     )
     Y = pd.DataFrame({"y1": [1, 2, 3], "y2": [7, 4, 5], "y3": [5, 6.9, 12]})
-    objectives.eval(Y)
+    objectives(Y)
 
     # problem
     Problem(

@@ -154,13 +154,9 @@ class Bread(Problem):
                 Maximize("appearance"),
             ],
             constraints=[
-                LinearEquality(
-                    names=["flour", "water", "salt", "yeast"], lhs=[1, 1, 1, 1], rhs=1
-                ),
+                LinearEquality(names=["flour", "water", "salt", "yeast"], rhs=1),
                 LinearInequality(
-                    names=["kneading_time", "resting_time", "baking_time"],
-                    lhs=[1, 1, 1],
-                    rhs=240,
+                    names=["kneading_time", "resting_time", "baking_time"], rhs=240
                 ),
             ],
             data=get_bread_data(),

@@ -25,10 +25,8 @@ def test_minimize():
     make_objective(**obj.to_config())
     assert obj.name == "meetings"
 
-    df = make_dataframe()
-    y = df["meetings"].values
-    assert np.allclose(obj(y), y)
-    assert np.allclose(obj.eval(df), y)
+    s = make_dataframe()["meetings"]
+    assert np.allclose(obj(s), s)
 
 
 def test_maximize():
@@ -38,10 +36,8 @@ def test_maximize():
     make_objective(**obj.to_config())
     assert obj.name == "coffee"
 
-    df = make_dataframe()
-    y = df["coffee"].values
-    assert np.allclose(obj(y), -y)
-    assert np.allclose(obj.eval(df), -y)
+    s = make_dataframe()["meetings"]
+    assert np.allclose(obj(s), s * (-1))
 
 
 def test_closetotarget():
@@ -51,10 +47,8 @@ def test_closetotarget():
     make_objective(**obj.to_config())
     assert obj.name == "seriousness"
 
-    df = make_dataframe()
-    y = df["seriousness"].values
-    assert np.allclose(obj(y), (y - 5) ** 2)
-    assert np.allclose(obj.eval(df), (y - 5) ** 2)
+    s = make_dataframe()["meetings"]
+    assert np.allclose(obj(s), (s - 5) ** 2)
 
 
 def test_objectives():
@@ -76,7 +70,7 @@ def test_objectives():
     ]
 
     df = make_dataframe()
-    Z = objectives.eval(df)
+    Z = objectives(df)
     assert len(Z) == len(df)
 
 

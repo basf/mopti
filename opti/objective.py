@@ -1,7 +1,6 @@
 import pprint
 from typing import Dict, List, Union
 
-import numpy as np
 import pandas as pd
 
 from opti.parameter import Parameters
@@ -18,15 +17,9 @@ class Objective:
         self.name = name
         self.parameter = parameter
 
-    def __call__(self, y: np.ndarray) -> np.ndarray:
+    def __call__(self, df: pd.DataFrame) -> pd.Series:
         """Evaluate the objective values for given output values."""
         raise NotImplementedError  # implemented in the derived classes
-
-    def eval(self, df: pd.DataFrame) -> pd.Series:
-        """Evaluate the objective values for a given DataFrame."""
-        return pd.Series(
-            self(df[self.parameter].values), index=df.index, name=self.name
-        )
 
     def to_config(self) -> Dict:
         """Return a json-serializable dictionary of the objective."""
@@ -46,10 +39,10 @@ class Minimize(Objective):
         super().__init__(name=parameter, parameter=parameter)
         self.target = target
 
-    def __call__(self, y: np.ndarray) -> np.ndarray:
+    def __call__(self, y: pd.Series) -> pd.Series:
         return y - self.target
 
-    def untransform(self, y: np.ndarray) -> np.ndarray:
+    def untransform(self, y: pd.Series) -> pd.Series:
         """Undo the transformation from output to objective value"""
         return y + self.target
 
@@ -76,12 +69,12 @@ class Maximize(Objective):
         super().__init__(name=parameter, parameter=parameter)
         self.target = target
 
-    def __call__(self, y: np.ndarray) -> np.ndarray:
-        return -y + self.target
+    def __call__(self, y: pd.Series) -> pd.Series:
+        return self.target - y
 
-    def untransform(self, y: np.ndarray) -> np.ndarray:
+    def untransform(self, y: pd.Series) -> pd.Series:
         """Undo the transformation from output to objective value"""
-        return -y - self.target
+        return self.target - y
 
     def __repr__(self):
         return f"Maximize('{self.parameter}', target={self.target})"
@@ -116,10 +109,10 @@ class CloseToTarget(Objective):
         self.exponent = exponent
         self.tolerance = tolerance
 
-    def __call__(self, y: np.ndarray) -> np.ndarray:
+    def __call__(self, y: pd.Series) -> pd.Series:
         return (
-            np.abs(y - self.target) ** self.exponent - self.tolerance ** self.exponent
-        )
+            y - self.target
+        ).abs() ** self.exponent - self.tolerance ** self.exponent
 
     def __repr__(self):
         return f"CloseToTarget('{self.parameter}', target={self.target})"
@@ -149,12 +142,8 @@ class Objectives:
                 _objectives.append(make_objective(**m))
         self.objectives = _objectives
 
-    def __call__(self, y: np.ndarray) -> np.ndarray:
-        y = np.atleast_2d(y)
-        return np.stack([obj(yi) for yi, obj in zip(y.T, self.objectives)], axis=-1)
-
-    def eval(self, y: pd.DataFrame) -> pd.DataFrame:
-        return pd.concat([obj.eval(y) for obj in self.objectives], axis=1)
+    def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
+        return pd.concat([obj(df[obj.name]) for obj in self.objectives], axis=1)
 
     def __repr__(self):
         return "Objectives(\n" + pprint.pformat(self.objectives) + "\n)"
@@ -185,7 +174,7 @@ class Objectives:
         Args:
             outputs: Output parameters.
         """
-        Z = self.eval(outputs.bounds)
+        Z = self(outputs.bounds)
         bounds = pd.DataFrame(columns=self.names, dtype=float)
         bounds.loc["min"] = Z.min(axis=0)
         bounds.loc["max"] = Z.max(axis=0)

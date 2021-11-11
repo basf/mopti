@@ -19,7 +19,7 @@ def test_linear_model():
 
     # evaluate,
     X = pd.DataFrame(np.random.rand(10, 3), columns=["x1", "x2", "x3"])
-    y = model.eval(X)
+    y = model(X)
     assert y.columns == ["y"]
     assert len(y) == 10
 
@@ -39,7 +39,7 @@ def test_models():
 
     # evaluate
     X = pd.DataFrame(np.random.rand(10, 3), columns=["x1", "x2", "x3"])
-    Y = models.eval(X)
+    Y = models(X)
     assert list(Y.columns) == ["cost", "pcf"]
     assert len(Y) == 10
 
@@ -54,8 +54,8 @@ def test_custom_model():
     pls = PLSRegression(n_components=4)
     pls.fit(X_train, Y_train)
     model1 = Model(names=["y1", "y2", "y3"])
-    model1.eval = lambda x: pd.DataFrame(
-        pls.predict(x.values), columns=model1.names, index=x.index
+    model1.__call__ = lambda df: pd.DataFrame(
+        pls.predict(df.to_numpy()), columns=model1.names, index=df.index
     )
 
     # linear model
@@ -66,7 +66,7 @@ def test_custom_model():
 
     # evaluate
     X = pd.DataFrame(np.random.rand(10, D), columns=[f"x{i}" for i in range(D)])
-    Y = models.eval(X)
+    Y = models(X)
     assert list(Y.columns) == ["y1", "y2", "y3", "cost"]
     assert len(Y) == 10
 

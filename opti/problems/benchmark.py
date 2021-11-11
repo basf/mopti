@@ -26,21 +26,22 @@ class Qapi1(Problem):
     """
 
     def __init__(self):
-        def f(x):
-            x = np.atleast_2d(x).T
-            f0 = (x[0] - 2) ** 2 + (x[1] - 1) ** 2
-            f1 = x[0] ** 2 + (x[1] - 3) ** 2
-            return np.stack([f0, f1], axis=1)
-
         super().__init__(
             name="Constrained bi-objective problem",
             inputs=[Continuous("x1", [0, 10]), Continuous("x2", [-10, 10])],
-            outputs=[Continuous(f"y{i}", [-np.inf, np.inf]) for i in range(2)],
+            outputs=[Continuous("y1"), Continuous("y2")],
             constraints=[
                 NonlinearInequality("x2 - x1**2"),
                 NonlinearInequality("2 - x1 - x2"),
             ],
-            f=f,
+        )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(
+            {
+                "y1": df.eval("(x1 - 2)**2 + (x2 - 1)**2"),
+                "y2": df.eval("x1**2 + (x2 - 3)**2"),
+            }
         )
 
 
@@ -64,21 +65,25 @@ class Hyperellipsoid(Problem):
     def __init__(self, n=5, a=None):
         if a is None:
             a = np.ones(n)
-            constr = " + ".join([f"x{i}**2" for i in range(n)]) + " - 1"
+            constr = " + ".join([f"x{i+1}**2" for i in range(n)]) + " - 1"
         else:
             a = np.array(a).squeeze()
             if len(a) != n:
                 raise ValueError("Dimension of half axes doesn't match input dimension")
-            constr = " + ".join([f"(x{i}/{a[i]})**2" for i in range(n)]) + " - 1"
+            constr = " + ".join([f"(x{i+1}/{a[i]})**2" for i in range(n)]) + " - 1"
         self.a = a
 
         super().__init__(
             name="Hyperellipsoid",
-            inputs=[Continuous(f"x{i}", [-a[i], a[i]]) for i in range(n)],
-            outputs=[Continuous(f"y{i}", [-a[i], a[i]]) for i in range(n)],
+            inputs=[Continuous(f"x{i+1}", [-a[i], a[i]]) for i in range(n)],
+            outputs=[Continuous(f"y{i+1}", [-a[i], a[i]]) for i in range(n)],
             constraints=[NonlinearInequality(constr)],
-            f=lambda x: np.atleast_2d(x),
         )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        y = df[self.inputs.names]
+        y.columns = self.outputs.names
+        return y
 
     def get_optima(self, n=10) -> pd.DataFrame:
         X = opti.sampling.sphere.sample(self.n_inputs, n, positive=True)
@@ -97,10 +102,6 @@ class Daechert1(Problem):
     """
 
     def __init__(self):
-        def f(x):
-            x1, x2, x3 = np.atleast_2d(x).T
-            return -np.stack([x1, x2, x3 ** 2], axis=1)
-
         super().__init__(
             name="Dächert-1",
             inputs=[
@@ -108,10 +109,12 @@ class Daechert1(Problem):
                 Continuous("x2", domain=[0, 10]),
                 Continuous("x3", domain=[1.2, 10]),
             ],
-            outputs=[Continuous(f"y{i}", [-np.inf, np.inf]) for i in range(3)],
+            outputs=[Continuous(f"y{i+1}") for i in range(3)],
             constraints=[NonlinearInequality("- cos(x1) - exp(-x2) + x3")],
-            f=f,
         )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame({"y1": df["x1"], "y2": df["x2"], "y3": (df["x3"] ** 2)})
 
 
 class Daechert2(Problem):
@@ -130,17 +133,6 @@ class Daechert2(Problem):
     """
 
     def __init__(self):
-        def f(x):
-            x1, x2, x3 = np.atleast_2d(x).T
-            return np.stack(
-                [
-                    (1 + x3) * (x1 ** 3 * x2 ** 2 - 10 * x1 - 4 * x2),
-                    (1 + x3) * (x1 ** 3 * x2 ** 2 - 10 * x2 + 4 * x2),
-                    3 * (1 + x3) * x1 ** 2,
-                ],
-                axis=1,
-            )
-
         super().__init__(
             name="Dächert-2",
             inputs=[
@@ -148,8 +140,16 @@ class Daechert2(Problem):
                 Continuous("x2", domain=[-2, 2]),
                 Continuous("x3", domain=[0, 1]),
             ],
-            outputs=[Continuous(f"y{i}", [-np.inf, np.inf]) for i in range(3)],
-            f=f,
+            outputs=[Continuous(f"y{i + 1}") for i in range(3)],
+        )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(
+            {
+                "y1": df.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 - 4 * x2)"),
+                "y2": df.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 + 4 * x2)"),
+                "y3": df.eval("3 * (1 + x3) * x1**2"),
+            }
         )
 
 
@@ -160,16 +160,18 @@ class Daechert3(Problem):
     """
 
     def __init__(self):
-        def f(x):
-            x = np.atleast_2d(x)
-            f0 = x[:, 0]
-            f1 = x[:, 1]
-            f2 = 6 - np.sum(x * (1 + np.sin(3 * np.pi * x)), axis=1)
-            return np.stack([f0, f1, f2], axis=1)
-
         super().__init__(
             name="Dächert-3",
-            inputs=[Continuous(f"x{i}", domain=[0, 1]) for i in range(2)],
-            outputs=[Continuous(f"y{i}", [-np.inf, np.inf]) for i in range(3)],
-            f=f,
+            inputs=[Continuous(f"x{i+1}", domain=[0, 1]) for i in range(2)],
+            outputs=[Continuous(f"y{i+1}") for i in range(3)],
+        )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        x = df[self.inputs.names].values
+        return pd.DataFrame(
+            {
+                "y1": df["x1"],
+                "y2": df["x2"],
+                "y3": 6 - np.sum(x * (1 + np.sin(3 * np.pi * x)), axis=1),
+            }
         )
