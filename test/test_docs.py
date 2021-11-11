@@ -45,7 +45,7 @@ def test_overview():
     constr5 = NChooseK(["x1", "x2", "x3"], max_active=2)
     constraints = Constraints([constr1, constr2, constr3, constr4, constr5])
     constr2.satisfied(X).values
-    constr2.eval(X).values
+    constr2(X).values
 
     # objectives
     objectives = Objectives(

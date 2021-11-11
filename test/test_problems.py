@@ -58,7 +58,7 @@ def test_multi_objective_problems():
 
         # evaluate the constraints
         if problem.constraints:
-            problem.constraints.eval(X)
+            problem.constraints(X)
             problem.constraints.satisfied(X)
 
 
