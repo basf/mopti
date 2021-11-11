@@ -173,11 +173,9 @@ class Problem:
             raise ValueError(f"Parameter name in both inputs and outputs: {duplicates}")
 
         # check if objectives are consistent
-        all_parameters = self.inputs.names + self.outputs.names
         for obj in self.objectives:
-            p = obj.parameter
-            if p not in all_parameters:
-                raise ValueError(f"Objective refers to unknown parameter: {p}")
+            if obj.name not in self.outputs.names:
+                raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
 
     def check_data(self, data: pd.DataFrame) -> None:
         """Check if data is consistent with input and output parameters."""
