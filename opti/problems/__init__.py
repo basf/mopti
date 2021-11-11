@@ -1,5 +1,4 @@
 # flake8: noqa
-from opti.problems.baking import Bread, Cake
 from opti.problems.benchmark import (
     Daechert1,
     Daechert2,
@@ -13,6 +12,7 @@ from opti.problems.datasets import (
     BaumgartnerAniline,
     BaumgartnerBenzamide,
     Benzylation,
+    Cake,
     Fullerenes,
     Photodegradation,
     ReizmanSuzuki,

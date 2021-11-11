@@ -42,11 +42,11 @@ def test_single_objective_problems():
 
 def test_multi_objective_problems():
     for _Problem in (
-        # opti.problems.Qapi1,
+        opti.problems.Qapi1,
         opti.problems.Hyperellipsoid,
-        # opti.problems.Daechert1,
-        # opti.problems.Daechert2,
-        # opti.problems.Daechert3,
+        opti.problems.Daechert1,
+        opti.problems.Daechert2,
+        opti.problems.Daechert3,
     ):
         problem = _Problem()
         json.dumps(problem.to_config())  # test serializing
@@ -62,20 +62,13 @@ def test_multi_objective_problems():
             problem.constraints.satisfied(X)
 
 
-def test_baking_problems():
-    problem = opti.problems.Cake()
-    json.dumps(problem.to_config())
-
-    problem = opti.problems.Bread()
-    json.dumps(problem.to_config())
-
-
 def test_dataset_problems():
     for _Problem in (
         opti.problems.Alkox,
         opti.problems.BaumgartnerAniline,
         opti.problems.BaumgartnerBenzamide,
         opti.problems.Benzylation,
+        opti.problems.Cake,
         opti.problems.Fullerenes,
         opti.problems.HPLC,
         opti.problems.Photodegradation,
