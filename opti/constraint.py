@@ -95,7 +95,10 @@ class Constraints:
 
 class LinearEquality(Constraint):
     def __init__(
-        self, names: List[str], lhs: Union[float, np.ndarray] = 1, rhs: float = 0
+        self,
+        names: List[str],
+        lhs: Union[float, List[float], np.ndarray] = 1,
+        rhs: float = 0,
     ):
         """Linear / affine inequality of the form 'lhs * x == rhs'.
 
@@ -146,7 +149,10 @@ class LinearEquality(Constraint):
 
 class LinearInequality(Constraint):
     def __init__(
-        self, names: List[str], lhs: Union[float, np.ndarray] = 1, rhs: float = 0
+        self,
+        names: List[str],
+        lhs: Union[float, List[float], np.ndarray] = 1,
+        rhs: float = 0,
     ):
         """Linear / affine inequality of the form 'lhs * x <= rhs'.
 

@@ -1,7 +1,7 @@
 from typing import Callable, List
 
 import pandas as pd
-import scipy.stats as stats
+from scipy.stats import norm
 
 from opti.parameter import Parameters
 from opti.problem import Problem
@@ -69,7 +69,7 @@ def noisify_problem_with_gaussian(problem: Problem, mu: float = 0, sigma: float 
     """
 
     def noisify(y):
-        rv = stats.norm(loc=mu, scale=sigma)
+        rv = norm(loc=mu, scale=sigma)
         return y + rv.rvs(len(y))
 
     return noisify_problem(problem, noisifiers=[noisify] * len(problem.outputs))
