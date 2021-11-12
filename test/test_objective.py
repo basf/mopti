@@ -74,6 +74,7 @@ def test_objectives():
     df = make_dataframe()
     Z = objectives(df)
     assert len(Z) == len(df)
+    assert np.all(Z.columns == objectives.names)
 
 
 def test_ideal_nadir():

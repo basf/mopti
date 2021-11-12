@@ -6,32 +6,14 @@ import pandas as pd
 
 
 class Constraint:
-    """Base class to define constraints on the input space, g(x) = 0 or g(x) <= 0."""
+    """Base class to define constraints on the input space, g(x) == 0 or g(x) <= 0."""
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
-        """Numerically evaluate the constraint.
-
-        Args:
-            data: Data to evaluate the constraint on.
-
-        Returns:
-            Constraint evaluation g(x) with equalities interpreted as g(x) = 0 and inequalities as g(x) <=0.
-        """
+        """Numerically evaluate the constraint g(x)."""
         raise NotImplementedError
 
-    def eval(self, data: pd.DataFrame) -> pd.Series:
-        """Legacy"""
-        return self(data)
-
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
-        """Check if a constraint is satisfied.
-
-        Args:
-            data: Data to evaluate the constraint on.
-
-        Returns:
-            Constraint evaluation g(x) = 0 or g(x) <= 0 depending on the constraint type.
-        """
+        """Check if a constraint is satisfied, i.e. g(x) == 0 for equalities and g(x) <= for inequalities."""
         raise NotImplementedError
 
     def to_config(self) -> Dict:
@@ -72,9 +54,6 @@ class Constraints:
             Constraint evaluation g(x) for each of the constraints.
         """
         return pd.concat([c(data) for c in self.constraints], axis=1)
-
-    def eval(self, data: pd.DataFrame) -> pd.DataFrame:
-        return self(data)
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         """Check if all constraints are satisfied.

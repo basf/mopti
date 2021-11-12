@@ -116,7 +116,7 @@ class Daechert1(Problem):
         )
 
     def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y1": df["x1"], "y2": df["x2"], "y3": (df["x3"] ** 2)})
+        return pd.DataFrame({"y1": -df["x1"], "y2": -df["x2"], "y3": -df["x3"] ** 2})
 
 
 class Daechert2(Problem):
