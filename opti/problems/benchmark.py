@@ -36,11 +36,11 @@ class Qapi1(Problem):
             ],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             {
-                "y1": df.eval("(x1 - 2)**2 + (x2 - 1)**2"),
-                "y2": df.eval("x1**2 + (x2 - 3)**2"),
+                "y1": X.eval("(x1 - 2)**2 + (x2 - 1)**2"),
+                "y2": X.eval("x1**2 + (x2 - 3)**2"),
             }
         )
 
@@ -80,8 +80,8 @@ class Hyperellipsoid(Problem):
             constraints=[NonlinearInequality(constr)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        y = df[self.inputs.names]
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        y = X[self.inputs.names]
         y.columns = self.outputs.names
         return y
 
@@ -115,8 +115,8 @@ class Daechert1(Problem):
             constraints=[NonlinearInequality("- cos(x1) - exp(-x2) + x3")],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y1": -df["x1"], "y2": -df["x2"], "y3": -df["x3"] ** 2})
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame({"y1": -X["x1"], "y2": -X["x2"], "y3": -X["x3"] ** 2})
 
 
 class Daechert2(Problem):
@@ -147,12 +147,12 @@ class Daechert2(Problem):
             outputs=[Continuous(f"y{i + 1}") for i in range(3)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             {
-                "y1": df.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 - 4 * x2)"),
-                "y2": df.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 + 4 * x2)"),
-                "y3": df.eval("3 * (1 + x3) * x1**2"),
+                "y1": X.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 - 4 * x2)"),
+                "y2": X.eval("(1 + x3) * (x1**3 * x2**2 - 10 * x1 + 4 * x2)"),
+                "y3": X.eval("3 * (1 + x3) * x1**2"),
             }
         )
 
@@ -172,12 +172,12 @@ class Daechert3(Problem):
             outputs=[Continuous(f"y{i+1}") for i in range(3)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names].values
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names].values
         return pd.DataFrame(
             {
-                "y1": df["x1"],
-                "y2": df["x2"],
+                "y1": X["x1"],
+                "y2": X["x2"],
                 "y3": 6 - np.sum(x * (1 + np.sin(3 * np.pi * x)), axis=1),
             }
         )

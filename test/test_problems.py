@@ -1,5 +1,3 @@
-import json
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -11,6 +9,14 @@ from opti.constraint import LinearEquality
 from opti.objective import CloseToTarget, Maximize, Minimize
 from opti.parameter import Discrete
 from opti.problems.noisify import _add_noise_to_data, noisify_problem_with_gaussian
+
+
+def check_function(problem):
+    X = problem.sample_inputs(10)
+    X.index += 1000  # change index to test wether it is kept
+    Y = problem.f(X)
+    assert np.all(X.index == Y.index)
+    assert np.all(problem.outputs.contains(Y))
 
 
 def test_single_objective_problems():
@@ -27,14 +33,7 @@ def test_single_objective_problems():
         opti.problems.Zakharov_NChooseKConstraint,
     ):
         problem = _Problem()
-        json.dumps(problem.to_config())
-
-        # test function evaluations
-        X = problem.sample_inputs(10)
-        Y = problem.f(X)
-        assert np.all(problem.outputs.contains(Y))
-
-        # test the optima
+        check_function(problem)
         optima = problem.get_optima()
         px = optima[problem.inputs.names]
         py = optima[problem.outputs.names]
@@ -50,17 +49,7 @@ def test_multi_objective_problems():
         opti.problems.Daechert3,
     ):
         problem = _Problem()
-        json.dumps(problem.to_config())  # test serializing
-
-        # evaluate the function
-        X = problem.inputs.sample(10)
-        Y = problem.f(X)
-        assert np.all(problem.outputs.contains(Y))
-
-        # evaluate the constraints
-        if problem.constraints:
-            problem.constraints(X)
-            problem.constraints.satisfied(X)
+        check_function(problem)
 
 
 def test_dataset_problems():
@@ -79,58 +68,42 @@ def test_dataset_problems():
     ):
         problem = _Problem()
         data = problem.get_data()
-        assert problem.inputs.contains(data[problem.inputs.names]).all()
+        assert problem.inputs.contains(data).all()
+        # assert problem.outputs.contains(data).all()
 
 
 def test_hyperellipsoid_problem():
     # Hypersphere
     problem = opti.problems.Hyperellipsoid(n=3)
-    json.dumps(problem.to_config())
-    X = problem.inputs.sample()
-    Y = problem.f(X)
-    assert problem.outputs.contains(Y)
-
-    # sampling from the constrained input space should work
-    problem.create_initial_data(10)
-    assert len(problem.get_data()) == 10
-
-    # sampling from the Pareto front
-    front = problem.get_optima(1)
-    assert len(front) == 1
-    front = problem.get_optima(10)
-    assert len(front) == 10
+    optima = problem.get_optima(10)
+    assert len(optima) == 10
 
     # Hyperellipsoid
     with pytest.raises(ValueError):
         opti.problems.Hyperellipsoid(n=3, a=[1, 1])  # a has wrong shape
 
     problem = opti.problems.Hyperellipsoid(n=2, a=[1000, 1])
-    X = problem.inputs.sample()
-    Y = problem.f(X)
-    assert problem.outputs.contains(Y)
+    check_function(problem)
 
-    front = problem.get_optima(10)
-    front.loc[0, "y1"] = -1000
-    front.loc[0, "y2"] = -1
+    optima = problem.get_optima(10)
+    optima.loc[0, "y1"] = -1000
+    optima.loc[0, "y2"] = -1
 
 
 def test_detergent():
     problem = opti.problems.Detergent()
-    problem.create_initial_data(10)
-    assert np.all(problem.outputs.contains(problem.get_data()))
+    check_function(problem)
 
     problem = opti.problems.Detergent_OutputConstraint()
     assert isinstance(problem.outputs["stable"], Continuous)
-    problem.create_initial_data(10)
-    assert np.all(problem.outputs.contains(problem.get_data()))
+    check_function(problem)
 
     problem = opti.problems.Detergent_OutputConstraint(discrete=True)
-    problem.create_initial_data(10)
     assert isinstance(problem.outputs["stable"], Discrete)
-    assert np.all(problem.outputs.contains(problem.get_data()))
+    check_function(problem)
 
     problem = opti.problems.Detergent_NChooseKConstraint()
-    # problem.create_initial_data(10)  # sampling for n-choose-k constraints not implemented
+    # # problem.create_initial_data(10)  # sampling for n-choose-k constraints not implemented
 
 
 def test_zdt_problems():
@@ -141,16 +114,10 @@ def test_zdt_problems():
         opti.problems.ZDT4,
         opti.problems.ZDT6,
     ):
-        problem = _Problem(n_inputs=20)
-        json.dumps(problem.to_config())
-
-        x = problem.inputs.sample()
-        y = problem.f(x)
-        assert np.all(problem.outputs.contains(y))
-
-        # test obtaining the true pareto front
-        opt = problem.get_optima(points=50)
-        assert len(opt) == 50
+        problem = _Problem(n_inputs=10)
+        check_function(problem)
+        optima = problem.get_optima(50)
+        assert len(optima) == 50
 
 
 def test_univariate_problems():
@@ -162,9 +129,7 @@ def test_univariate_problems():
         opti.problems.Step1D,
     ):
         problem = _Problem()
-        x = problem.inputs.sample()
-        y = problem.f(x)
-        assert np.all(problem.outputs.contains(y))
+        check_function(problem)
 
 
 def test_mixed_variables_problems():

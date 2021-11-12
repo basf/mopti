@@ -18,12 +18,12 @@ class ZDT1(Problem):
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names[1:]].to_numpy()
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names[1:]].to_numpy()
         g = 1 + 9 / (self.n_inputs - 1) * np.sum(x, axis=1)
-        y1 = df["x1"].to_numpy()
+        y1 = X["x1"].to_numpy()
         y2 = g * (1 - (y1 / g) ** 0.5)
-        return pd.DataFrame({"y1": y1, "y2": y2}, index=df.index)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
     def get_optima(self, points=100):
         x = np.linspace(0, 1, points)
@@ -39,12 +39,12 @@ class ZDT2(Problem):
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names[1:]].to_numpy()
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names[1:]].to_numpy()
         g = 1 + 9 / (self.n_inputs - 1) * np.sum(x, axis=1)
-        y1 = df["x1"].to_numpy()
+        y1 = X["x1"].to_numpy()
         y2 = g * (1 - (y1 / g) ** 2)
-        return pd.DataFrame({"y1": y1, "y2": y2}, index=df.index)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
     def get_optima(self, points=100):
         x = np.linspace(0, 1, points)
@@ -60,12 +60,12 @@ class ZDT3(Problem):
             outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names[1:]].to_numpy()
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names[1:]].to_numpy()
         g = 1 + 9 / (self.n_inputs - 1) * np.sum(x, axis=1)
-        y1 = df["x1"].to_numpy()
+        y1 = X["x1"].to_numpy()
         y2 = g * (1 - (y1 / g) ** 0.5 - (y1 / g) * np.sin(10 * np.pi * y1))
-        return pd.DataFrame({"y1": y1, "y2": y2}, index=df.index)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
     def get_optima(self, points=100):
         regions = [
@@ -95,14 +95,14 @@ class ZDT4(Problem):
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names].to_numpy()
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names].to_numpy()
         g = 1 + 10 * (self.n_inputs - 1)
         for i in range(1, self.n_inputs):
             g += x[:, i] ** 2 - 10 * np.cos(4.0 * np.pi * x[:, i])
-        y1 = df["x1"].to_numpy()
+        y1 = X["x1"].to_numpy()
         y2 = g * (1 - np.sqrt(y1 / g))
-        return pd.DataFrame({"y1": y1, "y2": y2}, index=df.index)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
     def get_optima(self, points=100):
         x = np.linspace(0, 1, points)
@@ -118,13 +118,13 @@ class ZDT6(Problem):
             outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = df[self.inputs.names].to_numpy()
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = X[self.inputs.names].to_numpy()
         n = self.n_inputs
         g = 1 + 9 * (np.sum(x[:, 1:], axis=1) / (n - 1)) ** 0.25
         y1 = 1 - np.exp(-4 * x[:, 0]) * (np.sin(6 * np.pi * x[:, 0])) ** 6
         y2 = g * (1 - (y1 / g) ** 2)
-        return pd.DataFrame({"y1": y1, "y2": y2}, index=df.index)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
     def get_optima(self, points=100):
         x = np.linspace(0.2807753191, 1, points)

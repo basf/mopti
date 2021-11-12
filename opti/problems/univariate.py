@@ -20,8 +20,8 @@ _X = pd.DataFrame({"x": [0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5]})
 
 class Line1D(Problem):
     def __init__(self):
-        def f(df):
-            return pd.DataFrame({"y": df.eval("0.1 * x + 1")})
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            return pd.DataFrame({"y": X.eval("0.1 * x + 1")}, index=X.index)
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
@@ -33,8 +33,10 @@ class Line1D(Problem):
 
 class Parabola1D(Problem):
     def __init__(self):
-        def f(df):
-            return pd.DataFrame({"y": df.eval("0.025 * (x - 5) ** 2 + 1")})
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            return pd.DataFrame(
+                {"y": X.eval("0.025 * (x - 5) ** 2 + 1")}, index=X.index
+            )
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
@@ -46,8 +48,10 @@ class Parabola1D(Problem):
 
 class Sinus1D(Problem):
     def __init__(self):
-        def f(df):
-            return pd.DataFrame({"y": df.eval("sin(x * 2 * 3.14159 / 10) / 2 + 2")})
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            return pd.DataFrame(
+                {"y": X.eval("sin(x * 2 * 3.14159 / 10) / 2 + 2")}, index=X.index
+            )
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
@@ -59,8 +63,10 @@ class Sinus1D(Problem):
 
 class Sigmoid1D(Problem):
     def __init__(self):
-        def f(df):
-            return pd.DataFrame({"y": df.eval("1 / (1 + exp(-2 * (x - 5))) + 1")})
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            return pd.DataFrame(
+                {"y": X.eval("1 / (1 + exp(-2 * (x - 5))) + 1")}, index=X.index
+            )
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
@@ -72,8 +78,8 @@ class Sigmoid1D(Problem):
 
 class Step1D(Problem):
     def __init__(self):
-        def f(df):
-            return pd.DataFrame({"y": df.eval("x > 1.1").astype(float)})
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            return pd.DataFrame({"y": X.eval("x > 1.1").astype(float)}, index=X.index)
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],

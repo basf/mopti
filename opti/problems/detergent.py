@@ -73,10 +73,10 @@ class Detergent(Problem):
             ],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x = np.atleast_2d(df[self.inputs.names])
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = np.atleast_2d(X[self.inputs.names])
         xp = np.stack([poly2(xi) for xi in x], axis=0)
-        return pd.DataFrame(xp @ self.coef, columns=self.outputs.names)
+        return pd.DataFrame(xp @ self.coef, columns=self.outputs.names, index=X.index)
 
 
 class Detergent_NChooseKConstraint(Problem):
@@ -108,12 +108,12 @@ class Detergent_OutputConstraint(Problem):
     def __init__(self, discrete=False):
         base = Detergent()
 
-        def f(df):
-            Y = base.f(df)
+        def f(X):
+            Y = base.f(X)
             if discrete:
-                Y["stable"] = (df.sum(axis=1) < 0.3).astype(int)
+                Y["stable"] = (X.sum(axis=1) < 0.3).astype(int)
             else:
-                Y["stable"] = (0.4 - df.sum(axis=1)) / 0.2
+                Y["stable"] = (0.4 - X.sum(axis=1)) / 0.2
             return Y
 
         outputs = list(base.outputs)

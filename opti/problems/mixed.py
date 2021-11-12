@@ -28,15 +28,15 @@ class DiscreteVLMOP2(Problem):
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        d = df[self.inputs.names[0]].values
-        x = df[self.inputs.names[1:]].values
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        d = X[self.inputs.names[0]].values
+        x = X[self.inputs.names[1:]].values
         n = self.n_inputs
-        f1 = np.exp(-np.sum((x - n ** -0.5) ** 2, axis=1))
-        f2 = np.exp(-np.sum((x + n ** -0.5) ** 2, axis=1))
-        f1 = np.where(d == "a", 1 - f1, 1.25 - f1)
-        f2 = np.where(d == "a", 1 - f2, 0.75 - f2)
-        return pd.DataFrame({"y1": f1, "y2": f2})
+        y1 = np.exp(-np.sum((x - n ** -0.5) ** 2, axis=1))
+        y2 = np.exp(-np.sum((x + n ** -0.5) ** 2, axis=1))
+        y1 = np.where(d == "a", 1 - y1, 1.25 - y1)
+        y2 = np.where(d == "a", 1 - y2, 0.75 - y2)
+        return pd.DataFrame({"y1": y1, "y2": y2}, index=X.index)
 
 
 class DiscreteFuelInjector(Problem):
@@ -61,11 +61,11 @@ class DiscreteFuelInjector(Problem):
             outputs=[Continuous(f"y{i+1}") for i in range(4)],
         )
 
-    def f(self, df: pd.DataFrame) -> pd.DataFrame:
-        x1 = df["x1"].to_numpy().astype(float)
-        x2 = df["x2"].to_numpy().astype(float)
-        x3 = df["x3"].to_numpy().astype(float)
-        x4 = df["x4"].to_numpy().astype(float)
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1 = X["x1"].to_numpy().astype(float)
+        x2 = X["x2"].to_numpy().astype(float)
+        x3 = X["x3"].to_numpy().astype(float)
+        x4 = X["x4"].to_numpy().astype(float)
         x1 *= 0.2
         y1 = (
             0.692
