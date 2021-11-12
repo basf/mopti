@@ -1,5 +1,5 @@
 import pprint
-from typing import Dict, List, Union
+from typing import Callable, Dict, List, Union
 
 import pandas as pd
 
@@ -16,7 +16,7 @@ class Model:
                 ValueError("Model: names must be a list of strings")
         self.names = list(names)
 
-    def eval(self, df: pd.DataFrame) -> pd.DataFrame:
+    def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
         """Evaluate the objective values for a given DataFrame."""
         raise NotImplementedError
 
@@ -26,6 +26,8 @@ class Model:
 
 
 class LinearModel(Model):
+    """Model to compute an output as a linear/affine function of the inputs."""
+
     def __init__(self, names: List[str], coefficients, offset: float = 0):
         super().__init__(names)
         if len(names) > 1:
@@ -33,8 +35,8 @@ class LinearModel(Model):
         self.coefficients = coefficients
         self.offset = offset
 
-    def eval(self, x: pd.DataFrame) -> pd.DataFrame:
-        y = x @ self.coefficients + self.offset
+    def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
+        y = df.to_numpy() @ self.coefficients + self.offset
         return pd.DataFrame(y, columns=self.names)
 
     def __repr__(self):
@@ -49,6 +51,20 @@ class LinearModel(Model):
         )
 
 
+class CustomModel(Model):
+    """Custom model for arbitrary functions."""
+
+    def __init__(self, names: List[str], f: Callable):
+        super().__init__(names)
+        self.f = f
+
+    def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
+        return self.f(df)
+
+    def __repr__(self):
+        return f"CustomModel({self.names}, f={self.f})"
+
+
 class Models:
     """Container for models."""
 
@@ -61,8 +77,8 @@ class Models:
                 _models.append(make_model(**m))
         self.models = _models
 
-    def eval(self, y: pd.DataFrame) -> pd.DataFrame:
-        return pd.concat([model.eval(y) for model in self.models], axis=1)
+    def __call__(self, y: pd.DataFrame) -> pd.DataFrame:
+        return pd.concat([model(y) for model in self.models], axis=1)
 
     def __repr__(self):
         return "Models(\n" + pprint.pformat(self.models) + "\n)"

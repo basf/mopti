@@ -10,88 +10,74 @@ problem = opti.problems.noisify_problem_with_gaussian(
 )
 ```
 """
-import numpy as np
 import pandas as pd
 
 from opti.parameter import Continuous, Discrete
 from opti.problem import Problem
 
+_X = pd.DataFrame({"x": [0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5]})
+
 
 class Line1D(Problem):
     def __init__(self):
-        def f(x):
-            return 0.1 * x + 1
-
-        x = np.array([0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5])
-        data = pd.DataFrame({"x": x, "y": f(x)})
+        def f(df):
+            return pd.DataFrame({"y": df.eval("0.1 * x + 1")})
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
             outputs=[Continuous("y", [0, 3])],
             f=f,
-            data=data,
+            data=pd.concat([_X, f(_X)], axis=1),
         )
 
 
 class Parabola1D(Problem):
     def __init__(self):
-        def f(x):
-            return 0.025 * (x - 5) ** 2 + 1
-
-        x = np.array([0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5])
-        data = pd.DataFrame({"x": x, "y": f(x)})
+        def f(df):
+            return pd.DataFrame({"y": df.eval("0.025 * (x - 5) ** 2 + 1")})
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
             outputs=[Continuous("y", [0, 3])],
             f=f,
-            data=data,
+            data=pd.concat([_X, f(_X)], axis=1),
         )
 
 
 class Sinus1D(Problem):
     def __init__(self):
-        def f(x):
-            return np.sin(x * 2 * np.pi / 10) / 2 + 2
-
-        x = np.array([0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5])
-        data = pd.DataFrame({"x": x, "y": f(x)})
+        def f(df):
+            return pd.DataFrame({"y": df.eval("sin(x * 2 * 3.14159 / 10) / 2 + 2")})
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
             outputs=[Continuous("y", [0, 3])],
             f=f,
-            data=data,
+            data=pd.concat([_X, f(_X)], axis=1),
         )
 
 
 class Sigmoid1D(Problem):
     def __init__(self):
-        def f(x):
-            return 1 / (1 + np.exp(-(x - 5) * 2)) + 1
-
-        x = np.array([0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5])
-        data = pd.DataFrame({"x": x, "y": f(x)})
+        def f(df):
+            return pd.DataFrame({"y": df.eval("1 / (1 + exp(-2 * (x - 5))) + 1")})
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
             outputs=[Continuous("y", [0, 3])],
             f=f,
-            data=data,
+            data=pd.concat([_X, f(_X)], axis=1),
         )
 
 
 class Step1D(Problem):
     def __init__(self):
-        def f(x):
-            return (x > 1.1).astype(float)
-
-        x = np.array([0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5])
-        data = pd.DataFrame({"x": x, "y": f(x)})
+        def f(df):
+            return pd.DataFrame({"y": df.eval("x > 1.1").astype(float)})
 
         super().__init__(
             inputs=[Continuous("x", [0, 10])],
             outputs=[Discrete("y", [0, 1])],
             f=f,
-            data=data,
+            data=pd.concat([_X, f(_X)], axis=1),
         )

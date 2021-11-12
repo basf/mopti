@@ -1,9 +1,15 @@
 import numpy as np
+import pandas as pd
 
 from opti.constraint import LinearInequality, NChooseK
 from opti.objective import Maximize
-from opti.parameter import Continuous, Parameters
+from opti.parameter import Continuous
 from opti.problem import Problem
+
+
+def poly2(x: np.ndarray) -> np.ndarray:
+    """Full quadratic feature expansion including bias term."""
+    return np.concatenate([[1], x, np.outer(x, x)[np.triu_indices(5)]])
 
 
 class Detergent(Problem):
@@ -22,7 +28,7 @@ class Detergent(Problem):
         # scale = PolynomialFeatures(degree=2).fit_transform(base).T
         # coef = np.random.RandomState(42).normal(scale=scale, size=(len(scale), 5))
         # coef = np.clip(coef, 0, None)
-        coef = np.array(
+        self.coef = np.array(
             [
                 [0.4967, 0.0, 0.6477, 1.523, 0.0],
                 [0.0, 4.7376, 2.3023, 0.0, 1.6277],
@@ -48,36 +54,29 @@ class Detergent(Problem):
             ]
         )
 
-        def poly2(x: np.ndarray) -> np.ndarray:
-            """Full quadratic feature expansion including bias term."""
-            return np.concatenate([[1], x, np.outer(x, x)[np.triu_indices(5)]])
-
-        def f(x):
-            x = np.atleast_2d(x)
-            xp = np.stack([poly2(xi) for xi in x], axis=0)
-            return xp @ coef
-
-        inputs = Parameters(
-            [
+        super().__init__(
+            name="Detergent",
+            inputs=[
                 Continuous("x1", domain=[0.0, 0.2]),
                 Continuous("x2", domain=[0.0, 0.3]),
                 Continuous("x3", domain=[0.02, 0.2]),
                 Continuous("x4", domain=[0.0, 0.06]),
                 Continuous("x5", domain=[0.0, 0.04]),
-            ]
-        )
-
-        super().__init__(
-            name="Detergent",
-            inputs=inputs,
+            ],
             outputs=[Continuous(f"y{i+1}", domain=[0, 3]) for i in range(5)],
             objectives=[Maximize(f"y{i+1}") for i in range(5)],
             constraints=[
-                LinearInequality(names=inputs.names, lhs=-np.ones(5), rhs=-0.2),
-                LinearInequality(names=inputs.names, lhs=np.ones(5), rhs=0.4),
+                LinearInequality(
+                    names=["x1", "x2", "x3", "x4", "x5"], lhs=-1, rhs=-0.2
+                ),
+                LinearInequality(names=["x1", "x2", "x3", "x4", "x5"], lhs=1, rhs=0.4),
             ],
-            f=f,
         )
+
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        x = np.atleast_2d(df[self.inputs.names])
+        xp = np.stack([poly2(xi) for xi in x], axis=0)
+        return pd.DataFrame(xp @ self.coef, columns=self.outputs.names)
 
 
 class Detergent_NChooseKConstraint(Problem):
@@ -109,12 +108,11 @@ class Detergent_OutputConstraint(Problem):
     def __init__(self):
         base = Detergent()
 
-        def f(x):
-            x = np.atleast_2d(x)
-            y1_5 = base.f(x)
-            y6 = (0.4 - x.sum(axis=1)) / 0.2  # continuous version
-            # y6 = np.sum(x, axis=1) < 0.3  # discrete version
-            return np.column_stack([y1_5, y6])
+        def f(df):
+            Y = base.f(df)
+            Y["stable"] = (0.4 - df.sum(axis=1)) / 0.2  # continuous version
+            Y["stable"] = df.sum(axis=1) < 0.3  # discrete version
+            return Y
 
         super().__init__(
             name="Detergent with stability constraint",

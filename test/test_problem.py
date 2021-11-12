@@ -248,14 +248,6 @@ def test_empty_constraints():
     assert problem.constraints is None
 
 
-def test_eval():
-    problem = opti.problems.ZDT1(3)
-    X = problem.inputs.sample(2)
-    Y = problem.eval(X)
-    assert len(Y) == 2
-    assert (X.index == Y.index).all()
-
-
 def test_config():
     # test if the configuration dict is strictly json-compliant
     problem = opti.problems.Ackley()
@@ -316,7 +308,7 @@ def test_models():
     )
 
     X = problem.sample_inputs(10)
-    Y = problem.models.eval(X)
-    Z = problem.objectives.eval(Y)
+    Y = problem.models(X)
+    Z = problem.objectives(Y)
     assert list(Y.columns) == problem.outputs.names
     assert list(Z.columns) == problem.objectives.names

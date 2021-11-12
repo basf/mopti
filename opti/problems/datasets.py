@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from opti.constraint import LinearEquality, NChooseK
-from opti.objective import Maximize, Minimize
+from opti.objective import CloseToTarget, Maximize, Minimize
 from opti.parameter import Categorical, Continuous
 from opti.problem import Problem
 
@@ -12,6 +12,47 @@ cdir = os.path.dirname(os.path.realpath(__file__))
 
 def get_data(fname: str):
     return pd.read_csv(f"{cdir}/data/{fname}")
+
+
+class Cake(Problem):
+    """Fictional dataset for a cake recipe optimization with mixed objectives."""
+
+    def __init__(self):
+        super().__init__(
+            name="Cake",
+            inputs=[
+                Continuous("wheat_flour", domain=[0, 1]),
+                Continuous("spelt_flour", domain=[0, 1]),
+                Continuous("sugar", domain=[0, 1]),
+                Continuous("chocolate", domain=[0, 1]),
+                Continuous("nuts", domain=[0, 1]),
+                Continuous("carrot", domain=[0, 1]),
+            ],
+            outputs=[
+                Continuous("calories", domain=[300, 600]),
+                Continuous("taste", domain=[0, 5]),
+                Continuous("browning", domain=[0, 2]),
+            ],
+            objectives=[
+                Minimize("calories"),
+                Maximize("taste"),
+                CloseToTarget("browning", target=1.4),
+            ],
+            constraints=[
+                LinearEquality(
+                    [
+                        "wheat_flour",
+                        "spelt_flour",
+                        "sugar",
+                        "chocolate",
+                        "nuts",
+                        "carrot",
+                    ],
+                    rhs=1,
+                )
+            ],
+            data=get_data("cake.csv"),
+        )
 
 
 class Alkox(Problem):

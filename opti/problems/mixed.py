@@ -3,6 +3,7 @@ Mixed variables single and multi-objective test problems.
 """
 
 import numpy as np
+import pandas as pd
 
 from opti.parameter import Categorical, Continuous, Discrete
 from opti.problem import Problem
@@ -19,22 +20,23 @@ class DiscreteVLMOP2(Problem):
     """
 
     def __init__(self, n_inputs: int = 3):
+        assert n_inputs >= 2
         super().__init__(
             name="Discrete VLMOP2 test problem",
-            inputs=[Categorical("x0", ["a", "b"])]
-            + [Continuous(f"x{i+1}", [-2, 2]) for i in range(n_inputs - 1)],
+            inputs=[Categorical("x1", ["a", "b"])]
+            + [Continuous(f"x{i+1}", [-2, 2]) for i in range(1, n_inputs)],
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 
-    def f(self, x: np.ndarray):
-        x = np.atleast_2d(np.array(x, dtype="object"))
-        d, x = x[:, 0], x[:, 1:].astype(float)
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        d = df[self.inputs.names[0]].values
+        x = df[self.inputs.names[1:]].values
         n = self.n_inputs
         f1 = np.exp(-np.sum((x - n ** -0.5) ** 2, axis=1))
         f2 = np.exp(-np.sum((x + n ** -0.5) ** 2, axis=1))
         f1 = np.where(d == "a", 1 - f1, 1.25 - f1)
         f2 = np.where(d == "a", 1 - f2, 0.75 - f2)
-        return np.column_stack([f1, f2])
+        return pd.DataFrame({"y1": f1, "y2": f2})
 
 
 class DiscreteFuelInjector(Problem):
@@ -50,15 +52,22 @@ class DiscreteFuelInjector(Problem):
     def __init__(self):
         super().__init__(
             name="Discrete fuel injector test problem",
-            inputs=[Discrete("x1", [0, 1, 2, 3])]
-            + [Continuous(f"x{i}", [-2, 2]) for i in range(2, 5)],
+            inputs=[
+                Discrete("x1", [0, 1, 2, 3]),
+                Discrete("x2", [-2, 2]),
+                Discrete("x3", [-2, 2]),
+                Discrete("x4", [-2, 2]),
+            ],
             outputs=[Continuous(f"y{i+1}") for i in range(4)],
         )
 
-    def f(self, x: np.ndarray):
-        x1, x2, x3, x4 = np.atleast_2d(x).T
+    def f(self, df: pd.DataFrame) -> pd.DataFrame:
+        x1 = df["x1"].to_numpy().astype(float)
+        x2 = df["x2"].to_numpy().astype(float)
+        x3 = df["x3"].to_numpy().astype(float)
+        x4 = df["x4"].to_numpy().astype(float)
         x1 *= 0.2
-        f1 = (
+        y1 = (
             0.692
             + 0.4771 * x1
             - 0.687 * x4
@@ -75,7 +84,7 @@ class DiscreteFuelInjector(Problem):
             + 0.00198 * x2 * x3
             + 0.0184 * x2 ** 2
         )
-        f2 = (
+        y2 = (
             0.37
             - 0.205 * x1
             + 0.0307 * x4
@@ -98,7 +107,7 @@ class DiscreteFuelInjector(Problem):
             - 0.184 * x1 * x2 ** 2
             + 0.281 * x1 * x3 * x4
         )
-        f3 = (
+        y3 = (
             0.153
             - 0.322 * x1
             + 0.396 * x4
@@ -115,7 +124,7 @@ class DiscreteFuelInjector(Problem):
             + 0.0752 * x2 * x3
             + 0.0192 * x2 ** 2
         )
-        f4 = (
+        y4 = (
             0.758
             + 0.358 * x1
             - 0.807 * x4
@@ -132,4 +141,4 @@ class DiscreteFuelInjector(Problem):
             + 0.0151 * x2 * x3
             + 0.0173 * x2 ** 2
         )
-        return np.column_stack([f1, f2, f3, f4])
+        return pd.DataFrame({"y1": y1, "y2": y2, "y3": y3, "y4": y4})

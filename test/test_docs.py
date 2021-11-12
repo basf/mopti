@@ -45,14 +45,14 @@ def test_overview():
     constr5 = NChooseK(["x1", "x2", "x3"], max_active=2)
     constraints = Constraints([constr1, constr2, constr3, constr4, constr5])
     constr2.satisfied(X).values
-    constr2.eval(X).values
+    constr2(X).values
 
     # objectives
     objectives = Objectives(
         [Minimize("y1"), Maximize("y2"), CloseToTarget("y3", target=7)]
     )
     Y = pd.DataFrame({"y1": [1, 2, 3], "y2": [7, 4, 5], "y3": [5, 6.9, 12]})
-    objectives.eval(Y)
+    objectives(Y)
 
     # problem
     Problem(

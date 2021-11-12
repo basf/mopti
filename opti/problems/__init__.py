@@ -1,5 +1,4 @@
 # flake8: noqa
-from opti.problems.baking import Bread, Cake
 from opti.problems.benchmark import (
     Daechert1,
     Daechert2,
@@ -13,6 +12,7 @@ from opti.problems.datasets import (
     BaumgartnerAniline,
     BaumgartnerBenzamide,
     Benzylation,
+    Cake,
     Fullerenes,
     Photodegradation,
     ReizmanSuzuki,
@@ -25,11 +25,7 @@ from opti.problems.detergent import (
     Detergent_OutputConstraint,
 )
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
-from opti.problems.noisify import (
-    noisify_problem,
-    noisify_problem_with_gaussian,
-    noisify_problem_with_scipy_stats,
-)
+from opti.problems.noisify import noisify_problem, noisify_problem_with_gaussian
 from opti.problems.sanitize import sanitize_problem
 from opti.problems.single import (
     Ackley,
