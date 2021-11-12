@@ -3,7 +3,7 @@ import pandas as pd
 
 from opti.constraint import LinearInequality, NChooseK
 from opti.objective import Maximize
-from opti.parameter import Continuous
+from opti.parameter import Continuous, Discrete
 from opti.problem import Problem
 
 
@@ -105,20 +105,28 @@ class Detergent_OutputConstraint(Problem):
         (0: not stable, 1: stable)
     """
 
-    def __init__(self):
+    def __init__(self, discrete=False):
         base = Detergent()
 
         def f(df):
             Y = base.f(df)
-            Y["stable"] = (0.4 - df.sum(axis=1)) / 0.2  # continuous version
-            Y["stable"] = df.sum(axis=1) < 0.3  # discrete version
+            if discrete:
+                Y["stable"] = (df.sum(axis=1) < 0.3).astype(int)
+            else:
+                Y["stable"] = (0.4 - df.sum(axis=1)) / 0.2
             return Y
+
+        outputs = list(base.outputs)
+        if discrete:
+            outputs += [Discrete("stable", domain=[0, 1])]
+        else:
+            outputs += [Continuous("stable", domain=[0, 1])]
 
         super().__init__(
             name="Detergent with stability constraint",
             inputs=base.inputs,
-            outputs=list(base.outputs) + [Continuous("stable", domain=[0, 1])],
-            objectives=[Maximize(f"y{i+1}") for i in range(3)],
+            outputs=outputs,
+            objectives=base.objectives,
             output_constraints=[Maximize("stable", target=0.5)],
             constraints=base.constraints,
             f=f,

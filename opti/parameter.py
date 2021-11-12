@@ -396,8 +396,10 @@ class Parameters:
 
     def contains(self, points: pd.DataFrame) -> pd.Series:
         """Check if points are inside the space in each parameter."""
-        b = np.stack([self[k].contains(v) for k, v in points.iteritems()], axis=-1)
-        return b.all(axis=-1)
+        if isinstance(points, pd.DataFrame):
+            points = points[self.names]
+        b = np.stack([self[k].contains(v) for k, v in points.iteritems()], axis=1)
+        return b.all(axis=1)
 
     def round(self, points: pd.DataFrame) -> pd.DataFrame:
         """Round points to the closest contained values."""

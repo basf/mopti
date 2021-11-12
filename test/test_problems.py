@@ -9,6 +9,7 @@ import opti
 from opti import Continuous, Problem
 from opti.constraint import LinearEquality
 from opti.objective import CloseToTarget, Maximize, Minimize
+from opti.parameter import Discrete
 from opti.problems.noisify import _add_noise_to_data, noisify_problem_with_gaussian
 
 
@@ -114,17 +115,22 @@ def test_hyperellipsoid_problem():
 
 
 def test_detergent():
-    p1 = opti.problems.Detergent()
-    p1.create_initial_data(1)
-    p1.create_initial_data(10)
+    problem = opti.problems.Detergent()
+    problem.create_initial_data(10)
+    assert np.all(problem.outputs.contains(problem.get_data()))
 
-    p2 = opti.problems.Detergent_OutputConstraint()
-    p2.create_initial_data(1)
-    p2.create_initial_data(10)
+    problem = opti.problems.Detergent_OutputConstraint()
+    assert isinstance(problem.outputs["stable"], Continuous)
+    problem.create_initial_data(10)
+    assert np.all(problem.outputs.contains(problem.get_data()))
 
-    p2 = opti.problems.Detergent_NChooseKConstraint()
-    # p2.create_initial_data(1)  # sampling for n-choose-k constraints not implemented
-    # p2.create_initial_data(10)
+    problem = opti.problems.Detergent_OutputConstraint(discrete=True)
+    problem.create_initial_data(10)
+    assert isinstance(problem.outputs["stable"], Discrete)
+    assert np.all(problem.outputs.contains(problem.get_data()))
+
+    problem = opti.problems.Detergent_NChooseKConstraint()
+    # problem.create_initial_data(10)  # sampling for n-choose-k constraints not implemented
 
 
 def test_zdt_problems():
