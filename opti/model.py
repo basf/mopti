@@ -17,7 +17,7 @@ class Model:
         self.names = list(names)
 
     def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
-        """__call__uate the objective values for a given DataFrame."""
+        """Evaluate the objective values for a given DataFrame."""
         raise NotImplementedError
 
     def to_config(self) -> None:
@@ -62,7 +62,7 @@ class Models:
         self.models = _models
 
     def __call__(self, y: pd.DataFrame) -> pd.DataFrame:
-        return pd.concat([model.__call__(y) for model in self.models], axis=1)
+        return pd.concat([model(y) for model in self.models], axis=1)
 
     def __repr__(self):
         return "Models(\n" + pprint.pformat(self.models) + "\n)"
