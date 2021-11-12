@@ -98,12 +98,14 @@ class Hyperellipsoid(Problem):
 class Daechert1(Problem):
     """Problem with a non-convex Pareto front.
 
+    From Dächert & Teichert 2020, An improved hyperboxing algorithm for calculating a Pareto front representation, https://arxiv.org/abs/2003.14249
+
     The ideal point is [-1.37, -1.61, -4] and the nadir is [0, 0, -1.44].
     """
 
     def __init__(self):
         super().__init__(
-            name="Dächert-1",
+            name="Daechert-1",
             inputs=[
                 Continuous("x1", domain=[0, np.pi]),
                 Continuous("x2", domain=[0, 10]),
@@ -120,6 +122,8 @@ class Daechert1(Problem):
 class Daechert2(Problem):
     """Unconstrained problem with a Pareto front resembling a comet.
 
+    From Dächert & Teichert 2020, An improved hyperboxing algorithm for calculating a Pareto front representation, https://arxiv.org/abs/2003.14249
+
     minimize
         f1(x) = (1 + x3) (x1^3 x2^2 - 10 x1 - 4 x2)
         f2(x) = (1 + x3) (x1^3 x2^2 - 10 x1 + 4 x2)
@@ -134,7 +138,7 @@ class Daechert2(Problem):
 
     def __init__(self):
         super().__init__(
-            name="Dächert-2",
+            name="Daechert-2",
             inputs=[
                 Continuous("x1", domain=[1, 3.5]),
                 Continuous("x2", domain=[-2, 2]),
@@ -156,12 +160,14 @@ class Daechert2(Problem):
 class Daechert3(Problem):
     """Modification of DTLZ7, with a Pareto consisting of 4 disconnected parts.
 
+    From Dächert & Teichert 2020, An improved hyperboxing algorithm for calculating a Pareto front representation, https://arxiv.org/abs/2003.14249
+
     The ideal point is [0, 0, 2.61] and the nadir is [0.86, 0.86, 6].
     """
 
     def __init__(self):
         super().__init__(
-            name="Dächert-3",
+            name="Daechert-3",
             inputs=[Continuous(f"x{i+1}", domain=[0, 1]) for i in range(2)],
             outputs=[Continuous(f"y{i+1}") for i in range(3)],
         )
