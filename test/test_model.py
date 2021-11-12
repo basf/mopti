@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.datasets import make_regression
 
-from opti.model import LinearModel, Model, Models, make_model
+from opti.model import CustomModel, LinearModel, Models, make_model
 
 
 def test_linear_model():
@@ -53,9 +53,11 @@ def test_custom_model():
     )
     pls = PLSRegression(n_components=4)
     pls.fit(X_train, Y_train)
-    model1 = Model(names=["y1", "y2", "y3"])
-    model1.__call__ = lambda df: pd.DataFrame(
-        pls.predict(df.to_numpy()), columns=model1.names, index=df.index
+    model1 = CustomModel(
+        names=["y1", "y2", "y3"],
+        f=lambda df: pd.DataFrame(
+            pls.predict(df.to_numpy()), columns=model1.names, index=df.index
+        ),
     )
 
     # linear model

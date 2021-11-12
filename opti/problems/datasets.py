@@ -15,21 +15,23 @@ def get_data(fname: str):
 
 
 class Cake(Problem):
+    """Fictional dataset for a cake recipe optimization with mixed objectives."""
+
     def __init__(self):
         super().__init__(
             name="Cake",
             inputs=[
-                Continuous(name="wheat_flour", domain=[0, 1]),
-                Continuous(name="spelt_flour", domain=[0, 1]),
-                Continuous(name="sugar", domain=[0, 1]),
-                Continuous(name="chocolate", domain=[0, 1]),
-                Continuous(name="nuts", domain=[0, 1]),
-                Continuous(name="carrot", domain=[0, 1]),
+                Continuous("wheat_flour", domain=[0, 1]),
+                Continuous("spelt_flour", domain=[0, 1]),
+                Continuous("sugar", domain=[0, 1]),
+                Continuous("chocolate", domain=[0, 1]),
+                Continuous("nuts", domain=[0, 1]),
+                Continuous("carrot", domain=[0, 1]),
             ],
             outputs=[
-                Continuous(name="calories", domain=[300, 600]),
-                Continuous(name="taste", domain=[0, 5]),
-                Continuous(name="browning", domain=[0, 2]),
+                Continuous("calories", domain=[300, 600]),
+                Continuous("taste", domain=[0, 5]),
+                Continuous("browning", domain=[0, 2]),
             ],
             objectives=[
                 Minimize("calories"),

@@ -1,5 +1,5 @@
 import pprint
-from typing import Dict, List, Union
+from typing import Callable, Dict, List, Union
 
 import pandas as pd
 
@@ -26,6 +26,8 @@ class Model:
 
 
 class LinearModel(Model):
+    """Model to compute an output as a linear/affine function of the inputs."""
+
     def __init__(self, names: List[str], coefficients, offset: float = 0):
         super().__init__(names)
         if len(names) > 1:
@@ -47,6 +49,20 @@ class LinearModel(Model):
             coefficients=self.coefficients,
             offset=self.offset,
         )
+
+
+class CustomModel(Model):
+    """Custom model for arbitrary functions."""
+
+    def __init__(self, names: List[str], f: Callable):
+        super().__init__(names)
+        self.f = f
+
+    def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
+        return self.f(df)
+
+    def __repr__(self):
+        return f"CustomModel({self.names}, f={self.f})"
 
 
 class Models:

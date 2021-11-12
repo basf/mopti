@@ -44,8 +44,10 @@ def test_closetotarget():
     obj = CloseToTarget("seriousness", target=5, exponent=2)
     eval(obj.__repr__())
     json.dumps(obj.to_config())
-    make_objective(**obj.to_config())
-    assert obj.name == "seriousness"
+    obj2 = make_objective(**obj.to_config())
+    assert obj2.name == "seriousness"
+    assert obj2.target == 5
+    assert obj2.exponent == 2
 
     s = make_dataframe()["meetings"]
     assert np.allclose(obj(s), (s - 5) ** 2)

@@ -299,9 +299,7 @@ class Problem:
         return constrained_sampling(n_samples, self.inputs, self.constraints)
 
     def create_initial_data(self, n_samples: int = 10) -> None:
-        """Create an initial data set by sampling uniformly from the input space and
-        evaluating f(x) at the sampled inputs.
-        """
+        """Create an initial data set for benchmark problems by sampling uniformly from the input space and evaluating f(x) at the sampled inputs."""
         if self.f is None:
             raise NotImplementedError("problem.f is not implemented for the problem.")
         X = self.sample_inputs(n_samples)

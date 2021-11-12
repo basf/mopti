@@ -23,8 +23,8 @@ class DiscreteVLMOP2(Problem):
         assert n_inputs >= 2
         super().__init__(
             name="Discrete VLMOP2 test problem",
-            inputs=[Categorical("x0", ["a", "b"])]
-            + [Continuous(f"x{i+1}", [-2, 2]) for i in range(n_inputs - 1)],
+            inputs=[Categorical("x1", ["a", "b"])]
+            + [Continuous(f"x{i+1}", [-2, 2]) for i in range(1, n_inputs)],
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 
