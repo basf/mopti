@@ -41,7 +41,7 @@ class Minimize(Objective):
         return y + self.target
 
     def __repr__(self):
-        return f"Minimize('{self.name}', target={self.target})"
+        return f"Minimize('{self.name}')"
 
     def to_config(self) -> Dict:
         config = dict(name=self.name, type="minimize")
@@ -71,7 +71,7 @@ class Maximize(Objective):
         return self.target - y
 
     def __repr__(self):
-        return f"Maximize('{self.name}', target={self.target})"
+        return f"Maximize('{self.name}')"
 
     def to_config(self) -> Dict:
         config = dict(name=self.name, type="maximize")
