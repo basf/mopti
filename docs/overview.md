@@ -111,11 +111,11 @@ constr2.satisfied(X).values
 
 The distance to the constraint boundary can also be evaluated for use in numerical optimization methods, where values $\leq 0$ correspond to a satisified constraint.
 ```python
-constr2.eval(X).values
+constr2(X).values
 >>> array([ 0.479001  ,  0.89347371, -0.10833372, -0.05890873, -0.22377122])
 ```
 
-Opti contains a number of methods to sample under constraints, see the sampling reference.
+Opti contains a number of methods to generate random samples from constrained spaces, see the sampling reference.
 
 
 ## Objectives
@@ -138,7 +138,7 @@ Y = pd.DataFrame({
     "y2": [7, 4, 5],
     "y3": [5, 6.9, 12]
 })
-objectives.eval(Y)
+objectives(Y)
 >>> minimize_y1  maximize_y2  closetotarget_y3
 0            1           -7              4.00
 1            2           -4              0.01

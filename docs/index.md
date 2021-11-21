@@ -19,8 +19,9 @@ where the design parameters may take values depending on their type and domain, 
 
 and a set of equations define additional experimental constraints, e.g.
 
-* equality: $\sum x_i = 1$
-* inequality: $2 x_1 < x_2$
+* linear equality: $\sum x_i = 1$
+* linear inequality: $2 x_1 \leq x_2$
+* non-linear inequality: $\sum x_i^2 \leq 1$
 * n-choose-k: only $k$ out of $n$ parameters can take non-zero values.
 
 ## Multiobjective optimization
