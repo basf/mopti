@@ -54,9 +54,9 @@ class Continuous(Parameter):
 
     def __repr__(self):
         if np.isfinite(self.low) or np.isfinite(self.high):
-            return f"Continuous(name='{self.name}', domain={self.domain})"
+            return f"Continuous('{self.name}', domain={self.domain})"
         else:
-            return f"Continuous(name='{self.name}')"
+            return f"Continuous('{self.name}')"
 
     @property
     def bounds(self) -> Tuple[float, float]:
@@ -137,7 +137,7 @@ class Discrete(Parameter):
         super().__init__(name, domain, type="discrete", **kwargs)
 
     def __repr__(self):
-        return f"Discrete(name='{self.name}', domain={self.domain})"
+        return f"Discrete('{self.name}', domain={self.domain})"
 
     @property
     def bounds(self) -> Tuple[float, float]:
@@ -219,7 +219,7 @@ class Categorical(Parameter):
         super().__init__(name, domain, type="categorical", **kwargs)
 
     def __repr__(self):
-        return f"Categorical(name='{self.name}', domain={self.domain})"
+        return f"Categorical('{self.name}', domain={self.domain})"
 
     def contains(self, point):
         """Check if a point is in contained in the domain.
