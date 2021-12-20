@@ -1,6 +1,6 @@
 import numbers
 import pprint
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -17,7 +17,7 @@ class Parameter:
         self.type = type
         self.extra_fields = kwargs
 
-    def to_config(self) -> Dict:
+    def to_config(self) -> dict:
         """Return a json-serializable configuration dict."""
         conf = dict(name=self.name, type=self.type, domain=self.domain)
         conf.update(self.extra_fields)
@@ -54,9 +54,9 @@ class Continuous(Parameter):
 
     def __repr__(self):
         if np.isfinite(self.low) or np.isfinite(self.high):
-            return f"Continuous(name='{self.name}', domain={self.domain})"
+            return f"Continuous('{self.name}', domain={self.domain})"
         else:
-            return f"Continuous(name='{self.name}')"
+            return f"Continuous('{self.name}')"
 
     @property
     def bounds(self) -> Tuple[float, float]:
@@ -91,11 +91,13 @@ class Continuous(Parameter):
         high = min(self.high, np.finfo(np.float32).max)
         return pd.Series(name=self.name, data=np.random.uniform(low, high, n))
 
-    def to_config(self) -> Dict:
+    def to_config(self) -> dict:
         """Return a json-serializable configuration dict."""
+        conf = dict(name=self.name, type=self.type)
         low = None if np.isinf(self.low) else float(self.low)
         high = None if np.isinf(self.high) else float(self.high)
-        conf = dict(name=self.name, type=self.type, domain=[low, high])
+        if low is not None or high is not None:
+            conf.update({"domain": [low, high]})
         conf.update(self.extra_fields)
         return conf
 
@@ -137,7 +139,7 @@ class Discrete(Parameter):
         super().__init__(name, domain, type="discrete", **kwargs)
 
     def __repr__(self):
-        return f"Discrete(name='{self.name}', domain={self.domain})"
+        return f"Discrete('{self.name}', domain={self.domain})"
 
     @property
     def bounds(self) -> Tuple[float, float]:
@@ -219,7 +221,7 @@ class Categorical(Parameter):
         super().__init__(name, domain, type="categorical", **kwargs)
 
     def __repr__(self):
-        return f"Categorical(name='{self.name}', domain={self.domain})"
+        return f"Categorical('{self.name}', domain={self.domain})"
 
     def contains(self, point):
         """Check if a point is in contained in the domain.
@@ -446,6 +448,6 @@ class Parameters:
                     raise ValueError(f"Unknown categorical transform {continuous}")
         return pd.concat(transformed, axis=1)
 
-    def to_config(self) -> List[Dict]:
+    def to_config(self) -> List[dict]:
         """Configuration of the parameter space."""
         return [param.to_config() for param in self.parameters.values()]

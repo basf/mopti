@@ -83,10 +83,26 @@ class TestContinuous:
         assert conf["domain"] == [1, 10]
         json.dumps(conf)
 
-        # json-compliance: inf -> None
-        p = Continuous("x")
+        # upper bound not provided or inf
+        p = Continuous("x", domain=[0, None])
+        assert p.low == 0
+        assert np.isinf(p.high)
         conf = p.to_config()
-        assert conf["domain"] == [None, None]
+        assert conf["domain"] == [0, None]
+
+        # lower bound not provided or inf
+        p = Continuous("x", domain=[None, 0])
+        assert np.isinf(p.low)
+        assert p.high == 0
+        conf = p.to_config()
+        assert conf["domain"] == [None, 0]
+
+        # neither bound provided
+        p = Continuous("x")
+        assert np.isinf(p.low)
+        assert np.isinf(p.high)
+        conf = p.to_config()
+        assert "domain" not in conf
 
     def test_config_int32(self):
         # test if domain with np.int32 can be serialized
