@@ -162,7 +162,7 @@ class Problem:
     def to_json(self, fname: PathLike) -> None:
         """Save a problem from a JSON file."""
         with open(fname, "wb") as outfile:
-            b = json.dumps(self.to_config(), ensure_ascii=False, indent=2)
+            b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
             outfile.write(b.encode("utf-8"))
 
     def check_problem(self) -> None:

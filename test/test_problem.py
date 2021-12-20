@@ -253,12 +253,12 @@ def test_config():
     problem = opti.problems.Ackley()
     problem.create_initial_data(2)
     problem.data.loc[0, "y"] = np.nan
+    problem.outputs["y"].low = 0  # output domain is now [0, Inf]
 
     conf = problem.to_config()
-    # domain [-np.inf, np.inf] should be converted to [None, None]
-    assert conf["outputs"][0]["domain"][0] is None
+    # the upper bound np.inf is converted to None
     assert conf["outputs"][0]["domain"][1] is None
-    # the the datapoint y = np.nan should be converted to None
+    # the datapoint y = np.nan is converted to None
     assert conf["data"]["data"][0][-1] is None
 
 
@@ -270,15 +270,15 @@ def test_json(tmpdir):
     problem.to_json(tmpfile)
 
     # test json compliance
-    problem = opti.problems.Ackley()  # output domain is [-Inf, Inf]
+    problem = opti.problems.Ackley()
+    problem.outputs["y"].low = 0  # output domain is now [0, Inf]
     problem.to_json(tmpfile)
 
     conf = json.load(open(tmpfile))
-    assert conf["outputs"][0]["domain"][0] is None
     assert conf["outputs"][0]["domain"][1] is None
 
     problem = opti.Problem.from_json(tmpfile)
-    assert problem.outputs.bounds.loc["min", "y"] == -np.inf
+    assert problem.outputs.bounds.loc["min", "y"] == 0
     assert problem.outputs.bounds.loc["max", "y"] == np.inf
 
     # test unicode characters
