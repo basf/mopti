@@ -12,7 +12,7 @@ from opti.problem import Problem
 
 
 def test_parameters():
-    # test if inputs / outputs can be specified as list of Dimensions
+    # test if inputs / outputs can be specified as list of objects
     problem = opti.Problem(
         inputs=[opti.Continuous(f"x{i}", domain=[0, 1]) for i in range(3)],
         outputs=[opti.Continuous(f"y{i}", domain=[0, 1]) for i in range(3)],
@@ -20,7 +20,7 @@ def test_parameters():
     assert isinstance(problem.inputs, opti.Parameters)
     assert isinstance(problem.outputs, opti.Parameters)
 
-    # test if inputs / outputs can be specified as list of Dimensions
+    # test if inputs / outputs can be specified as list of dicts
     problem = opti.Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
@@ -35,7 +35,29 @@ def test_parameters():
     assert isinstance(problem.outputs, opti.Parameters)
 
 
-def test_problem():
+def test_properties():
+    problem = opti.Problem(
+        inputs=[opti.Continuous(f"x{i}") for i in range(10)],
+        outputs=[opti.Continuous(f"y{i}") for i in range(4)],
+        objectives=[opti.Minimize(f"y{i}") for i in range(2)],
+    )
+    assert problem.n_inputs == 10
+    assert problem.n_outputs == 4
+    assert problem.n_objectives == 2
+    assert problem.n_constraints == 0
+
+    problem = opti.Problem(
+        inputs=[opti.Continuous(f"x{i}") for i in range(10)],
+        outputs=[opti.Continuous(f"y{i}") for i in range(4)],
+        constraints=[opti.LinearEquality([f"x{i}" for i in range(10)], rhs=1)],
+    )
+    assert problem.n_inputs == 10
+    assert problem.n_outputs == 4
+    assert problem.n_objectives == 4
+    assert problem.n_constraints == 1
+
+
+def test_read_json():
     # test loading from json
     problem = opti.read_json("examples/bread.json")
     assert len(problem.inputs) == 11
@@ -222,6 +244,7 @@ def test_X_bounds():
 
 
 def test_empty_constraints():
+    # test handling of empty constraints
     problem = opti.Problem(
         inputs=[opti.Continuous("x")],
         outputs=[opti.Continuous("y")],

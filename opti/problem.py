@@ -105,6 +105,14 @@ class Problem:
     def n_outputs(self) -> int:
         return len(self.outputs)
 
+    @property
+    def n_objectives(self) -> int:
+        return len(self.objectives)
+
+    @property
+    def n_constraints(self) -> int:
+        return 0 if self.constraints is None else len(self.constraints)
+
     def __repr__(self):
         return self.__str__()
 
@@ -167,12 +175,12 @@ class Problem:
 
     def check_problem(self) -> None:
         """Check if input and output parameters are consistent."""
-        # check if inputs and outputs are consistent
+        # check for duplicate names
         duplicates = set(self.inputs.names).intersection(self.outputs.names)
         if duplicates:
             raise ValueError(f"Parameter name in both inputs and outputs: {duplicates}")
 
-        # check if objectives are consistent
+        # check if all objectives refer to an output
         for obj in self.objectives:
             if obj.name not in self.outputs.names:
                 raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
