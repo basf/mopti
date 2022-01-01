@@ -25,8 +25,6 @@ from opti.problems.detergent import (
     Detergent_OutputConstraint,
 )
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
-from opti.problems.noisify import noisify_problem, noisify_problem_with_gaussian
-from opti.problems.sanitize import sanitize_problem
 from opti.problems.single import (
     Ackley,
     Himmelblau,

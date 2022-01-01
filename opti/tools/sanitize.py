@@ -1,6 +1,5 @@
 import warnings
 from copy import deepcopy
-from enum import Enum
 from typing import Tuple
 
 import numpy as np
@@ -29,16 +28,11 @@ def _normalize_parameters_data(
     return data, min_vals, delta_vals
 
 
-class InOrOut(str, Enum):
-    IN = "input"
-    OUT = "output"
-
-
-def _sanitize_params(parameters: Parameters, in_or_out: InOrOut):
+def _sanitize_params(parameters: Parameters, prefix: str):
     """Sets parameter boundaries to 0 and 1 and replaces parameter names"""
     sanitized = []
     for i, p in enumerate(parameters):
-        name = f"{in_or_out}_{i}"
+        name = f"{prefix}_{i}"
         if isinstance(p, Continuous):
             low = -np.inf if np.isneginf(p.low) else 0
             high = np.inf if np.isinf(p.high) else 1
@@ -49,7 +43,7 @@ def _sanitize_params(parameters: Parameters, in_or_out: InOrOut):
     return Parameters(sanitized)
 
 
-def sanitize_problem(problem: Problem):
+def sanitize_problem(problem: Problem) -> Problem:
     """
     This creates a transformation of the problem with sanitized data. Thereby, we try
     to preserve relationships between inputs, outputs, and objectives.
@@ -62,7 +56,7 @@ def sanitize_problem(problem: Problem):
 
     Currently unsuported are problems with
     - discrete or categorical variables,
-    - input constraints that are neither linear nor n-choose-k, or
+    - nonlinear (in)equality input constraints, or
     - output constraints.
 
     Args:
@@ -83,12 +77,12 @@ def sanitize_problem(problem: Problem):
     if problem.models is not None:
         warnings.warn("models are not sanitized but dropped")
 
-    inputs = _sanitize_params(problem.inputs, InOrOut.IN)
+    inputs = _sanitize_params(problem.inputs, "input")
     input_name_map = {pi.name: i.name for pi, i in zip(problem.inputs, inputs)}
     normalized_in_data, xmin, Δx = _normalize_parameters_data(
         problem.data, problem.inputs
     )
-    outputs = _sanitize_params(problem.outputs, InOrOut.OUT)
+    outputs = _sanitize_params(problem.outputs, "output")
     output_name_map = {pi.name: i.name for pi, i in zip(problem.outputs, outputs)}
     normalized_out_data, ymin, Δy = _normalize_parameters_data(
         problem.data, problem.outputs

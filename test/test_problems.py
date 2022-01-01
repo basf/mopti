@@ -1,14 +1,8 @@
 import numpy as np
-import pandas as pd
 import pytest
-from scipy import stats
 
 import opti
-from opti import Continuous, Problem
-from opti.constraint import LinearEquality
-from opti.objective import CloseToTarget, Maximize, Minimize
-from opti.parameter import Discrete
-from opti.problems.noisify import _add_noise_to_data, noisify_problem_with_gaussian
+from opti.parameter import Continuous, Discrete
 
 
 def check_function(problem):
@@ -103,7 +97,7 @@ def test_detergent():
     check_function(problem)
 
     problem = opti.problems.Detergent_NChooseKConstraint()
-    # # problem.create_initial_data(10)  # sampling for n-choose-k constraints not implemented
+    # problem.create_initial_data(10)  # sampling for n-choose-k constraints not implemented
 
 
 def test_zdt_problems():
@@ -142,140 +136,3 @@ def test_mixed_variables_problems():
     x = problem.inputs.sample(1000)
     y = problem.f(x)
     assert np.all(problem.outputs.contains(y))
-
-
-def test_add_noise_to_data():
-    cake = opti.problems.Cake()
-    cake.f = lambda df: pd.DataFrame(
-        data=np.zeros((len(df), cake.n_outputs)),
-        columns=cake.outputs.names,
-    )
-
-    def no_noise(Y):
-        return Y
-
-    def to_zero(Y):
-        return Y * 0
-
-    Y = cake.get_data()[cake.outputs.names]
-    Y_not_noisy = _add_noise_to_data(Y, [no_noise] * len(Y), cake.outputs)
-    assert np.allclose(Y, Y_not_noisy)
-
-    # outputs are clipped to their domain bounds after noise is applied, which is why the first output ("calories") is set to 300.
-    Y_not_noisy = _add_noise_to_data(Y, [to_zero] * len(Y), cake.outputs)
-    assert np.allclose(Y_not_noisy, [300, 0, 0])
-
-
-def test_noisify_problem_with_gaussian():
-    n_samples = 5000
-    mu = 0.1
-    sigma = 0.05
-
-    zdt2 = opti.problems.ZDT2()
-    zdt2.create_initial_data(n_samples)
-    zdt2_gaussian = noisify_problem_with_gaussian(zdt2, mu=mu, sigma=sigma)
-
-    reference = np.clip(stats.norm.rvs(loc=mu, scale=sigma, size=n_samples), 0, 1)
-    Y_noise = zdt2_gaussian.get_Y() - zdt2.get_Y()
-    for col in Y_noise.T:
-        s, _ = stats.ks_2samp(col, reference)
-        assert s < 0.1
-
-
-def test_sanitize_problem():
-    def _test(original):
-        sanitized = opti.problems.sanitize_problem(original)
-
-        # check inputs
-        for p1, p2 in zip(original.inputs, sanitized.inputs):
-            assert type(p1) == type(p2)
-            if isinstance(p2, Continuous):
-                p2.bounds == (0, 1)  # continuous input bounds are [0, 1]
-            assert p2.name.startswith("input")
-
-        # check outputs
-        for p1, p2 in zip(original.outputs, sanitized.outputs):
-            assert type(p1) == type(p2)
-            if isinstance(
-                p2, Continuous
-            ):  # continuous output bounds are [0, 1] if specified and [-inf, inf] if not
-                if np.isneginf(p1.low):
-                    assert np.isneginf(p2.low)
-                else:
-                    assert np.isclose(p2.low, 0)
-                if np.isinf(p1.high):
-                    assert np.isinf(p2.high)
-                else:
-                    assert np.isclose(p2.high, 1)
-            assert p2.name.startswith("output")
-
-        # check objectives
-        for (p1, p2) in zip(original.objectives, sanitized.objectives):
-            assert type(p1) == type(p2)
-            assert p2.name.startswith("output")
-            assert np.isfinite(p2.target)
-
-        # check constraints
-        if original.constraints is not None:
-            for c1, c2 in zip(original.constraints, sanitized.constraints):
-                # sanitizing should not modify the original problem
-                assert c1.names != c2.names
-
-        # check data
-        assert original.data.shape == sanitized.data.shape
-        assert set(sanitized.data.columns) == set(
-            sanitized.inputs.names + sanitized.outputs.names
-        )
-        assert sanitized.inputs.contains(sanitized.data[sanitized.inputs.names]).all()
-        assert sanitized.constraints.satisfied(sanitized.data).all()
-
-        # problem.f is dropped
-        assert not hasattr(sanitized, "f")
-
-    _test(opti.problems.Cake())
-
-    _test(opti.problems.Photodegradation())
-
-    z = opti.problems.Zakharov_Constrained()
-    z.create_initial_data(n_samples=1000)
-    _test(z)
-
-    tp = Problem(
-        inputs=[
-            Continuous("secret_ingredient_1", domain=[0, 150]),
-            Continuous("secret_ingredient_2", domain=[0, 50]),
-            Continuous("secret_ingredient_3", domain=[0, 34.3]),
-        ],
-        outputs=[
-            Continuous("ultimate_goal", domain=[0, np.linalg.norm([150, 50, 34.3])]),
-            Continuous("mega_goal", domain=[0, np.sum(np.square([150, 50, 34.3]))]),
-            Continuous(
-                "super_goal", domain=[0, np.linalg.norm([150, 50, 34.3]) ** 0.5]
-            ),
-        ],
-        objectives=[
-            CloseToTarget("ultimate_goal", target=100),
-            Minimize("mega_goal", target=1000),
-            Maximize("super_goal", target=10),
-        ],
-        constraints=[
-            LinearEquality(
-                ["secret_ingredient_1", "secret_ingredient_2", "secret_ingredient_3"],
-                lhs=np.array([3.5, 4.5, 2]),
-                rhs=153.1,
-            )
-        ],
-        f=lambda df: pd.DataFrame(
-            {
-                "ultimate_goal": np.linalg.norm(df.to_numpy(), axis=1),
-                "mega_goal": np.sum(df ** 2, axis=1),
-                "super_goal": np.linalg.norm(df, axis=1) ** 0.5,
-            }
-        ),
-    )
-    tp.create_initial_data(n_samples=100)
-    _test(tp)
-
-    empty = Problem([], [])  # this should not be possible
-    with pytest.raises(TypeError):
-        opti.problems.sanitize_problem(empty)
