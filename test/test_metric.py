@@ -61,11 +61,14 @@ def test_generational_distance():
     A = np.array([[0.1, 1], [0.3, 0.8], [0.8, 0.3], [1, 0.1]])
 
     # single point on the front
-    assert opti.metric.generational_distance(np.array([[1, 0]]), R) == 0
+    gd = opti.metric.generational_distance(np.array([[1, 0]]), R)
+    assert np.isclose(gd, 0)
     # single point at distance = 0.1 to the front
-    assert opti.metric.generational_distance(np.array([[1, 0.1]]), R) == 0.1
+    gd = opti.metric.generational_distance(np.array([[1, 0.1]]), R)
+    assert np.isclose(gd, 0.1)
     # multiple points
-    assert opti.metric.generational_distance(A, R) == 0.18603015676967713
+    gd = opti.metric.generational_distance(A, R)
+    assert np.isclose(gd, 0.18603015677)
 
 
 def test_inverted_generational_distance():
@@ -75,6 +78,8 @@ def test_inverted_generational_distance():
     A = np.array([[0.1, 1], [0.3, 0.8], [0.8, 0.3], [1, 0.1]])
 
     # single point at distance = 1 to the front
-    assert opti.metric.inverted_generational_distance(np.array([[1, 1]]), R) == 1
+    igd = opti.metric.inverted_generational_distance(np.array([[1, 1]]), R)
+    assert np.isclose(igd, 1)
     # multiple points
-    assert opti.metric.inverted_generational_distance(A, R) == 0.292415441318418
+    igd = opti.metric.inverted_generational_distance(A, R)
+    assert np.isclose(igd, 0.292415441318418)
