@@ -1,7 +1,9 @@
 """
-ZDT problem test suite.
-Reference: Zitzler, Eckart, Kalyanmoy Deb, and Lothar Thiele. “Comparison of multiobjective evolutionary algorithms: Empirical results.” Evolutionary computation 8.2 (2000): 173-195. doi: 10.1.1.30.5848
-Adapted from https://github.com/msu-coinlab/pymoo/blob/master/pymoo/problems/multi/zdt.py
+ZDT benchmark problem suite.
+All problems are bi-objective, have D continuous inputs and are unconstrained.
+
+Zitzler, Deb, Thiele 2000 - Comparison of Multiobjective Evolutionary Algorithms: Empirical Results
+http://dx.doi.org/10.1162/106365600568202
 """
 import numpy as np
 import pandas as pd
@@ -11,9 +13,11 @@ from opti.problem import Problem
 
 
 class ZDT1(Problem):
+    """ZDT-1 benchmark problem."""
+
     def __init__(self, n_inputs=30):
         super().__init__(
-            name="ZDT1 function",
+            name="ZDT-1 problem",
             inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
         )
@@ -32,9 +36,11 @@ class ZDT1(Problem):
 
 
 class ZDT2(Problem):
+    """ZDT-2 benchmark problem."""
+
     def __init__(self, n_inputs=30):
         super().__init__(
-            name="ZDT2 function",
+            name="ZDT-2 problem",
             inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
         )
@@ -53,9 +59,11 @@ class ZDT2(Problem):
 
 
 class ZDT3(Problem):
+    """ZDT-3 benchmark problem."""
+
     def __init__(self, n_inputs=30):
         super().__init__(
-            name="ZDT3 function",
+            name="ZDT-3 problem",
             inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
         )
@@ -87,9 +95,11 @@ class ZDT3(Problem):
 
 
 class ZDT4(Problem):
+    """ZDT-4 benchmark problem."""
+
     def __init__(self, n_inputs=10):
         super().__init__(
-            name="ZDT4 function",
+            name="ZDT-4 problem",
             inputs=[Continuous("x1", [0, 1])]
             + [Continuous(f"x{i+1}", [-5, 5]) for i in range(1, n_inputs)],
             outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
@@ -111,9 +121,11 @@ class ZDT4(Problem):
 
 
 class ZDT6(Problem):
+    """ZDT-6 benchmark problem."""
+
     def __init__(self, n_inputs=30):
         super().__init__(
-            name="ZDT6 function",
+            name="ZDT-6 problem",
             inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
         )

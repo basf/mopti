@@ -1,5 +1,5 @@
 """
-Simple 1D problems for visually assessing probabilistic surrogate models.
+Simple 1D problems for assessing probabilistic surrogate models.
 Note: these problems should be output-noisified, e.g.
 ```
 import opti
@@ -19,6 +19,8 @@ _X = pd.DataFrame({"x": [0.2, 1, 1.5, 2, 3, 3.1, 6.5, 7, 7.2, 7.5]})
 
 
 class Line1D(Problem):
+    """A line."""
+
     def __init__(self):
         def f(X: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame({"y": X.eval("0.1 * x + 1")}, index=X.index)
@@ -32,6 +34,8 @@ class Line1D(Problem):
 
 
 class Parabola1D(Problem):
+    """A parabola."""
+
     def __init__(self):
         def f(X: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame(
@@ -47,6 +51,8 @@ class Parabola1D(Problem):
 
 
 class Sinus1D(Problem):
+    """A sinus-function with one full period over the domain."""
+
     def __init__(self):
         def f(X: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame(
@@ -62,6 +68,8 @@ class Sinus1D(Problem):
 
 
 class Sigmoid1D(Problem):
+    """A smooth step at x=5."""
+
     def __init__(self):
         def f(X: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame(
@@ -77,6 +85,8 @@ class Sigmoid1D(Problem):
 
 
 class Step1D(Problem):
+    """A discrete step at x=1.1."""
+
     def __init__(self):
         def f(X: pd.DataFrame) -> pd.DataFrame:
             return pd.DataFrame({"y": X.eval("x > 1.1").astype(float)}, index=X.index)

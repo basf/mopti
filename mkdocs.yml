@@ -1,5 +1,5 @@
 site_name: Opti
-site_url: "https://basf.github.io/mopti"
+site_url: https://basf.github.io/mopti
 repo_name: basf/mopti
 repo_url: https://github.com/basf/mopti
 
@@ -7,7 +7,7 @@ nav:
   - index.md
   - Install: install.md
   - Overview: overview.md
-  - Code Reference:
+  - API Reference:
       - Problem: ref-problem.md
       - Parameter: ref-parameter.md
       - Objective: ref-objective.md
@@ -19,25 +19,36 @@ nav:
       - Test Problems: ref-problems.md
 
 theme:
-  name: "material"
+  name: material
   logo: assets/logo.png
   favicon: assets/logo.png
 
 plugins:
   - search
-  - mkdocstrings
+  # https://mkdocstrings.github.io/
+  - mkdocstrings:
+      watch:  # watch for changes when serving locally
+        - opti
+      # handlers:
+      #   python:
+      #     rendering:
+      #       show_root_heading: yes
+      #       show_root_full_path: no
 
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
-  - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.highlight
   - pymdownx.inlinehilite
+  - admonition
 
 extra_css:
   - stylesheets/style.css
 
 extra_javascript:
-  - javascripts/config.js
+  # math support, https://squidfunk.github.io/mkdocs-material/reference/mathjax/
+  - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

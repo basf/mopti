@@ -1,3 +1,5 @@
+"""Single objective benchmark problems.
+"""
 import numpy as np
 import pandas as pd
 
@@ -7,9 +9,11 @@ from opti.problem import Problem
 
 
 class Ackley(Problem):
+    """Ackley benchmark problem."""
+
     def __init__(self, n_inputs=2):
         super().__init__(
-            name="Ackley function",
+            name="Ackley problem",
             inputs=[Continuous(f"x{i}", [-32.768, +32.768]) for i in range(n_inputs)],
             outputs=[Continuous("y", [-np.inf, np.inf])],
         )
@@ -32,6 +36,8 @@ class Ackley(Problem):
 
 
 class Himmelblau(Problem):
+    """Himmelblau benchmark problem"""
+
     def __init__(self):
         super().__init__(
             name="Himmelblau function",
@@ -58,6 +64,8 @@ class Himmelblau(Problem):
 
 
 class Rosenbrock(Problem):
+    """Rosenbrock benchmark problem."""
+
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rosenbrock function",
@@ -77,6 +85,8 @@ class Rosenbrock(Problem):
 
 
 class Schwefel(Problem):
+    """Schwefel benchmark problem"""
+
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Schwefel function",
@@ -96,6 +106,8 @@ class Schwefel(Problem):
 
 
 class Sphere(Problem):
+    """Sphere benchmark problem."""
+
     def __init__(self, n_inputs=10):
         super().__init__(
             name="Sphere function",
@@ -115,6 +127,8 @@ class Sphere(Problem):
 
 
 class Rastrigin(Problem):
+    """Rastrigin benchmark problem."""
+
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rastrigin function",
@@ -135,6 +149,8 @@ class Rastrigin(Problem):
 
 
 class Zakharov(Problem):
+    """Zakharov benchmark problem."""
+
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Zakharov function",
@@ -155,7 +171,7 @@ class Zakharov(Problem):
 
 
 class Zakharov_NChooseKConstraint(Problem):
-    """Variant of the Zakharov problem with an n-choose-k constraint"""
+    """Zakharov problem with an n-choose-k constraint"""
 
     def __init__(self, n_inputs=5, n_max_active=3):
         base = Zakharov(n_inputs)
@@ -173,7 +189,7 @@ class Zakharov_NChooseKConstraint(Problem):
 
 
 class Zakharov_Constrained(Problem):
-    """Variant of the Zakharov problem with one linear constraint"""
+    """Zakharov problem with one linear constraint"""
 
     def __init__(self, n_inputs=5):
         base = Zakharov(n_inputs)
@@ -191,7 +207,7 @@ class Zakharov_Constrained(Problem):
 
 
 class Zakharov_Categorical(Problem):
-    """Variant of the Zakharov problem with one categorical input"""
+    """Zakharov problem with one categorical input"""
 
     def __init__(self, n_inputs=3):
         base = Zakharov(n_inputs)

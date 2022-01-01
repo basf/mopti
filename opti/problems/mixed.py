@@ -12,11 +12,13 @@ from opti.problem import Problem
 class DiscreteVLMOP2(Problem):
     """VLMOP2 problem (also known as Fonzeca & Fleming), modified to contain a discrete variable.
 
+    * 2 minimization objectives
+    * 1 categorical and n continuous inputs, unconstrained
+
     See:
         Manson2021, MVMOO: Mixed variable multi-objective optimisation
         https://doi.org/10.1007/s10898-021-01052-9
-    Properties:
-        bi-objective, mixed variables, unconstrained
+
     """
 
     def __init__(self, n_inputs: int = 3):
@@ -42,11 +44,12 @@ class DiscreteVLMOP2(Problem):
 class DiscreteFuelInjector(Problem):
     """Fuel injector test problem, modified to contain an integer variable.
 
+    * 4 objectives,
+    * mixed variables, unconstrained
+
     See:
         Manson2021, MVMOO: Mixed variable multi-objective optimisation
         https://doi.org/10.1007/s10898-021-01052-9
-    Properties:
-        4 objectives, mixed variables, unconstrained
     """
 
     def __init__(self):
@@ -54,9 +57,9 @@ class DiscreteFuelInjector(Problem):
             name="Discrete fuel injector test problem",
             inputs=[
                 Discrete("x1", [0, 1, 2, 3]),
-                Discrete("x2", [-2, 2]),
-                Discrete("x3", [-2, 2]),
-                Discrete("x4", [-2, 2]),
+                Continuous("x2", [-2, 2]),
+                Continuous("x3", [-2, 2]),
+                Continuous("x4", [-2, 2]),
             ],
             outputs=[Continuous(f"y{i+1}") for i in range(4)],
         )

@@ -7,7 +7,7 @@ from opti.parameter import Continuous, Discrete
 from opti.problem import Problem
 
 
-def poly2(x: np.ndarray) -> np.ndarray:
+def _poly2(x: np.ndarray) -> np.ndarray:
     """Full quadratic feature expansion including bias term."""
     return np.concatenate([[1], x, np.outer(x, x)[np.triu_indices(5)]])
 
@@ -75,7 +75,7 @@ class Detergent(Problem):
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         x = np.atleast_2d(X[self.inputs.names])
-        xp = np.stack([poly2(xi) for xi in x], axis=0)
+        xp = np.stack([_poly2(xi) for xi in x], axis=0)
         return pd.DataFrame(xp @ self.coef, columns=self.outputs.names, index=X.index)
 
 

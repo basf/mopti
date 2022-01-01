@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 import numpy as np
 import pandas as pd
 
@@ -62,7 +64,7 @@ class Hyperellipsoid(Problem):
         a (list-like, optional): Half length of principal axes. a = None or a = [1, ...] results in a hypersphere.
     """
 
-    def __init__(self, n=5, a=None):
+    def __init__(self, n: int = 5, a: Optional[Union[list, np.ndarray]] = None):
         if a is None:
             a = np.ones(n)
             constr = " + ".join([f"x{i+1}**2" for i in range(n)]) + " - 1"

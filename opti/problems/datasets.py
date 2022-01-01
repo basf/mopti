@@ -1,3 +1,5 @@
+"""Datasets: Problems with observed data but no underlying ground truth.
+"""
 import os
 
 import pandas as pd
@@ -15,7 +17,7 @@ def get_data(fname: str):
 
 
 class Cake(Problem):
-    """Fictional dataset for a cake recipe optimization with mixed objectives."""
+    """Cake recipe optimization with mixed objectives."""
 
     def __init__(self):
         super().__init__(
@@ -56,6 +58,8 @@ class Cake(Problem):
 
 
 class Alkox(Problem):
+    """Alkox reaction optimization."""
+
     def __init__(self):
         super().__init__(
             name="Alkox",
@@ -72,6 +76,8 @@ class Alkox(Problem):
 
 
 class BaumgartnerAniline(Problem):
+    """Baumgartner Aniline optimization."""
+
     def __init__(self):
         super().__init__(
             name="Baumgartner 2019 - Aniline Cross-Coupling",
@@ -89,6 +95,8 @@ class BaumgartnerAniline(Problem):
 
 
 class BaumgartnerBenzamide(Problem):
+    """Benzamide optimization, Baumgartner 2019."""
+
     def __init__(self):
         super().__init__(
             name="Baumgartner 2019 - Benzamide Cross-Coupling",
@@ -106,6 +114,8 @@ class BaumgartnerBenzamide(Problem):
 
 
 class Benzylation(Problem):
+    """Benzylation optimization."""
+
     def __init__(self):
         super().__init__(
             name="Benzylation",
@@ -122,6 +132,8 @@ class Benzylation(Problem):
 
 
 class Fullerenes(Problem):
+    """Fullerene recation optimization."""
+
     def __init__(self):
         super().__init__(
             name="Fullerenes",
@@ -137,6 +149,8 @@ class Fullerenes(Problem):
 
 
 class HPLC(Problem):
+    """High-performance liquid chromatography optimization."""
+
     def __init__(self):
         super().__init__(
             name="HPLC",
@@ -155,6 +169,8 @@ class HPLC(Problem):
 
 
 class Photodegradation(Problem):
+    """Photodegration minimization."""
+
     def __init__(self):
         super().__init__(
             name="Photodegradation",
@@ -178,6 +194,8 @@ class Photodegradation(Problem):
 
 
 class ReizmanSuzuki(Problem):
+    """Suzuki reaction optimization, Reizmann 2016."""
+
     def __init__(self, case=1):
         assert case in [1, 2, 3, 4]
         super().__init__(
@@ -210,6 +228,8 @@ class ReizmanSuzuki(Problem):
 
 
 class SnAr(Problem):
+    """SnAr reaction optimization."""
+
     def __init__(self):
         super().__init__(
             name="SnAr",
@@ -226,6 +246,8 @@ class SnAr(Problem):
 
 
 class Suzuki(Problem):
+    """Suzuki reaction optimization."""
+
     def __init__(self):
         super().__init__(
             name="Suzuki",
