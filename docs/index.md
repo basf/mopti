@@ -1,4 +1,4 @@
-# Opti
+# Introduction
 
 The primary purpose of opti is to define tasks or problems in a number of closely related fields, including experimental design, multiobjective optimization and decision making and Bayesian optimization.
 

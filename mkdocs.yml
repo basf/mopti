@@ -7,21 +7,35 @@ nav:
   - index.md
   - Install: install.md
   - Overview: overview.md
+  - Datasets:
+    - datasets/alkox.md
+    - datasets/benzylation.md
+    - datasets/cake.md
+    - datasets/fullerenes.md
+    - datasets/hplc.md
+    - datasets/photodegradation.md
+    - datasets/snar.md
+    - datasets/suzuki.md
+    - datasets/reizmann-suzuki.md
+    - datasets/baumgartner-aniline.md
+    - datasets/baumgartner-benzamide.md
   - API Reference:
-      - Problem: ref-problem.md
-      - Parameter: ref-parameter.md
-      - Objective: ref-objective.md
-      - Constraint: ref-constraint.md
-      - Model: ref-model.md
-      - Metric: ref-metric.md
-      - Sampling: ref-sampling.md
-      - Tools: ref-tools.md
-      - Test Problems: ref-problems.md
+    - Problem: ref-problem.md
+    - Parameter: ref-parameter.md
+    - Objective: ref-objective.md
+    - Constraint: ref-constraint.md
+    - Model: ref-model.md
+    - Metric: ref-metric.md
+    - Sampling: ref-sampling.md
+    - Tools: ref-tools.md
+    - Test Problems: ref-problems.md
 
 theme:
   name: material
   logo: assets/logo.png
   favicon: assets/logo.png
+  features:
+    - toc.integrate
 
 plugins:
   - search
@@ -49,6 +63,6 @@ extra_css:
 
 extra_javascript:
   # math support, https://squidfunk.github.io/mkdocs-material/reference/mathjax/
-  - javascripts/mathjax.js
+  # - javascripts/mathjax.js  # when enabled, formulas come with a vertical scrollbar
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
