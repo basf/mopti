@@ -1,4 +1,3 @@
-import numbers
 import pprint
 from typing import List, Optional, Sequence, Tuple
 
@@ -25,7 +24,7 @@ class Parameter:
 
 
 class Continuous(Parameter):
-    """Parameter that can take on any real value in the specified domain.
+    """Variable that can take on any real value in the specified domain.
 
     Attributes:
         name (str): name of the parameter
@@ -43,9 +42,10 @@ class Continuous(Parameter):
         else:
             if len(domain) != 2:
                 raise ValueError("domain needs to consist of two values [low, high]")
-        # convert None to inf (json doesn't support infinity)
-        low = -np.inf if domain[0] is None else domain[0]
-        high = np.inf if domain[1] is None else domain[1]
+        # convert None to +/- inf and string to float
+        low = -np.inf if domain[0] is None else float(domain[0])
+        high = np.inf if domain[1] is None else float(domain[1])
+
         if high < low:
             raise ValueError(f"lower bound {low} must be less than upper bound {high}")
         self.low = low
@@ -102,22 +102,30 @@ class Continuous(Parameter):
         return conf
 
     def to_unit_range(self, points):
-        """Transform points to the unit range: [low, high] -> [0, 1]."""
+        """Transform points to the unit range: [low, high] -> [0, 1].
+
+        Points outside of the domain will transform to outside of [0, 1].
+        Nothing is done if low == high.
+        """
         if np.isclose(self.low, self.high):
             return points
         else:
             return (points - self.low) / (self.high - self.low)
 
     def from_unit_range(self, points):
-        """Transform points from the unit range: [0-1] -> [low, high]."""
+        """Transform points from the unit range: [0, 1] -> [low, high].
+
+        A rounding is applied to correct for numerical precision.
+        Nothing is done if low == high.
+        """
         if np.isclose(self.low, self.high):
-            return np.ones_like(points) * self.high
+            return points
         else:
             return points * (self.high - self.low) + self.low
 
 
 class Discrete(Parameter):
-    """Discrete parameter (ordinal scale).
+    """Variable with a discrete domain (ordinal scale).
 
     Attributes:
         name (str): name of the parameter
@@ -127,13 +135,13 @@ class Discrete(Parameter):
     def __init__(self, name: str, domain: Sequence, **kwargs):
         if len(domain) < 1:
             raise ValueError("domain must contain at least 1 value")
-        for d in domain:
-            if not isinstance(d, numbers.Number):
-                raise ValueError("domain contains non-numeric values")
+        # convert to a sorted list of floats
+        try:
+            domain = np.sort(np.array(domain).astype(float)).tolist()
+        except ValueError:
+            raise ValueError("domain contains non-numeric values")
         if len(set(domain)) != len(domain):
             raise ValueError("domain contains duplicates")
-        # convert to python-native dtype to ensure json-serializability
-        domain = np.array(np.sort(domain)).tolist()
         self.low = min(domain)
         self.high = max(domain)
         super().__init__(name, domain, type="discrete", **kwargs)
@@ -145,13 +153,6 @@ class Discrete(Parameter):
     def bounds(self) -> Tuple[float, float]:
         """Return the domain bounds."""
         return self.low, self.high
-
-    def is_integer(self):
-        """Check if the domain is an integer range, such as [1, 2, 3]"""
-        if isinstance(self.low, int) and isinstance(self.high, int):
-            return self.domain == list(range(self.low, self.high + 1))
-        else:
-            return False
 
     def contains(self, point):
         """Check if a point is in contained in the domain.
@@ -192,19 +193,31 @@ class Discrete(Parameter):
         return pd.Series(name=self.name, data=np.random.choice(self.domain, n))
 
     def to_unit_range(self, points):
-        """Transform points to the unit range.
+        """Transform points to the unit range: [low, high] -> [0, 1].
 
-        Note, if the given points are not inside the domain of the parameter, the
-        transformed will not be inside the unit range.
+        Points outside of the domain will transform to outside of [0, 1].
+        Nothing is done if low == high.
         """
         if np.isclose(self.low, self.high):
             return points
         else:
             return (points - self.low) / (self.high - self.low)
 
+    def from_unit_range(self, points):
+        """Transform points from the unit range: [0, 1] -> [low, high].
+
+        A rounding is applied to correct for numerical precision.
+        Nothing is done if low == high.
+        """
+        if np.isclose(self.low, self.high):
+            return points
+        else:
+            points = points * (self.high - self.low) + self.low
+            return self.round(points)
+
 
 class Categorical(Parameter):
-    """Categorical parameter (nominal scale, values cannot be put into order).
+    """Variable with a categorical domain (nominal scale, values cannot be put into order).
 
     Attributes:
         name (str): name of the parameter
@@ -418,6 +431,28 @@ class Parameters:
         discrete: str = "none",
         categorical: str = "onehot-encode",
     ) -> pd.DataFrame:
+        """Transfrom the given dataframe according to a set of transformation rules.
+
+        Args:
+            points (pd.DataFrame): Dataframe to transfrom. Must contain columns for each parameter and may contain additional columns.
+            continuous (str, optional): Transform for continuous parameters. Options are
+                - "none" (default): keep values unchanged.
+                - "normalize": transforms the domain bounds to [0, 1]
+            discrete (str, optional): Transform for discrete parameters. Options are
+                - "none" (default): keep values unchanged.
+                - "normalize": transforms the domain bounds to [0, 1]
+            categorical (str, optional): Transform for categoricals. Options are
+                - "onehot-encode" (default): A parameter with levels [A, B, C] transforms to 3 columns holding values [0, 1]
+                - "dummy-encode": a parameter with levels [A, B, C] transforms to 2 columns holding values [0, 1]
+                - "label-encode": a parameter with levels [A, B, C] transfroms to 1 columns with values [0, 1, 2]
+                - "none": keep values unchanged
+
+        Raises:
+            ValueError: Unknown transform.
+
+        Returns:
+            pd.DataFrame: Transformed points. Columns that don't correspond to parameters are dropped.
+        """
         transformed = []
         for p in self:
             s = points[p.name]

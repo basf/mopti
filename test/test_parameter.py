@@ -63,7 +63,7 @@ def test_make_parameter():
 
 class TestContinuous:
     def test_init(self):
-        for domain in ((1, 10), [1, 10], np.array([1, 10])):
+        for domain in ([1, 10], np.array([1, 10]), ["1", "10"]):
             p = Continuous("x", domain=domain)
             assert p.name == "x"
             assert p.bounds == (1, 10)
@@ -185,14 +185,23 @@ class TestContinuous:
 
 class TestDiscrete:
     def test_init(self):
-        p = Discrete(domain=[1, 2, 3, 5], name="x")
+        p = Discrete("x", [1, 2, 3, 5])
         assert p.name == "x"
         assert p.bounds == (1, 5)
         assert p.domain == [1, 2, 3, 5]
 
-        p = Discrete(domain=[-1.1, 5.1], name="x")
-        assert p.bounds == (-1.1, 5.1)
+        # strings are accepted
+        p = Discrete("x", ["1", "2", "3", "5"])
+        assert p.domain == [1, 2, 3, 5]
+
+        # negative values work
+        p = Discrete("x", [-1.1, 5.1])
         assert p.domain == [-1.1, 5.1]
+
+        # domain may contain only a single value
+        p = Discrete("x", [1])
+        assert p.domain == [1]
+        assert p.bounds == (1, 1)
 
     def test_config(self):
         p = Discrete(domain=[1, 2, 3, 5], name="x")
@@ -211,7 +220,7 @@ class TestDiscrete:
         with pytest.raises(ValueError):
             Discrete("x", domain="very discrete")  # domain must be a list
         with pytest.raises(ValueError):
-            Discrete("x", domain=[])  # domain needs to have at least 2 values
+            Discrete("x", domain=[])  # domain can't be empty
         with pytest.raises(ValueError):
             Discrete("x", domain=[1, 1])  # domain cannot contain duplicates
         with pytest.raises(ValueError):
@@ -221,13 +230,6 @@ class TestDiscrete:
         p = Discrete("x", domain=[1, 2, 7, 10], unit="°C")
         conf = p.to_config()
         assert conf["unit"] == "°C"
-
-    def test_is_integer(self):
-        assert Discrete(name="x", domain=[0, 1, 2]).is_integer()
-        assert Discrete(name="x", domain=[-1, 0, 1]).is_integer()
-        assert not Discrete(name="x", domain=[1, 2, 10]).is_integer()
-        assert not Discrete(name="x", domain=[1, 2.1, 3]).is_integer()
-        assert not Discrete(name="x", domain=[1.1, 2.1]).is_integer()
 
     def test_round(self):
         p = Discrete(name="x", domain=[1, 2, 3, 10])
