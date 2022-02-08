@@ -13,7 +13,7 @@ def sample(dimension: int, n_samples: int = 1, positive: bool = False) -> np.nda
         array, shape=(n_samples, dimesnion): Random samples from the unit simplex.
     """
     x = np.random.normal(0, 1, size=(n_samples, dimension))
-    x = x / np.sum(x ** 2, axis=1, keepdims=True) ** 0.5
+    x = x / np.sum(x**2, axis=1, keepdims=True) ** 0.5
     if positive:
         x *= -2 * (x < 0) + 1
     return x

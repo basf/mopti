@@ -24,7 +24,7 @@ class Ackley(Problem):
         c = 2 * np.pi
         n = self.n_inputs
         x = self.get_X(X)
-        part1 = -a * np.exp(-b * np.sqrt((1 / n) * np.sum(x ** 2, axis=-1)))
+        part1 = -a * np.exp(-b * np.sqrt((1 / n) * np.sum(x**2, axis=-1)))
         part2 = -np.exp((1 / n) * np.sum(np.cos(c * x), axis=-1))
         y = part1 + part2 + a + np.exp(1)
         return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
@@ -47,7 +47,7 @@ class Himmelblau(Problem):
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         x0, x1 = self.get_X(X).T
-        y = (x0 ** 2 + x1 - 11) ** 2 + (x0 + x1 ** 2 - 7) ** 2
+        y = (x0**2 + x1 - 11) ** 2 + (x0 + x1**2 - 7) ** 2
         return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
 
     def get_optima(self) -> pd.DataFrame:
@@ -139,7 +139,7 @@ class Rastrigin(Problem):
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         x = self.get_X(X)
         a = 10
-        y = a * self.n_inputs + np.sum(x ** 2 - a * np.cos(2 * np.pi * x), axis=1)
+        y = a * self.n_inputs + np.sum(x**2 - a * np.cos(2 * np.pi * x), axis=1)
         return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
 
     def get_optima(self) -> pd.DataFrame:
@@ -161,7 +161,7 @@ class Zakharov(Problem):
     def f(self, X: pd.DataFrame):
         x = self.get_X(X)
         a = 0.5 * np.sum(np.arange(1, self.n_inputs + 1) * x, axis=1)
-        y = np.sum(x ** 2, axis=1) + a ** 2 + a ** 4
+        y = np.sum(x**2, axis=1) + a**2 + a**4
         return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
 
     def get_optima(self) -> pd.DataFrame:
