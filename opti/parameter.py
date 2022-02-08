@@ -224,7 +224,7 @@ class Categorical(Parameter):
         domain (list): list possible values
     """
 
-    def __init__(self, name: str, domain: Sequence, **kwargs):
+    def __init__(self, name: str, domain: List[str], **kwargs):
         if not isinstance(domain, list):
             raise ValueError("domain must be of type list")
         if len(domain) < 2:

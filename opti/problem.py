@@ -230,7 +230,13 @@ class Problem:
     def set_data(self, data: Optional[pd.DataFrame]) -> None:
         """Set the data."""
         if data is not None:
+            # Categorical levels are required to be strings. Ensure that the corresponding data is as well.
+            for p in self.inputs:
+                if isinstance(p, Categorical):
+                    data[p.name] = data[p.name].astype(str)
+
             self.check_data(data)
+
         self.data = data
 
     def get_data(self) -> pd.DataFrame:

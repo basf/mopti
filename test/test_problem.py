@@ -146,6 +146,13 @@ def test_set_data():
     with pytest.raises(ValueError):
         problem.set_data(pd.DataFrame({"x": ["A", "B", "C"], "y": [0, 1, 2]}))
 
+    # test the case where a data frame with numeric values is passed for a categorical parameter
+    problem = opti.Problem(
+        inputs=[{"name": "x", "type": "categorical", "domain": ["0", "1", "2"]}],
+        outputs=[{"name": "y", "type": "continuous", "domain": [0, 1]}],
+    )
+    problem.set_data(pd.DataFrame({"x": [0, 1, 2], "y": [0.1, 0.7, 0.3]}))
+
 
 def test_add_data():
     problem = opti.Problem(
