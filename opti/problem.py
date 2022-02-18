@@ -188,29 +188,42 @@ class Problem:
     def check_data(self, data: pd.DataFrame) -> None:
         """Check if data is consistent with input and output parameters."""
         for p in self.inputs + self.outputs:
-            # check if parameter is present
+            # data must contain all parameters
             if p.name not in data.columns:
-                raise ValueError(f"Parameter {p.name} not in data.")
+                raise ValueError(
+                    f"Parameter {p.name} is missing. Data must contain all parameters."
+                )
 
-            # check for non-numeric values for continuous / discrete parameters
+            # data for continuous / discrete parameters must be numeric
             if isinstance(p, (Continuous, Discrete)):
-                if not is_numeric_dtype(data[p.name]):
-                    raise ValueError(f"Non-numeric data for parameter {p.name}.")
+                ok = is_numeric_dtype(data[p.name]) or data[p.name].isnull().all()
+                if not ok:
+                    raise ValueError(
+                        f"Parameter {p.name} contains non-numeric values. Data for continuous / discrete parameters must be numeric."
+                    )
 
-            # check for undefined categories for categorical parameters
+            # categorical levels in data must be specified
             elif isinstance(p, Categorical):
-                if not p.contains(data[p.name]).all():
-                    raise ValueError(f"Unknown category for parameter {p.name}.")
+                ok = p.contains(data[p.name]) | data[p.name].isna()
+                if not ok.all():
+                    unknowns = data[p.name][~ok].unique().tolist()
+                    raise ValueError(
+                        f"Data for parameter {p.name} contains unknown values: {unknowns}. All categorical levels must be specified."
+                    )
 
-        # inputs need to be complete
+        # inputs must be complete
         for p in self.inputs:
             if data[p.name].isnull().any():
-                raise ValueError(f"Missing values for input parameter {p.name}.")
+                raise ValueError(
+                    f"Input parameter {p.name} has missing data. Inputs must be complete."
+                )
 
-        # outputs need to have at least one observation
+        # outputs must have at least one observation
         for p in self.outputs:
             if data[p.name].isnull().all():
-                raise ValueError(f"No value for output parameter {p.name} in data.")
+                raise ValueError(
+                    f"Output parameter {p.name} has no data. Outputs must have at least one observation."
+                )
 
     def check_models(self) -> None:
         """Check if the models are well defined"""
@@ -230,10 +243,11 @@ class Problem:
     def set_data(self, data: Optional[pd.DataFrame]) -> None:
         """Set the data."""
         if data is not None:
-            # Categorical levels are required to be strings. Ensure that the corresponding data is as well.
             for p in self.inputs:
+                # Categorical levels are required to be strings. Ensure that the corresponding data is as well.
                 if isinstance(p, Categorical):
-                    data[p.name] = data[p.name].astype(str)
+                    nulls = data[p.name].isna()
+                    data[p.name] = data[p.name].astype(str).mask(nulls, np.nan)
 
             self.check_data(data)
 

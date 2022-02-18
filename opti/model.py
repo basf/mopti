@@ -13,7 +13,7 @@ class Model:
         """
         for name in names:
             if not isinstance(name, str):
-                ValueError("Model: names must be a list of strings")
+                TypeError("Model: names must be a list of strings.")
         self.names = list(names)
 
     def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -31,7 +31,7 @@ class LinearModel(Model):
     def __init__(self, names: List[str], coefficients, offset: float = 0):
         super().__init__(names)
         if len(names) > 1:
-            raise ValueError("LinearModel can only describe a single output")
+            raise ValueError("LinearModel can only describe a single output.")
         self.coefficients = coefficients
         self.offset = offset
 
@@ -109,4 +109,4 @@ def make_model(type, **kwargs):
     t = type.lower()
     if t == "linear-model":
         return LinearModel(**kwargs)
-    raise ValueError(f"Unknown model type: {t}")
+    raise ValueError(f"Unknown model type: {t}.")

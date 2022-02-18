@@ -10,7 +10,7 @@ from opti.parameter import Categorical, Continuous, Discrete, Parameters, make_p
 
 def test_arbitrary_parameters():
     # Issue #60
-    # saves as {}} when no extra fields
+    # saves as {} when no extra fields
     p = make_parameter(name="foo", type="continuous", domain=[0, 1])
     assert len(p.extra_fields) == 0
 
@@ -288,7 +288,7 @@ class TestCategorical:
         assert p.domain == ["A", "B", 3]
 
     def test_checks(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             Categorical("x", domain="very categorical")  # domain must be a list
         with pytest.raises(ValueError):
             Categorical("x", domain=[])  # domain needs to have at least 2 values

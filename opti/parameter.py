@@ -41,13 +41,17 @@ class Continuous(Parameter):
             domain = [-np.inf, np.inf]
         else:
             if len(domain) != 2:
-                raise ValueError("domain needs to consist of two values [low, high]")
+                raise ValueError(
+                    f"{name}: Domain must consist of two values [low, high]."
+                )
         # convert None to +/- inf and string to float
         low = -np.inf if domain[0] is None else float(domain[0])
         high = np.inf if domain[1] is None else float(domain[1])
 
         if high < low:
-            raise ValueError(f"lower bound {low} must be less than upper bound {high}")
+            raise ValueError(
+                f"{name}: Lower bound {low} must be less than upper bound {high}."
+            )
         self.low = low
         self.high = high
         super().__init__(name=name, domain=[low, high], type="continuous", **kwargs)
@@ -134,14 +138,14 @@ class Discrete(Parameter):
 
     def __init__(self, name: str, domain: Sequence, **kwargs):
         if len(domain) < 1:
-            raise ValueError("domain must contain at least 1 value")
-        # convert to a sorted list of floats
+            raise ValueError(f"{name}: Domain must contain at least one value.")
         try:
+            # convert to a sorted list of floats
             domain = np.sort(np.array(domain).astype(float)).tolist()
         except ValueError:
-            raise ValueError("domain contains non-numeric values")
+            raise ValueError(f"{name}: Domain contains non-numeric values.")
         if len(set(domain)) != len(domain):
-            raise ValueError("domain contains duplicates")
+            raise ValueError(f"{name}: Domain contains duplicates.")
         self.low = min(domain)
         self.high = max(domain)
         super().__init__(name, domain, type="discrete", **kwargs)
@@ -226,11 +230,11 @@ class Categorical(Parameter):
 
     def __init__(self, name: str, domain: List[str], **kwargs):
         if not isinstance(domain, list):
-            raise ValueError("domain must be of type list")
+            raise TypeError(f"{name}: Domain must be of type list.")
         if len(domain) < 2:
-            raise ValueError("domain must a least contain 2 values")
+            raise ValueError(f"{name}: Domain must a least contain 2 values.")
         if len(set(domain)) != len(domain):
-            raise ValueError("domain contains duplicates")
+            raise ValueError(f"{name}: Domain contains duplicates.")
         super().__init__(name, domain, type="categorical", **kwargs)
 
     def __repr__(self):
@@ -259,7 +263,9 @@ class Categorical(Parameter):
             Object of the same type as `point`.
         """
         if not np.all(self.contains(point)):
-            raise ValueError("cannot round categorical variable")
+            raise ValueError(
+                f"{self.name}: Cannot round values for categorical parameter."
+            )
         return point
 
     def sample(self, n: int = 1) -> pd.Series:
@@ -277,7 +283,7 @@ class Categorical(Parameter):
         cat_cols = [f"{self.name}{_CAT_SEP}{c}" for c in self.domain]
         if np.any([c not in cat_cols for c in points.columns]):
             raise ValueError(
-                f"Column names don't match categorical levels: {points.columns}, {cat_cols}"
+                f"{self.name}: Column names don't match categorical levels: {points.columns}, {cat_cols}."
             )
         s = points.idxmax(1).str.split(_CAT_SEP, expand=True)[1]
         s.name = self.name
@@ -295,7 +301,7 @@ class Categorical(Parameter):
         cat_cols = [f"{self.name}{_CAT_SEP}{c}" for c in self.domain]
         if np.any([c not in cat_cols[1:] for c in points.columns]):
             raise ValueError(
-                f"Column names don't match categorical levels: {points.columns}, {cat_cols}"
+                f"{self.name}: Column names don't match categorical levels: {points.columns}, {cat_cols}."
             )
         points = points.copy()
         points[cat_cols[0]] = 1 - points[cat_cols[1:]].sum(axis=1)
@@ -338,19 +344,19 @@ def make_parameter(
         "categorical": Categorical,
     }[type.lower()]
     if domain is None and parameter is not Continuous:
-        raise ValueError(f"domain not given for parameter {name}")
+        raise ValueError(f"Domain not given for parameter {name}.")
 
     return parameter(name=name, domain=domain, **kwargs)
 
 
 class Parameters:
-    """Set of parameters representing either the input or the output space."""
+    """Set of parameters representing either the input or the output parameter space."""
 
     def __init__(self, parameters):
         """
         It can be constructed either from a list / tuple (of at least one) Parameter objects
         ```
-        Space([
+        Parameters([
             Continuous(name="foo", domain=[1, 10]),
             Discrete(name="bar", domain=[1, 2, 3, 4]),
             Categorical(name="baz", domain=["A", "B", 3]),
@@ -358,7 +364,7 @@ class Parameters:
         ```
         or from a list / tuple of dicts
         ```
-        Space([
+        Parameters([
             {"name": "foo", "type": "continuous", "domain": [1, 10]},
             {"name": "bar", "type": "discrete", "domain": [1, 2, 3, 4]},
             {"name": "baz", "type": "categorical", "domain": ["A", "B", 3]},
@@ -369,7 +375,7 @@ class Parameters:
         Parameters(conf).to_config() == conf
         """
         if not isinstance(parameters, (list, tuple)):
-            raise TypeError("Space expects a list or tuple of parameters.")
+            raise TypeError("Parameters expects a list or tuple of parameters.")
 
         self.parameters = {}
         for d in parameters:
@@ -402,15 +408,15 @@ class Parameters:
     @property
     def bounds(self) -> pd.DataFrame:
         """Return the parameter bounds."""
-        for param in self:
-            if isinstance(param, Categorical):
+        for p in self:
+            if isinstance(p, Categorical):
                 raise TypeError(
-                    "Contains categorical parameters which are not bounded."
+                    f"Contains categorical parameter {p.name} which is not bounded."
                 )
         return pd.DataFrame({p.name: p.bounds for p in self}, index=["min", "max"])
 
     def contains(self, points: pd.DataFrame) -> pd.Series:
-        """Check if points are inside the space in each parameter."""
+        """Check if points are inside the domain of each parameter."""
         if isinstance(points, pd.DataFrame):
             points = points[self.names]
         b = np.stack([self[k].contains(v) for k, v in points.iteritems()], axis=1)
@@ -462,14 +468,14 @@ class Parameters:
                 elif continuous == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    raise ValueError(f"Unknown continuous transform {continuous}")
+                    raise ValueError(f"Unknown continuous transform {continuous}.")
             if isinstance(p, Discrete):
                 if discrete == "none":
                     transformed.append(s)
                 elif discrete == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    raise ValueError(f"Unknown discrete transform {continuous}")
+                    raise ValueError(f"Unknown discrete transform {continuous}.")
             if isinstance(p, Categorical):
                 if categorical == "none":
                     transformed.append(s)
@@ -480,7 +486,7 @@ class Parameters:
                 elif categorical == "label-encode":
                     transformed.append(p.to_label_encoding(s))
                 else:
-                    raise ValueError(f"Unknown categorical transform {continuous}")
+                    raise ValueError(f"Unknown categorical transform {continuous}.")
         return pd.concat(transformed, axis=1)
 
     def to_config(self) -> List[dict]:

@@ -307,4 +307,4 @@ def make_constraint(type, **kwargs):
         return NonlinearInequality(**kwargs)
     if t == "n-choose-k":
         return NChooseK(**kwargs)
-    raise ValueError(f"Unknown constraint type: {t}")
+    raise ValueError(f"Unknown constraint type: {t}.")

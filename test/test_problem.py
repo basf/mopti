@@ -108,28 +108,32 @@ def test_inconsistent_objectives():
 
 
 def test_set_data():
+    # test with continuous and discrete parameters
     problem = opti.Problem(
         inputs=[opti.Discrete("x", [0, 1, 2])], outputs=[opti.Continuous("y")]
     )
+
+    # this works
     problem.set_data(data=pd.DataFrame({"x": [0, 1], "y": [0, 1]}))
 
-    # missing input
+    # missing parameter in data
     with pytest.raises(ValueError):
         problem.set_data(data=pd.DataFrame({"y": [0, 1, 2]}))
-
-    # missing output
     with pytest.raises(ValueError):
         problem.set_data(data=pd.DataFrame({"x": [0, 1, 2]}))
 
     # missing value in inputs
     with pytest.raises(ValueError):
-        problem.set_data(data=pd.DataFrame({"x": [0, 1, np.nan], "y": [0, 1, 2]}))
+        problem.set_data(data=pd.DataFrame({"x": [0, 1, None], "y": [0, 1, 2]}))
 
-    # no value in outputs
+    # missing output values in outputs are ok
+    problem.set_data(data=pd.DataFrame({"x": [0, 1, 2], "y": [0, 1, None]}))
+
+    # outputs with all missing values are not ok
     with pytest.raises(ValueError):
-        problem.set_data(data=pd.DataFrame({"x": [0, 1], "y": [np.nan, np.nan]}))
+        problem.set_data(data=pd.DataFrame({"x": [0, 1], "y": [None, None]}))
 
-    # non-numeric value for continuous parameter
+    # non-numeric value for continuous / discrete parameter
     with pytest.raises(ValueError):
         problem.set_data(pd.DataFrame({"x": ["oops", 1, 2], "y": [0, 1, 2]}))
     with pytest.raises(ValueError):
@@ -140,11 +144,12 @@ def test_set_data():
         inputs=[opti.Categorical("x", ["A", "B"])], outputs=[opti.Continuous("y")]
     )
 
-    problem.set_data(data=pd.DataFrame({"x": ["A", "A"], "y": [0, 1]}))
+    # this works
+    problem.set_data(data=pd.DataFrame({"x": ["A", "B", "A"], "y": [0, 1, 0.5]}))
 
-    # unknown category
+    # categorical levels in data must be known
     with pytest.raises(ValueError):
-        problem.set_data(pd.DataFrame({"x": ["A", "B", "C"], "y": [0, 1, 2]}))
+        problem.set_data(pd.DataFrame({"x": ["A", "B", "C", None], "y": [0, 1, 2, 3]}))
 
     # test the case where a data frame with numeric values is passed for a categorical parameter
     problem = opti.Problem(
