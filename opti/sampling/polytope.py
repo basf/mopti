@@ -90,6 +90,10 @@ def _get_AbNx(parameters, constraints):
         At xt <= bt
         x = xt N.T + xp
     """
+    for c in constraints:
+        if not isinstance(c, (LinearEquality, LinearInequality)):
+            raise TypeError(f"{type(c)} does not allow for a linear subspace.")
+
     nD = len(parameters)
     nC = len(constraints)
 
