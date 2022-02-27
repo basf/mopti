@@ -20,6 +20,7 @@ References
 """
 from typing import Generator, Tuple
 
+import cdd
 import numpy as np
 import pandas as pd
 import scipy.linalg
@@ -40,6 +41,16 @@ def _chebyshev_center(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     if not res.success:
         raise Exception("Unable to find Chebyshev center")
     return res.x[:-1]
+
+
+def vertices(A: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Calculate the vertices of the polytope Ax <= b."""
+    mat = cdd.Matrix((np.c_[b, -A]).tolist())
+    mat.rep_type = cdd.RepType.INEQUALITY
+    poly = cdd.Polyhedron(mat)
+    gen = poly.get_generators()
+    V = np.array(gen)[:, 1:]
+    return V
 
 
 def _affine_subspace(A: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:

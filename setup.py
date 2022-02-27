@@ -42,6 +42,6 @@ setup(
     packages=find_packages(),
     package_data={"": ["problems/data/*"]},
     include_package_data=True,
-    install_requires=["numpy", "pandas", "scipy>=1.7"],
+    install_requires=["numpy", "pandas", "scipy>=1.7", "pycddlib"],
     extras_require={"testing": ["pytest", "scikit-learn"]},
 )
