@@ -40,7 +40,7 @@ We can sample from individual parameters, parameter spaces or parameter spaces i
 ```python
 x5 = inputs["x1"].sample(3)
 print(x5.values)
->>> array(["A", "C", "A", "C", "A"], dtype=object)
+>>> array([0.72405216, 0.14914942, 0.46051132])
 
 X = inputs.sample(5)
 print(X)
@@ -163,7 +163,7 @@ problem = opti.Problem(
 Problems can be serialized to and from a dictionary
 ```python
 config = problem.to_config()
-problem = Problem(**config)
+problem = opti.Problem(**config)
 ```
 or to a json file
 ```python
