@@ -229,3 +229,28 @@ class OmniTest(Problem):
         XY = pd.concat([X, self.f(X)], axis=1)
         XY["_patch"] = np.repeat(np.arange(3**self.n_inputs), n)
         return XY
+
+
+class Poloni(Problem):
+    """Poloni benchmark problem."""
+
+    def __init__(self):
+        super().__init__(
+            name="Poloni function",
+            inputs=[Continuous(f"x{i+1}", [-np.pi, np.pi]) for i in range(2)],
+            outputs=[Continuous("y1"), Continuous("y2")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1, x2 = self.get_X(X).T
+        A1 = 0.5 * np.sin(1) - 2 * np.cos(1) + np.sin(2) - 1.5 * np.cos(2)
+        A2 = 1.5 * np.sin(1) - np.cos(1) + 2 * np.sin(2) - 0.5 * np.cos(2)
+        B1 = 0.5 * np.sin(x1) - 2 * np.cos(x1) + np.sin(x2) - 1.5 * np.cos(x2)
+        B2 = 1.5 * np.sin(x1) - np.cos(x1) + 2 * np.sin(x2) - 0.5 * np.cos(x2)
+        return pd.DataFrame(
+            {
+                "y1": 1 + (A1 - B1) ** 2 + (A2 - B2) ** 2,
+                "y2": (x1 + 3) ** 2 + (x2 + 1) ** 2,
+            },
+            index=X.index,
+        )

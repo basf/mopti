@@ -24,6 +24,7 @@ from opti.problems.multi import (
     Daechert3,
     Hyperellipsoid,
     OmniTest,
+    Poloni,
     Qapi1,
 )
 from opti.problems.single import (
