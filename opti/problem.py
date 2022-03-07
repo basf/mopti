@@ -34,6 +34,7 @@ class Problem:
         data: Optional[DataFrameLike] = None,
         optima: Optional[DataFrameLike] = None,
         name: Optional[str] = None,
+        equalities: Optional[List[str]] = None,
         **kwargs,
     ):
         """An optimization problem.
@@ -49,7 +50,10 @@ class Problem:
             data: Experimental data.
             optima: Pareto optima.
             name: Name of the problem.
+            equalities: Only in case of problem reduction due to equality con
+                straints. Used to augment the solution of the reduced problem.
         """
+
         self.name = name if name is not None else "Problem"
         self.inputs = inputs if isinstance(inputs, Parameters) else Parameters(inputs)
         self.outputs = (
@@ -96,6 +100,11 @@ class Problem:
         self.set_optima(optima)
         self.check_problem()
         self.check_models()
+
+        if isinstance(equalities, List):
+            self.equalities = equalities
+        else:
+            self.equalities = None
 
     @property
     def n_inputs(self) -> int:
