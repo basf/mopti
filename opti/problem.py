@@ -21,15 +21,10 @@ ModelsLike = Union[Models, List[Model], List[Dict]]
 DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
-#TESTEN/IMPLEMENTIEREN:
-# n_equalities()
-# in from_config, to_config equalities einbauen
-# tests schreiben: test_reduce.py, test_problem.py
-# in check_problem überprüfung der equalities einbauen
 
+#IMPLEMENTIEREN
+# tests schreiben/erweitern: test_reduce.py, test_problem.py
 
-#AUFBAU data:
-# input columns ... output columns
 class Problem:
     def __init__(
         self,
@@ -105,18 +100,19 @@ class Problem:
         if isinstance(optima, dict):
             optima = pd.DataFrame(**optima)
 
-        self.set_data(data)
-        self.set_optima(optima)
-        self.check_problem()
-        self.check_models()
-
-        #TESTEN
         if isinstance(equalities, List):
             self.equalities = equalities
         elif equalities is not None:
             self.equalities = eval(equalities)
         else:
             self.equalities = None 
+
+        self.set_data(data)
+        self.set_optima(optima)
+        self.check_problem()
+        self.check_models()
+
+
 
     @property
     def n_inputs(self) -> int:
@@ -134,7 +130,6 @@ class Problem:
     def n_constraints(self) -> int:
         return 0 if self.constraints is None else len(self.constraints)
     
-    #TESTEN
     @property
     def n_equalities(self) -> int:
         return 0 if self.equalities is None else len(self.equalities)
@@ -216,7 +211,6 @@ class Problem:
             if obj.name not in self.outputs.names:
                 raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
 
-        #TESTEN
         #check if the names in self.equalities are valid
         if self.n_equalities > 0:
             for rhs, lhs in self.equalities:

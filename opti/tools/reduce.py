@@ -1,7 +1,4 @@
-from copy import deepcopy
 from logging.handlers import WatchedFileHandler
-from time import process_time_ns       #wird nicht gebraucht?
-from black import Line                                #wird nicht gebraucht?
 import numpy as np
 import pandas as pd                                                     
 from typing import Callable, Dict, List, Optional, Tuple, Union
@@ -17,6 +14,7 @@ from sympy import Matrix
 #TODO: Wie geht man mit diskreten inputs um? --> einfach domain beibehalten?
 #TODO: funktion, die das Modell f für das reduzierte problem anpasst
 #TODO: Was bedeutet das attribut Models in class Problem?
+#TODO: data, optima, etc einbauen
 
 
 def reduce(problem: Problem) -> Problem:
@@ -161,19 +159,39 @@ def reduce(problem: Problem) -> Problem:
 
         equalities.append([name, lhs])
 
+    _data = problem.data
+    drop = []
+    if _data is not None:
+        for col in _data.columns:
+            if col not in _inputs.names and col not in problem.outputs.names:
+                drop.append(col)
+        _data = _data.drop(columns=drop)
+
+    #TESTEN / TODO
+    _models = problem.models
+    if _models is not None:
+        pass
+
+    #TESTEN / TODO
+    _f = None
+    if 'f' in list(vars(problem).keys()):
+        _f = problem.f
+        if _f is not None:
+            pass
+
     _problem = Problem(
         inputs = _inputs,
         outputs = problem.outputs,
         objectives = problem.objectives,
-        constraints = _constraints,
-        f = None,                               #TODO
-        models = None,                          #TODO, David fragen
-        data = None,                            #TODO, David fragen
-        optima = None,                          #TODO, David fragen
+        constraints = _constraints,                       #BEI DIESEN PUNKTEN NOCH EINMAL DAVID FRAGEN:
+        f = _f,                                           #Einfach daten erweitern, oder?
+        models = _models,                                 #Einfach daten erweitern, oder?
+        data = _data,                                     #droppe alle spalten, deren Variable eliminiert wurde, richtig so?
+        optima = problem.optima,                          #es ändert sich nichts, richtig so?
         name = problem.name,
         equalities = equalities
     )
-    print(A_aug_rref)
+
     return _problem
 
 
@@ -181,8 +199,6 @@ def reduce(problem: Problem) -> Problem:
 def augment():
     pass
 
-def reduce_f():
-    pass
 
 
 
@@ -224,8 +240,11 @@ problem = opti.Problem(
     ],
 )
 
+
+from opti.problem import read_json
+
+problem = read_json("examples/bread.json")
+print(problem)
+
 _problem = reduce(problem)
 print(_problem)
-#print(_problem.equalities)
-#print(problem.equalities)
-#problem.check_problem()
