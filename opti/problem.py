@@ -141,6 +141,8 @@ class Problem:
             s += f"data=\n{self.data.head()}\n"
         if self.optima is not None:
             s += f"optima=\n{self.optima.head()}\n"
+        if self.equalities is not None:
+            s += f"equalities=\n{self.equalities}\n"
         return s + ")"
 
     @staticmethod
