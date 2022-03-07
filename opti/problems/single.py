@@ -99,6 +99,32 @@ class Himmelblau(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class Michalewicz(Problem):
+    """Michalewicz benchmark problem.
+
+    The Michalewicz function has d! local minima, and it is multimodal.
+    The parameter m (m=10 is used here) defines the steepness of they valleys and a larger m leads to a more difficult search.
+    """
+
+    def __init__(self, n_inputs: int = 2):
+        super().__init__(
+            name="Michalewicz function",
+            inputs=[Continuous(f"x{i+1}", [0, np.pi]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = self.get_X(X)
+        m = 10
+        i = np.arange(1, self.n_inputs + 1)
+        y = -np.sum(np.sin(x) * np.sin(i * x**2 / np.pi) ** (2 * m), axis=1)
+        return pd.DataFrame({"y": y}, index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        x = pd.DataFrame([[2.2, 1.57]], columns=self.inputs.names)
+        return pd.concat([x, self.f(x)], axis=1)
+
+
 class Rosenbrock(Problem):
     """Rosenbrock benchmark problem."""
 

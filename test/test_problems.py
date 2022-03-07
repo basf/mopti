@@ -18,6 +18,7 @@ def test_single_objective_problems():
         opti.problems.Ackley,
         opti.problems.Branin,
         opti.problems.Himmelblau,
+        opti.problems.Michalewicz,
         opti.problems.Rastrigin,
         opti.problems.Rosenbrock,
         opti.problems.Schwefel,

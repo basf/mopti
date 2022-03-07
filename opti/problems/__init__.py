@@ -30,6 +30,7 @@ from opti.problems.single import (
     Ackley,
     Branin,
     Himmelblau,
+    Michalewicz,
     Rastrigin,
     Rosenbrock,
     Schwefel,
