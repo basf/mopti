@@ -27,6 +27,7 @@ from opti.problems.detergent import (
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
 from opti.problems.single import (
     Ackley,
+    Branin,
     Himmelblau,
     Rastrigin,
     Rosenbrock,

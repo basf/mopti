@@ -16,6 +16,7 @@ def check_function(problem):
 def test_single_objective_problems():
     for _Problem in (
         opti.problems.Ackley,
+        opti.problems.Branin,
         opti.problems.Himmelblau,
         opti.problems.Rastrigin,
         opti.problems.Rosenbrock,

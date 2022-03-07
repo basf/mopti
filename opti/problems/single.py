@@ -35,6 +35,42 @@ class Ackley(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class Branin(Problem):
+    """The Branin (Branin-Hoo) benchmark problem.
+
+    f(x) = a(x2 - b x1^2 + cx1 - r)^2 + s(1 - t) cos(x1) + s
+    a = 1, b = 5.1 / (4 pi^2), c = 5 / pi, r = 6, s = 10 and t = 1 / (8pi)
+
+    It has 3 global optima.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Branin function",
+            inputs=[Continuous("x1", [-5, 10]), Continuous("x2", [0, 15])],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1, x2 = self.get_X(X).T
+        y = (
+            (x2 - 5.1 / (4 * np.pi**2) * x1**2 + 5 / np.pi * x1 - 6) ** 2
+            + 10 * (1 - 1 / (8 * np.pi)) * np.cos(x1)
+            + 10
+        )
+        return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        return pd.DataFrame(
+            [
+                [-np.pi, 12.275, 0.397887],
+                [np.pi, 2.275, 0.397887],
+                [9.42478, 2.475, 0.397887],
+            ],
+            columns=self.inputs.names + self.outputs.names,
+        )
+
+
 class Himmelblau(Problem):
     """Himmelblau benchmark problem"""
 
