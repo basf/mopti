@@ -167,12 +167,12 @@ def reduce(problem: Problem) -> Problem:
                 drop.append(col)
         _data = _data.drop(columns=drop)
 
-    #TESTEN / TODO
+    #TODO
     _models = problem.models
     if _models is not None:
         pass
 
-    #TESTEN / TODO
+    #TODO
     _f = None
     if 'f' in list(vars(problem).keys()):
         _f = problem.f
@@ -195,14 +195,29 @@ def reduce(problem: Problem) -> Problem:
     return _problem
 
 
-#TODO:
-def augment():
-    pass
+def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =None):
+    """Computes augmented DataFrame based on dependencies givern by a set of equalities.
+
+    Args:
+        data (DataFrame): data to be augmented.
+        equalities (List[str]): Set of equalities used for the augmentation
+        names (List[str]): name of all columns given in a certain order to determine the 
+        order of the columns of the returned data.
+
+    Returns:
+        A DataFrame with additional columns (augmented data)
+    """
+    for lhs, rhs in equalities:
+        data[lhs] = data.eval(rhs)
+
+    if names is not None:
+        data = data[names]
+    
+    return data
 
 
 
-
-
+"""
 import opti
 from opti.problems import Hyperellipsoid
 
@@ -241,10 +256,16 @@ problem = opti.Problem(
 )
 
 
+
+
 from opti.problem import read_json
 
 problem = read_json("examples/bread.json")
-print(problem)
-
 _problem = reduce(problem)
-print(_problem)
+
+cols = problem.data.columns
+
+print(_problem.data)
+print(augment_data(_problem.data, _problem.equalities, names=cols))
+print(problem.data)
+"""

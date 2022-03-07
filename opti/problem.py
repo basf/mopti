@@ -213,9 +213,9 @@ class Problem:
 
         #check if the names in self.equalities are valid
         if self.n_equalities > 0:
-            for rhs, lhs in self.equalities:
-                lhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", lhs)
-                for name in lhs:
+            for lhs, rhs in self.equalities:
+                rhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", rhs)
+                for name in rhs:
                     if name not in self.inputs.names:
                         raise ValueError(f"Equality refers to unknown parameter: {name}")
 
