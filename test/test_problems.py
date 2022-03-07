@@ -42,6 +42,7 @@ def test_multi_objective_problems():
         opti.problems.Daechert1,
         opti.problems.Daechert2,
         opti.problems.Daechert3,
+        opti.problems.OmniTest,
     ):
         problem = _Problem()
         check_function(problem)

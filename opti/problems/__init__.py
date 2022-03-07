@@ -4,6 +4,7 @@ from opti.problems.benchmark import (
     Daechert2,
     Daechert3,
     Hyperellipsoid,
+    OmniTest,
     Qapi1,
 )
 from opti.problems.datasets import (

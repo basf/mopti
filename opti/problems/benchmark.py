@@ -1,3 +1,4 @@
+from itertools import product
 from typing import Optional, Union
 
 import numpy as np
@@ -175,7 +176,7 @@ class Daechert3(Problem):
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        x = X[self.inputs.names].values
+        x = X[self.inputs.names]
         return pd.DataFrame(
             {
                 "y1": X["x1"],
@@ -183,3 +184,48 @@ class Daechert3(Problem):
                 "y3": 6 - np.sum(x * (1 + np.sin(3 * np.pi * x)), axis=1),
             }
         )
+
+
+class OmniTest(Problem):
+    """Bi-objective benchmark problem with D inputs and a multi-modal Pareto set.
+
+    It has 3^D Pareto subsets in the decision space corresponding to the same Pareto front.
+
+    Reference:
+        Deb & Tiwari "Omni-optimizer: A generic evolutionary algorithm for single and multi-objective optimization"
+    """
+
+    def __init__(self, n_inputs: int = 2):
+        super().__init__(
+            name="Omni",
+            inputs=[Continuous(f"x{i+1}", domain=[0, 6]) for i in range(2)],
+            outputs=[Continuous("y1"), Continuous("y2")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        X = X[self.inputs.names]
+        return pd.DataFrame(
+            {
+                "y1": np.sum(np.sin(np.pi * X), axis=1),
+                "y2": np.sum(np.cos(np.pi * X), axis=1),
+            }
+        )
+
+    def get_optima(self) -> pd.DataFrame:
+        n = 11  # points per set (3^D sets)
+        c = [np.linspace(1, 1.5, n) + 2 * i for i in range(3)]
+        C = np.array(
+            list(
+                product(
+                    *[
+                        c,
+                    ]
+                    * self.n_inputs
+                )
+            )
+        )
+        C = np.moveaxis(C, 1, 2).reshape(-1, 2)
+        X = pd.DataFrame(C, columns=self.inputs.names)
+        XY = pd.concat([X, self.f(X)], axis=1)
+        XY["_patch"] = np.repeat(np.arange(3**self.n_inputs), n)
+        return XY
