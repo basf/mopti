@@ -23,6 +23,7 @@ def test_single_objective_problems():
         opti.problems.Rosenbrock,
         opti.problems.Schwefel,
         opti.problems.Sphere,
+        opti.problems.ThreeHumpCamel,
         opti.problems.Zakharov,
         opti.problems.Zakharov_Categorical,
         opti.problems.Zakharov_Constrained,

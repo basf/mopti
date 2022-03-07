@@ -35,6 +35,7 @@ from opti.problems.single import (
     Rosenbrock,
     Schwefel,
     Sphere,
+    ThreeHumpCamel,
     Zakharov,
     Zakharov_Categorical,
     Zakharov_Constrained,

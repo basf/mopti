@@ -210,6 +210,27 @@ class Rastrigin(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class ThreeHumpCamel(Problem):
+    """Three-hump camel benchmark problem."""
+
+    def __init__(self):
+        super().__init__(
+            name="Three-hump camel function",
+            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(2)],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1, x2 = self.get_X(X).T
+        y = 2 * x1**2 - 1.05 * x1**4 + x1**6 / 6 + x1 * x2 + x2**2
+        return pd.DataFrame(y, columns=["y"], index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        return pd.DataFrame(
+            np.zeros((1, 3)), columns=self.inputs.names + self.outputs.names
+        )
+
+
 class Zakharov(Problem):
     """Zakharov benchmark problem."""
 
