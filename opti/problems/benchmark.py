@@ -213,12 +213,12 @@ class OmniTest(Problem):
 
     def get_optima(self) -> pd.DataFrame:
         n = 11  # points per set (3^D sets)
-        c = [np.linspace(1, 1.5, n) + 2 * i for i in range(3)]
+        comb = [np.linspace(1, 1.5, n) + 2 * i for i in range(3)]
         C = np.array(
             list(
                 product(
                     *[
-                        c,
+                        comb,
                     ]
                     * self.n_inputs
                 )
