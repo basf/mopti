@@ -1,19 +1,19 @@
 from copy import deepcopy
 from logging.handlers import WatchedFileHandler
-from black import Line
+from time import process_time_ns       #wird nicht gebraucht?
+from black import Line                                #wird nicht gebraucht?
 import numpy as np
 import pandas as pd                                                     
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-from pydantic import ConstrainedInt         #wird gebraucht?
 
-from opti.problem import Problem
+from opti import Problem
 from opti.constraint import Constraints, LinearEquality
 from opti.objective import Objectives
 from opti.parameter import Categorical, Parameters
 from sympy import Matrix
 
-#TODO: noch nicht berücksichtigt, dass es Categorical inputs gibt
+
 #TODO: Wie geht man mit diskreten inputs um? --> einfach domain beibehalten?
 #TODO: funktion, die das Modell f für das reduzierte problem anpasst
 #TODO: Was bedeutet das attribut Models in class Problem?
@@ -23,8 +23,11 @@ def reduce(problem: Problem) -> Problem:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
 
-    Attributes:
+    Args:
         problem (Problem): problem to be reduced
+
+    Returns:
+        Reduced problem where linear equality constraints have been eliminated 
     
     """
     #check if the reduction can be applied or if a trivial case is present
@@ -94,8 +97,6 @@ def reduce(problem: Problem) -> Problem:
     A_aug_rref, pivots = Matrix(A_aug).rref()
     pivots = np.array(pivots)
     A_aug_rref = np.array(A_aug_rref).astype(np.float64)
-    A_ref = A_aug_rref[:,:-1]                                       #not needed?
-    b_ref = A_aug_rref[:,-1]                                        #not needed?
 
     #formulate box bounds as linear inequality constraints in matrix form
     B = np.zeros(shape=(2*(M-1), M))
@@ -124,7 +125,7 @@ def reduce(problem: Problem) -> Problem:
     for i in pivots:
         ind = np.where(B[i,:-1] != 0)[0]
         if len(ind)>0:
-            c = LinearEquality(names=names[ind],lhs=B[i,ind],rhs=B[i,-1])
+            c = LinearEquality(names=list(names[ind]),lhs=B[i,ind],rhs=B[i,-1])
             _constraints.append(c)
         else:
             if B[i,-1] < -1e-16:
@@ -133,7 +134,7 @@ def reduce(problem: Problem) -> Problem:
         
         ind = np.where(B[i+M-1,:-1] != 0)[0]
         if len(ind)>0:
-            c = LinearEquality(names=names[ind],lhs=B[i+M-1,ind],rhs=B[i+M-1,-1])
+            c = LinearEquality(names=list(names[ind]),lhs=B[i+M-1,ind],rhs=B[i+M-1,-1])
             _constraints.append(c)
         else:
             if B[i+M-1,-1] < -1e-16:
@@ -141,15 +142,14 @@ def reduce(problem: Problem) -> Problem:
                 "that fulfills the constraints.")
     _constraints = Constraints(_constraints)
 
-    #TESTEN
     equalities = []
     for i in range(len(pivots)):
         name = names[pivots[i]]
         lhs = ""
         
-        for j in range(len(names)):
+        for j in range(len(names)-1):
             if (A_aug_rref[i,j] != 0 and j != pivots[i]):
-                lhs += "("+str(-A_aug_rref[i,j]) + ") * " + names[i] + " + "
+                lhs += "("+str(-A_aug_rref[i,j]) + ") * " + names[j] + " + "
             
         if A_aug_rref[i,-1] != 0:
             lhs += "("+str(A_aug_rref[i,-1])+")"
@@ -166,16 +166,23 @@ def reduce(problem: Problem) -> Problem:
         outputs = problem.outputs,
         objectives = problem.objectives,
         constraints = _constraints,
-        f = None,
+        f = None,                               #TODO
         models = None,                          #TODO, David fragen
         data = None,                            #TODO, David fragen
         optima = None,                          #TODO, David fragen
         name = problem.name,
         equalities = equalities
     )
-
+    print(A_aug_rref)
     return _problem
 
+
+#TODO:
+def augment():
+    pass
+
+def reduce_f():
+    pass
 
 
 
@@ -218,6 +225,7 @@ problem = opti.Problem(
 )
 
 _problem = reduce(problem)
-
 print(_problem)
-print(_problem.equalities)
+#print(_problem.equalities)
+#print(problem.equalities)
+#problem.check_problem()

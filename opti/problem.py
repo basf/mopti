@@ -4,6 +4,7 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
+import re
 from pandas.api.types import is_numeric_dtype
 
 from opti.constraint import Constraint, Constraints
@@ -20,7 +21,15 @@ ModelsLike = Union[Models, List[Model], List[Dict]]
 DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
+#TESTEN/IMPLEMENTIEREN:
+# n_equalities()
+# in from_config, to_config equalities einbauen
+# tests schreiben: test_reduce.py, test_problem.py
+# in check_problem überprüfung der equalities einbauen
 
+
+#AUFBAU data:
+# input columns ... output columns
 class Problem:
     def __init__(
         self,
@@ -101,10 +110,13 @@ class Problem:
         self.check_problem()
         self.check_models()
 
+        #TESTEN
         if isinstance(equalities, List):
             self.equalities = equalities
+        elif equalities is not None:
+            self.equalities = eval(equalities)
         else:
-            self.equalities = None
+            self.equalities = None 
 
     @property
     def n_inputs(self) -> int:
@@ -121,6 +133,11 @@ class Problem:
     @property
     def n_constraints(self) -> int:
         return 0 if self.constraints is None else len(self.constraints)
+    
+    #TESTEN
+    @property
+    def n_equalities(self) -> int:
+        return 0 if self.equalities is None else len(self.equalities)
 
     def __repr__(self):
         return self.__str__()
@@ -169,6 +186,8 @@ class Problem:
             config["data"] = self.data.replace({np.nan: None}).to_dict("split")
         if self.optima is not None:
             config["optima"] = self.optima.replace({np.nan: None}).to_dict("split")
+        if self.equalities is not None:
+            config["equalities"] = self.equalities
         return config
 
     @staticmethod
@@ -184,6 +203,7 @@ class Problem:
             b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
             outfile.write(b.encode("utf-8"))
 
+
     def check_problem(self) -> None:
         """Check if input and output parameters are consistent."""
         # check for duplicate names
@@ -195,6 +215,16 @@ class Problem:
         for obj in self.objectives:
             if obj.name not in self.outputs.names:
                 raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
+
+        #TESTEN
+        #check if the names in self.equalities are valid
+        if self.n_equalities > 0:
+            for rhs, lhs in self.equalities:
+                lhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", lhs)
+                for name in lhs:
+                    if name not in self.inputs.names:
+                        raise ValueError(f"Equality refers to unknown parameter: {name}")
+
 
     def check_data(self, data: pd.DataFrame) -> None:
         """Check if data is consistent with input and output parameters."""
