@@ -14,8 +14,8 @@ class Ackley(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Ackley problem",
-            inputs=[Continuous(f"x{i}", [-32.768, +32.768]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-32.768, +32.768]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -77,8 +77,8 @@ class Himmelblau(Problem):
     def __init__(self):
         super().__init__(
             name="Himmelblau function",
-            inputs=[Continuous(f"x{i}", [-6, 6]) for i in range(2)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-6, 6]) for i in range(2)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -131,8 +131,8 @@ class Rosenbrock(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rosenbrock function",
-            inputs=[Continuous(f"x{i}", [-2.048, 2.048]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-2.048, 2.048]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -152,8 +152,8 @@ class Schwefel(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Schwefel function",
-            inputs=[Continuous(f"x{i}", [-500, 500]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-500, 500]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -173,7 +173,7 @@ class Sphere(Problem):
     def __init__(self, n_inputs=10):
         super().__init__(
             name="Sphere function",
-            inputs=[Continuous(f"x{i}", [0, 1]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous("y", [0, 2])],
         )
 
@@ -194,8 +194,8 @@ class Rastrigin(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rastrigin function",
-            inputs=[Continuous(f"x{i}", [-5, 5]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -237,8 +237,8 @@ class Zakharov(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Zakharov function",
-            inputs=[Continuous(f"x{i}", [-10, 10]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-10, 10]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame):

@@ -1,12 +1,4 @@
 # flake8: noqa
-from opti.problems.benchmark import (
-    Daechert1,
-    Daechert2,
-    Daechert3,
-    Hyperellipsoid,
-    OmniTest,
-    Qapi1,
-)
 from opti.problems.datasets import (
     HPLC,
     Alkox,
@@ -26,6 +18,14 @@ from opti.problems.detergent import (
     Detergent_OutputConstraint,
 )
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
+from opti.problems.multi import (
+    Daechert1,
+    Daechert2,
+    Daechert3,
+    Hyperellipsoid,
+    OmniTest,
+    Qapi1,
+)
 from opti.problems.single import (
     Ackley,
     Branin,
