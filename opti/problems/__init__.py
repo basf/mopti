@@ -16,6 +16,7 @@ from opti.problems.detergent import (
     Detergent,
     Detergent_NChooseKConstraint,
     Detergent_OutputConstraint,
+    Detergent_TwoOutputConstraints,
 )
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
 from opti.problems.multi import (

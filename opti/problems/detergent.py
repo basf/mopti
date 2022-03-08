@@ -8,18 +8,18 @@ from opti.problem import Problem
 
 
 def _poly2(x: np.ndarray) -> np.ndarray:
-    """Full quadratic feature expansion including bias term."""
+    """Quadratic feature expansion including bias term."""
     return np.concatenate([[1], x, np.outer(x, x)[np.triu_indices(5)]])
 
 
 class Detergent(Problem):
-    """Constrained problem with 5 inputs and 5 outputs.
+    """Detergent formulation problem.
 
+    There are 5 outputs representing the washing performance on different stain types.
     Each output is modeled as a second degree polynomial.
-
-    The sixth input is a filler (water) and is factored out using the formulation
-    constraint sum x = 1, and it's parameter bounds 0.6 < water < 0.8 result in 2 linear
-    inequality constraints for the other parameters.
+    The formulation consists of 5 components.
+    The sixth input is a filler (water) and is factored out and it's parameter bounds
+    0.6 < water < 0.8 result in 2 linear inequality constraints for the other parameters.
     """
 
     def __init__(self):
@@ -55,7 +55,7 @@ class Detergent(Problem):
         )
 
         super().__init__(
-            name="Detergent",
+            name="Detergent optimization",
             inputs=[
                 Continuous("x1", domain=[0.0, 0.2]),
                 Continuous("x2", domain=[0.0, 0.3]),
@@ -66,10 +66,8 @@ class Detergent(Problem):
             outputs=[Continuous(f"y{i+1}", domain=[0, 3]) for i in range(5)],
             objectives=[Maximize(f"y{i+1}") for i in range(5)],
             constraints=[
-                LinearInequality(
-                    names=["x1", "x2", "x3", "x4", "x5"], lhs=-1, rhs=-0.2
-                ),
-                LinearInequality(names=["x1", "x2", "x3", "x4", "x5"], lhs=1, rhs=0.4),
+                LinearInequality(["x1", "x2", "x3", "x4", "x5"], lhs=-1, rhs=-0.2),
+                LinearInequality(["x1", "x2", "x3", "x4", "x5"], lhs=1, rhs=0.4),
             ],
         )
 
@@ -80,13 +78,13 @@ class Detergent(Problem):
 
 
 class Detergent_NChooseKConstraint(Problem):
-    """Variant of the Detergent problem with an n-choose-k constraint"""
+    """Variant of the Detergent problem where only 3 of the 5 formulation components are allowed to be active (n-choose-k constraint)."""
 
     def __init__(self):
         base = Detergent()
 
         super().__init__(
-            name="Detergent with n-choose-k constraint",
+            name="Detergent optimization with n-choose-k constraint",
             inputs=base.inputs,
             outputs=base.outputs,
             objectives=base.objectives,
@@ -97,12 +95,11 @@ class Detergent_NChooseKConstraint(Problem):
 
 
 class Detergent_OutputConstraint(Problem):
-    """Variant of the Detergent problem with an output constraint.
+    """Variant of the Detergent problem with an additional output/black-box constraint.
 
-    There are 5 inputs, 6 outputs:
-    - 3 outputs are to be maximized
-    - 1 output represents the stability of the formulation
-        (0: not stable, 1: stable)
+    In addition to the 5 washing performances there is a sixth output reflecting the stability of the formulation.
+    If `discrete=True` the stability can only be measured qualitatively (0: not stable, 1: stable).
+    If `discrete=True` the stability can be measured quantively with smaller values indicating less stable formulations.
     """
 
     def __init__(self, discrete=False):
@@ -123,11 +120,51 @@ class Detergent_OutputConstraint(Problem):
             outputs += [Continuous("stable", domain=[0, 1])]
 
         super().__init__(
-            name="Detergent with stability constraint",
+            name="Detergent optimization with stability constraint",
             inputs=base.inputs,
             outputs=outputs,
             objectives=base.objectives,
             output_constraints=[Maximize("stable", target=0.5)],
+            constraints=base.constraints,
+            f=f,
+        )
+
+
+class Detergent_TwoOutputConstraints(Problem):
+    """Variant of the Detergent problem with two outputs constraint.
+
+    In addition to the 5 washing performances there are two more outputs measuring the formulation stability.
+    The first, stability 1, measures the immediate stability. If not stable, the other properties cannot be measured.
+    The second, stability 2, is measured after all other outputs.
+    """
+
+    def __init__(self):
+        base = Detergent()
+
+        def f(X: pd.DataFrame) -> pd.DataFrame:
+            Y = base.f(X)
+            x = self.get_X(X)
+            stable1 = (x.sum(axis=1) < 0.3).astype(int)
+            stable2 = (x[:, :-1].sum(axis=1) < 0.25).astype(int)
+            Y[stable1 == 0] = np.nan
+            Y["stability 1"] = stable1
+            Y["stability 2"] = stable2
+            return Y
+
+        outputs = list(base.outputs) + [
+            Discrete("stability 1", domain=[0, 1]),
+            Discrete("stability 2", domain=[0, 1]),
+        ]
+
+        super().__init__(
+            name="Detergent optimization with two output constraint",
+            inputs=base.inputs,
+            outputs=outputs,
+            objectives=base.objectives,
+            output_constraints=[
+                Maximize("stability 1", target=0.5),
+                Maximize("stability 2", target=0.5),
+            ],
             constraints=base.constraints,
             f=f,
         )
