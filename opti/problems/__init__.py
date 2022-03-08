@@ -26,6 +26,7 @@ from opti.problems.multi import (
     OmniTest,
     Poloni,
     Qapi1,
+    WeldedBeam,
 )
 from opti.problems.single import (
     Ackley,

@@ -39,13 +39,14 @@ def test_single_objective_problems():
 
 def test_multi_objective_problems():
     for _Problem in (
-        opti.problems.Qapi1,
-        opti.problems.Hyperellipsoid,
         opti.problems.Daechert1,
         opti.problems.Daechert2,
         opti.problems.Daechert3,
+        opti.problems.Hyperellipsoid,
         opti.problems.OmniTest,
         opti.problems.Poloni,
+        opti.problems.Qapi1,
+        opti.problems.WeldedBeam,
     ):
         problem = _Problem()
         check_function(problem)
