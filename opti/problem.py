@@ -4,7 +4,6 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-import re
 from pandas.api.types import is_numeric_dtype
 
 from opti.constraint import Constraint, Constraints
@@ -21,10 +20,6 @@ ModelsLike = Union[Models, List[Model], List[Dict]]
 DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
-
-#IMPLEMENTIEREN
-# tests schreiben/erweitern: test_reduce.py, test_problem.py
-
 class Problem:
     def __init__(
         self,
@@ -38,7 +33,6 @@ class Problem:
         data: Optional[DataFrameLike] = None,
         optima: Optional[DataFrameLike] = None,
         name: Optional[str] = None,
-        equalities: Optional[List[str]] = None,
         **kwargs,
     ):
         """An optimization problem.
@@ -54,8 +48,6 @@ class Problem:
             data: Experimental data.
             optima: Pareto optima.
             name: Name of the problem.
-            equalities: Only in case of problem reduction due to equality con
-                straints. Used to augment the solution of the reduced problem.
         """
 
         self.name = name if name is not None else "Problem"
@@ -100,18 +92,10 @@ class Problem:
         if isinstance(optima, dict):
             optima = pd.DataFrame(**optima)
 
-        if isinstance(equalities, List):
-            self.equalities = equalities
-        elif equalities is not None:
-            self.equalities = eval(equalities)
-        else:
-            self.equalities = None 
-
         self.set_data(data)
         self.set_optima(optima)
         self.check_problem()
         self.check_models()
-
 
 
     @property
@@ -129,10 +113,6 @@ class Problem:
     @property
     def n_constraints(self) -> int:
         return 0 if self.constraints is None else len(self.constraints)
-    
-    @property
-    def n_equalities(self) -> int:
-        return 0 if self.equalities is None else len(self.equalities)
 
     def __repr__(self):
         return self.__str__()
@@ -153,8 +133,6 @@ class Problem:
             s += f"data=\n{self.data.head()}\n"
         if self.optima is not None:
             s += f"optima=\n{self.optima.head()}\n"
-        if self.equalities is not None:
-            s += f"equalities=\n{self.equalities}\n"
         return s + ")"
 
     @staticmethod
@@ -181,8 +159,6 @@ class Problem:
             config["data"] = self.data.replace({np.nan: None}).to_dict("split")
         if self.optima is not None:
             config["optima"] = self.optima.replace({np.nan: None}).to_dict("split")
-        if self.equalities is not None:
-            config["equalities"] = self.equalities
         return config
 
     @staticmethod
@@ -210,14 +186,6 @@ class Problem:
         for obj in self.objectives:
             if obj.name not in self.outputs.names:
                 raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
-
-        #check if the names in self.equalities are valid
-        if self.n_equalities > 0:
-            for lhs, rhs in self.equalities:
-                rhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", rhs)
-                for name in rhs:
-                    if name not in self.inputs.names:
-                        raise ValueError(f"Equality refers to unknown parameter: {name}")
 
 
     def check_data(self, data: pd.DataFrame) -> None:

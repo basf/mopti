@@ -5,19 +5,138 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 
 
 from opti import Problem
-from opti.constraint import Constraints, LinearEquality
+from opti.constraint import Constraints, LinearEquality, LinearInequality
 from opti.objective import Objectives
 from opti.parameter import Categorical, Parameters
 from sympy import Matrix
 
 
 #TODO: Wie geht man mit diskreten inputs um? --> einfach domain beibehalten?
-#TODO: funktion, die das Modell f für das reduzierte problem anpasst
+#TODO: f für das reduzierte problem anpassen
 #TODO: Was bedeutet das attribut Models in class Problem?
-#TODO: data, optima, etc einbauen
+#TODO: tests schreiben
+
+################################
+import json
+import os
+import re
+
+from opti.constraint import Constraint, Constraints
+from opti.model import Model, Models
+from opti.objective import Objective, Objectives
+from opti.parameter import Categorical, Parameter, Parameters
+
+ParametersLike = Union[Parameters, List[Parameter], List[Dict]]
+ObjectivesLike = Union[Objectives, List[Objective], List[Dict]]
+ConstraintsLike = Union[Constraints, List[Constraint], List[Dict]]
+ModelsLike = Union[Models, List[Model], List[Dict]]
+DataFrameLike = Union[pd.DataFrame, Dict]
+PathLike = Union[str, bytes, os.PathLike]
+
+class ReducedProblem(Problem):
+    def __init__(
+        self,
+        inputs: ParametersLike,
+        outputs: ParametersLike,
+        objectives: Optional[ObjectivesLike] = None,
+        constraints: Optional[ConstraintsLike] = None,
+        output_constraints: Optional[ObjectivesLike] = None,
+        f: Optional[Callable] = None,
+        models: Optional[ModelsLike] = None,
+        data: Optional[DataFrameLike] = None,
+        optima: Optional[DataFrameLike] = None,
+        name: Optional[str] = None,
+        equalities: Optional[List[str]] = None,
+        **kwargs,
+    ):
+        """An optimization problem.
+
+        Args:
+            inputs: Input parameters.
+            outputs: Output parameters.
+            objectives: Optimization objectives. Defaults to minimization.
+            constraints: Constraints on the inputs.
+            output_constraints: Constraints on the outputs.
+            f: Function to evaluate the outputs for given inputs.
+                Must have the signature: f(x: pd.DataFrame) -> pd.DataFrame
+            data: Experimental data.
+            optima: Pareto optima.
+            name: Name of the problem.
+            equalities: Only in case of problem reduction due to equality con
+                straints. Used to augment the solution of the reduced problem.
+        """
+        super().__init__(
+            inputs, 
+            outputs, 
+            objectives, 
+            constraints, 
+            output_constraints, 
+            f, 
+            models, 
+            data, 
+            optima, 
+            name
+            )
+
+        if isinstance(equalities, List):
+            self.equalities = equalities
+        elif equalities is not None:
+            self.equalities = eval(equalities)
+        else:
+            self.equalities = None 
+
+        #check if the names in self.equalities are valid
+        if self.n_equalities > 0:
+            for lhs, rhs in self.equalities:
+                rhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", rhs)
+                for name in rhs:
+                    if name not in self.inputs.names:
+                        raise ValueError(f"Equality refers to unknown parameter: {name}")
+
+    @property
+    def n_equalities(self) -> int:
+        return 0 if self.equalities is None else len(self.equalities)
+    
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        s = super().__str__()
+        if self.equalities is not None:
+            s = s[:-1] + f"equalities=\n{self.equalities}\n"
+        return "Reduced" + s + ")"
+
+    @staticmethod
+    def from_config(config: dict) -> "ReducedProblem":
+        """Create a Problem instance from a configuration dict."""
+        return ReducedProblem(**config)
+
+    def to_config(self) -> dict:
+        config = super().to_config()
+        if self.equalities is not None:
+            config["equalities"] = self.equalities
+        return config
+
+    @staticmethod
+    def from_json(fname: PathLike) -> "ReducedProblem":
+        """Read a problem from a JSON file."""
+        with open(fname, "rb") as infile:
+            config = json.loads(infile.read())
+        return ReducedProblem(**config)
+
+    def to_json(self, fname: PathLike) -> None:
+        """Save a problem from a JSON file."""
+        with open(fname, "wb") as outfile:
+            b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
+            outfile.write(b.encode("utf-8"))
 
 
-def reduce(problem: Problem) -> Problem:
+    
+        
+
+#####################################
+
+def reduce(problem: Problem) -> ReducedProblem:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
 
@@ -123,7 +242,7 @@ def reduce(problem: Problem) -> Problem:
     for i in pivots:
         ind = np.where(B[i,:-1] != 0)[0]
         if len(ind)>0:
-            c = LinearEquality(names=list(names[ind]),lhs=B[i,ind],rhs=B[i,-1])
+            c = LinearInequality(names=list(names[ind]),lhs=B[i,ind],rhs=B[i,-1])
             _constraints.append(c)
         else:
             if B[i,-1] < -1e-16:
@@ -132,7 +251,7 @@ def reduce(problem: Problem) -> Problem:
         
         ind = np.where(B[i+M-1,:-1] != 0)[0]
         if len(ind)>0:
-            c = LinearEquality(names=list(names[ind]),lhs=B[i+M-1,ind],rhs=B[i+M-1,-1])
+            c = LinearInequality(names=list(names[ind]),lhs=B[i+M-1,ind],rhs=B[i+M-1,-1])
             _constraints.append(c)
         else:
             if B[i+M-1,-1] < -1e-16:
@@ -159,18 +278,21 @@ def reduce(problem: Problem) -> Problem:
 
         equalities.append([name, lhs])
 
+    
     _data = problem.data
-    drop = []
-    if _data is not None:
-        for col in _data.columns:
-            if col not in _inputs.names and col not in problem.outputs.names:
-                drop.append(col)
-        _data = _data.drop(columns=drop)
+    #We do not drop the values of the eliminated variables.
+    #drop = []           
+    #if _data is not None:
+    #    for col in _data.columns:
+    #        if col not in _inputs.names and col not in problem.outputs.names:
+    #            drop.append(col)
+    #    _data = _data.drop(columns=drop)
 
-    #TODO
+    
     _models = problem.models
-    if _models is not None:
-        pass
+    #We ignorie the models attribute for now
+    #if _models is not None:
+    #    pass
 
     #TODO
     _f = None
@@ -179,15 +301,15 @@ def reduce(problem: Problem) -> Problem:
         if _f is not None:
             pass
 
-    _problem = Problem(
+    _problem = ReducedProblem(
         inputs = _inputs,
         outputs = problem.outputs,
         objectives = problem.objectives,
-        constraints = _constraints,                       #BEI DIESEN PUNKTEN NOCH EINMAL DAVID FRAGEN:
-        f = _f,                                           #Einfach daten erweitern, oder?
-        models = _models,                                 #Einfach daten erweitern, oder?
-        data = _data,                                     #droppe alle spalten, deren Variable eliminiert wurde, richtig so?
-        optima = problem.optima,                          #es ändert sich nichts, richtig so?
+        constraints = _constraints,
+        f = _f,                                           #TODO
+        models = _models,
+        data = _data,
+        optima = problem.optima,
         name = problem.name,
         equalities = equalities
     )
@@ -217,9 +339,8 @@ def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =No
 
 
 
-"""
+
 import opti
-from opti.problems import Hyperellipsoid
 
 problem = opti.Problem(
     inputs=[
@@ -227,7 +348,7 @@ problem = opti.Problem(
         opti.Continuous("wFAEOS", [0, 0.75]),
         opti.Continuous("wNIO", [0, 0.85]),
         opti.Continuous("TEMPERATURE", [15, 40]),
-        opti.Categorical("KATEGORIE", domain=["A", "B"]),
+#        opti.Categorical("KATEGORIE", domain=["A", "B"]),
         opti.Continuous("Detergent_AMOUNT", [2, 5]),
         opti.Continuous("Log_Protease_ppm", [0, np.log(3 + 1)]),
         opti.Continuous("Log_TRILON_M_LIQUID_ppm", [0, np.log(300 + 1)]),
@@ -250,14 +371,18 @@ problem = opti.Problem(
     ],
     constraints=[
         opti.LinearEquality(["wLAS", "wFAEOS", "wNIO"], rhs=1),
-        opti.LinearEquality(["wFAEOS", "wNIO"], rhs=1),
-        opti.LinearEquality(["wLAS"], rhs=0)
+#        opti.LinearEquality(["wFAEOS", "wNIO"], rhs=1),
+#        opti.LinearEquality(["wLAS"], rhs=0)
     ],
 )
 
+print(problem)
+_problem = reduce(problem)
+print(_problem)
 
 
 
+"""
 from opti.problem import read_json
 
 problem = read_json("examples/bread.json")
