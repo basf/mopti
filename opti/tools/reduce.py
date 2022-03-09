@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 from opti import Problem
 from opti.constraint import Constraints, LinearEquality, LinearInequality
 from opti.objective import Objectives
-from opti.parameter import Categorical, Parameters
+from opti.parameter import Categorical, Continuous, Parameters
 from sympy import Matrix
 
 
@@ -165,18 +165,27 @@ def reduce(problem: Problem) -> ReducedProblem:
     if len(linearEqualityConstraints) == 0:
         return problem
     
-    #only consider non-categorical inputs
+    #only consider continuous inputs
     inputs = []
-    categoricalInputs = []
+    otherInputs = []
     for p in problem.inputs:
-        if not isinstance(p, Categorical):
+        if isinstance(p, Continuous):
             inputs.append(p)
         else:
-            categoricalInputs.append(p)
+            otherInputs.append(p)
     inputs = Parameters(inputs)
     
     if len(inputs) == 0:
         return problem
+
+    #check if there are invalid equality constraints (i.e. constraints
+    #containing non-continuous parameters)
+    for c in linearEqualityConstraints:
+        for name in c.names:
+            if name not in inputs.names:
+                raise RuntimeError(f"Linear equality constraint {c} contains "
+                "a non-continuous parameter. Problem reduction for this situation"
+                " is not supported.")
 
 
     N = len(linearEqualityConstraints)
@@ -231,7 +240,7 @@ def reduce(problem: Problem) -> ReducedProblem:
 
 
     #build up reduced problem
-    _inputs = categoricalInputs
+    _inputs = otherInputs
     for i in range(len(inputs)):
         #add all inputs that were not eliminated
         if i not in pivots:
@@ -339,7 +348,6 @@ def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =No
 
 
 
-
 import opti
 
 problem = opti.Problem(
@@ -348,7 +356,7 @@ problem = opti.Problem(
         opti.Continuous("wFAEOS", [0, 0.75]),
         opti.Continuous("wNIO", [0, 0.85]),
         opti.Continuous("TEMPERATURE", [15, 40]),
-#        opti.Categorical("KATEGORIE", domain=["A", "B"]),
+        opti.Categorical("KATEGORIE", domain=["A", "B"]),
         opti.Continuous("Detergent_AMOUNT", [2, 5]),
         opti.Continuous("Log_Protease_ppm", [0, np.log(3 + 1)]),
         opti.Continuous("Log_TRILON_M_LIQUID_ppm", [0, np.log(300 + 1)]),
