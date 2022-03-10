@@ -134,8 +134,8 @@ class Detergent_TwoOutputConstraints(Problem):
     """Variant of the Detergent problem with two outputs constraint.
 
     In addition to the 5 washing performances there are two more outputs measuring the formulation stability.
-    The first, stability 1, measures the immediate stability. If not stable, the other properties cannot be measured.
-    The second, stability 2, is measured after all other outputs.
+    The first, stability 1, measures the immediate stability. If not stable, the other properties cannot be measured, except for stability 2.
+    The second, stability 2, measures the long-term stability.
     """
 
     def __init__(self):
