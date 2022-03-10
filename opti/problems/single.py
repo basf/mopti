@@ -14,8 +14,8 @@ class Ackley(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Ackley problem",
-            inputs=[Continuous(f"x{i}", [-32.768, +32.768]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-32.768, +32.768]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -35,14 +35,50 @@ class Ackley(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class Branin(Problem):
+    """The Branin (Branin-Hoo) benchmark problem.
+
+    f(x) = a(x2 - b x1^2 + cx1 - r)^2 + s(1 - t) cos(x1) + s
+    a = 1, b = 5.1 / (4 pi^2), c = 5 / pi, r = 6, s = 10 and t = 1 / (8pi)
+
+    It has 3 global optima.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Branin function",
+            inputs=[Continuous("x1", [-5, 10]), Continuous("x2", [0, 15])],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1, x2 = self.get_X(X).T
+        y = (
+            (x2 - 5.1 / (4 * np.pi**2) * x1**2 + 5 / np.pi * x1 - 6) ** 2
+            + 10 * (1 - 1 / (8 * np.pi)) * np.cos(x1)
+            + 10
+        )
+        return pd.DataFrame(y, columns=self.outputs.names, index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        return pd.DataFrame(
+            [
+                [-np.pi, 12.275, 0.397887],
+                [np.pi, 2.275, 0.397887],
+                [9.42478, 2.475, 0.397887],
+            ],
+            columns=self.inputs.names + self.outputs.names,
+        )
+
+
 class Himmelblau(Problem):
     """Himmelblau benchmark problem"""
 
     def __init__(self):
         super().__init__(
             name="Himmelblau function",
-            inputs=[Continuous(f"x{i}", [-6, 6]) for i in range(2)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-6, 6]) for i in range(2)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -63,14 +99,40 @@ class Himmelblau(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class Michalewicz(Problem):
+    """Michalewicz benchmark problem.
+
+    The Michalewicz function has d! local minima, and it is multimodal.
+    The parameter m (m=10 is used here) defines the steepness of they valleys and a larger m leads to a more difficult search.
+    """
+
+    def __init__(self, n_inputs: int = 2):
+        super().__init__(
+            name="Michalewicz function",
+            inputs=[Continuous(f"x{i+1}", [0, np.pi]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x = self.get_X(X)
+        m = 10
+        i = np.arange(1, self.n_inputs + 1)
+        y = -np.sum(np.sin(x) * np.sin(i * x**2 / np.pi) ** (2 * m), axis=1)
+        return pd.DataFrame({"y": y}, index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        x = pd.DataFrame([[2.2, 1.57]], columns=self.inputs.names)
+        return pd.concat([x, self.f(x)], axis=1)
+
+
 class Rosenbrock(Problem):
     """Rosenbrock benchmark problem."""
 
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rosenbrock function",
-            inputs=[Continuous(f"x{i}", [-2.048, 2.048]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-2.048, 2.048]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -90,8 +152,8 @@ class Schwefel(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Schwefel function",
-            inputs=[Continuous(f"x{i}", [-500, 500]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-500, 500]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -111,7 +173,7 @@ class Sphere(Problem):
     def __init__(self, n_inputs=10):
         super().__init__(
             name="Sphere function",
-            inputs=[Continuous(f"x{i}", [0, 1]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous("y", [0, 2])],
         )
 
@@ -132,8 +194,8 @@ class Rastrigin(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rastrigin function",
-            inputs=[Continuous(f"x{i}", [-5, 5]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -148,14 +210,35 @@ class Rastrigin(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
+class ThreeHumpCamel(Problem):
+    """Three-hump camel benchmark problem."""
+
+    def __init__(self):
+        super().__init__(
+            name="Three-hump camel function",
+            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(2)],
+            outputs=[Continuous("y")],
+        )
+
+    def f(self, X: pd.DataFrame) -> pd.DataFrame:
+        x1, x2 = self.get_X(X).T
+        y = 2 * x1**2 - 1.05 * x1**4 + x1**6 / 6 + x1 * x2 + x2**2
+        return pd.DataFrame(y, columns=["y"], index=X.index)
+
+    def get_optima(self) -> pd.DataFrame:
+        return pd.DataFrame(
+            np.zeros((1, 3)), columns=self.inputs.names + self.outputs.names
+        )
+
+
 class Zakharov(Problem):
     """Zakharov benchmark problem."""
 
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Zakharov function",
-            inputs=[Continuous(f"x{i}", [-10, 10]) for i in range(n_inputs)],
-            outputs=[Continuous("y", [-np.inf, np.inf])],
+            inputs=[Continuous(f"x{i+1}", [-10, 10]) for i in range(n_inputs)],
+            outputs=[Continuous("y")],
         )
 
     def f(self, X: pd.DataFrame):

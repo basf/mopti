@@ -1,11 +1,4 @@
 # flake8: noqa
-from opti.problems.benchmark import (
-    Daechert1,
-    Daechert2,
-    Daechert3,
-    Hyperellipsoid,
-    Qapi1,
-)
 from opti.problems.datasets import (
     HPLC,
     Alkox,
@@ -23,15 +16,29 @@ from opti.problems.detergent import (
     Detergent,
     Detergent_NChooseKConstraint,
     Detergent_OutputConstraint,
+    Detergent_TwoOutputConstraints,
 )
 from opti.problems.mixed import DiscreteFuelInjector, DiscreteVLMOP2
+from opti.problems.multi import (
+    Daechert1,
+    Daechert2,
+    Daechert3,
+    Hyperellipsoid,
+    OmniTest,
+    Poloni,
+    Qapi1,
+    WeldedBeam,
+)
 from opti.problems.single import (
     Ackley,
+    Branin,
     Himmelblau,
+    Michalewicz,
     Rastrigin,
     Rosenbrock,
     Schwefel,
     Sphere,
+    ThreeHumpCamel,
     Zakharov,
     Zakharov_Categorical,
     Zakharov_Constrained,
