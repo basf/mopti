@@ -1,17 +1,15 @@
-from logging.handlers import WatchedFileHandler
+from copy import deepcopy
 import numpy as np
 import pandas as pd                                                     
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Union
 
 
 from opti import Problem
 from opti.constraint import Constraints, LinearEquality, LinearInequality
 from opti.objective import Objectives
-from opti.parameter import Categorical, Continuous, Parameters
+from opti.parameter import Continuous, Parameters
 from sympy import Matrix
 
-
-#TODO: Wie geht man mit diskreten inputs um? --> einfach domain beibehalten?
 #TODO: f für das reduzierte problem anpassen
 #TODO: Was bedeutet das attribut Models in class Problem?
 #TODO: tests schreiben
@@ -303,30 +301,31 @@ def reduce(problem: Problem) -> ReducedProblem:
     #if _models is not None:
     #    pass
 
-    #TODO
+    #Wrap f, if defined
     _f = None
     if 'f' in list(vars(problem).keys()):
-        _f = problem.f
-        if _f is not None:
-            pass
+        if problem.f is not None:
+            def _f(X: pd.DataFrame) -> pd.DataFrame:
+                return problem.f(augment_data(X, equalities, inputs.names))
+            
 
     _problem = ReducedProblem(
-        inputs = _inputs,
-        outputs = problem.outputs,
-        objectives = problem.objectives,
-        constraints = _constraints,
-        f = _f,                                           #TODO
-        models = _models,
-        data = _data,
-        optima = problem.optima,
-        name = problem.name,
-        equalities = equalities
+        inputs = deepcopy(_inputs),
+        outputs = deepcopy(problem.outputs),
+        objectives = deepcopy(problem.objectives),
+        constraints = deepcopy(_constraints),
+        f = deepcopy(_f),
+        models = deepcopy(_models),
+        data = deepcopy(_data),
+        optima = deepcopy(problem.optima),
+        name = deepcopy(problem.name),
+        equalities = deepcopy(equalities)
     )
 
     return _problem
 
 
-def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =None):
+def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] = None):
     """Computes augmented DataFrame based on dependencies givern by a set of equalities.
 
     Args:
@@ -338,6 +337,8 @@ def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =No
     Returns:
         A DataFrame with additional columns (augmented data)
     """
+    data = data.copy()
+
     for lhs, rhs in equalities:
         data[lhs] = data.eval(rhs)
 
@@ -346,8 +347,8 @@ def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] =No
     
     return data
 
-
-
+"""
+#test stuff
 import opti
 
 problem = opti.Problem(
@@ -384,21 +385,44 @@ problem = opti.Problem(
     ],
 )
 
-print(problem)
-_problem = reduce(problem)
-print(_problem)
+def f(X: pd.DataFrame) -> pd.DataFrame:
+    Y = X.iloc[:,:2].copy()
+    cols = Y.columns
+    #Y = Y.rename(columns={cols[0]:"out1", cols[1]:"out2"})
+    return Y
 
 
 
-"""
+
 from opti.problem import read_json
 
 problem = read_json("examples/bread.json")
+problem.f = f
 _problem = reduce(problem)
 
-cols = problem.data.columns
+#cols = problem.data.columns
+#
+#print(_problem.data)
+#print(augment_data(_problem.data, _problem.equalities, names=cols))
+#print(problem.data)
 
-print(_problem.data)
-print(augment_data(_problem.data, _problem.equalities, names=cols))
-print(problem.data)
+
+
+X = problem.data
+Y = problem.f(X)
+print(X)
+
+_problem = reduce(problem)
+
+
+_Y = _problem.f(X)
+
+X = X.iloc[:,1:]
+print(X)
+Z = _problem.f(X)
+
+print(Y)
+print(_Y)
+print()
+print(Z)
 """
