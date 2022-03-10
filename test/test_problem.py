@@ -7,20 +7,28 @@ import pytest
 import opti
 from opti.model import LinearModel
 from opti.objective import Minimize
-from opti.parameter import Continuous
+from opti.parameter import Continuous, Parameters
 from opti.problem import Problem
 
 
 def test_parameters():
-    # test if inputs / outputs can be specified as list of objects
+    # set inputs & outputs as Parameters object
     problem = opti.Problem(
-        inputs=[opti.Continuous(f"x{i}", domain=[0, 1]) for i in range(3)],
-        outputs=[opti.Continuous(f"y{i}", domain=[0, 1]) for i in range(3)],
+        inputs=Parameters([opti.Continuous("x")]),
+        outputs=Parameters([opti.Continuous("y")]),
     )
     assert isinstance(problem.inputs, opti.Parameters)
     assert isinstance(problem.outputs, opti.Parameters)
 
-    # test if inputs / outputs can be specified as list of dicts
+    # set inputs & outputs as a list of Parameter
+    problem = opti.Problem(
+        inputs=[opti.Continuous("x", domain=[0, 1])],
+        outputs=[opti.Continuous("y", domain=[0, 1])],
+    )
+    assert isinstance(problem.inputs, opti.Parameters)
+    assert isinstance(problem.outputs, opti.Parameters)
+
+    # set inputs & outputs as list of dicts
     problem = opti.Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
@@ -57,7 +65,7 @@ def test_properties():
     assert problem.n_constraints == 1
 
 
-def test_read_json():
+def test_json(tmpdir):
     # test loading from json
     problem = opti.read_json("examples/bread.json")
     assert len(problem.inputs) == 11
@@ -72,10 +80,6 @@ def test_read_json():
     data["yeast_type"] = "A"
     problem.set_data(data)
 
-    # test repr/str
-    problem.__str__()
-    problem.__repr__()
-
     # objectives are optional and should be set to minimize if not given
     config = json.load(open("examples/bread.json"))
     config.pop("objectives")
@@ -89,6 +93,37 @@ def test_read_json():
     config.pop("constraints")
     problem = opti.Problem.from_config(config)
     assert problem.constraints is None
+
+    # serialize to json
+    tmpfile = tmpdir.join("foo.json")
+    problem = opti.Problem.from_json("examples/bread.json")
+    problem.to_json(tmpfile)
+
+    # json compliance with respect to Inf and Nan
+    problem = opti.problems.Ackley()
+    problem.outputs["y"].low = 0  # output domain is now [0, Inf]
+    problem.to_json(tmpfile)
+
+    conf = json.load(open(tmpfile))
+    assert conf["outputs"][0]["domain"][1] is None
+
+    problem = opti.Problem.from_json(tmpfile)
+    assert problem.outputs.bounds.loc["min", "y"] == 0
+    assert problem.outputs.bounds.loc["max", "y"] == np.inf
+
+    # handling of unicode characters
+    problem = opti.Problem(
+        inputs=[opti.Continuous("öäüßèé", [0, 1])],
+        outputs=[opti.Continuous("/[].#@²³$")],
+    )
+    problem.to_json(tmpfile)
+    problem2 = opti.read_json(tmpfile)
+    assert np.all(problem2.inputs.names == problem.inputs.names)
+    assert np.all(problem2.outputs.names == problem.outputs.names)
+
+    # parse values scientific notation
+    problem = opti.read_json("examples/test_scientific_notation.json")
+    assert np.allclose(problem.data["x"], [0.9, 1.7e12])
 
 
 def test_inconsistent_parameters():
@@ -295,36 +330,6 @@ def test_config():
     assert conf["outputs"][0]["domain"][1] is None
     # the datapoint y = np.nan is converted to None
     assert conf["data"]["data"][0][-1] is None
-
-
-def test_json(tmpdir):
-    tmpfile = tmpdir.join("foo.json")
-
-    # test if problems are serializable to/from json
-    problem = opti.Problem.from_json("examples/bread.json")
-    problem.to_json(tmpfile)
-
-    # test json compliance
-    problem = opti.problems.Ackley()
-    problem.outputs["y"].low = 0  # output domain is now [0, Inf]
-    problem.to_json(tmpfile)
-
-    conf = json.load(open(tmpfile))
-    assert conf["outputs"][0]["domain"][1] is None
-
-    problem = opti.Problem.from_json(tmpfile)
-    assert problem.outputs.bounds.loc["min", "y"] == 0
-    assert problem.outputs.bounds.loc["max", "y"] == np.inf
-
-    # test unicode characters
-    problem = opti.Problem(
-        inputs=[opti.Continuous("öäüßèé", [0, 1])],
-        outputs=[opti.Continuous("/[].#@²³$")],
-    )
-    problem.to_json(tmpfile)
-    problem2 = opti.read_json(tmpfile)
-    assert np.all(problem2.inputs.names == problem.inputs.names)
-    assert np.all(problem2.outputs.names == problem.outputs.names)
 
 
 def test_optima():

@@ -87,10 +87,10 @@ class Problem:
             self.f = f
 
         if isinstance(data, dict):
-            data = pd.DataFrame(**data)
+            data = pd.read_json(json.dumps(data), orient="split")
 
         if isinstance(optima, dict):
-            optima = pd.DataFrame(**optima)
+            optima = pd.read_json(json.dumps(optima), orient="split")
 
         self.set_data(data)
         self.set_optima(optima)

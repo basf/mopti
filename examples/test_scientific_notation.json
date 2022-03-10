@@ -1,0 +1,5 @@
+{
+  "inputs": [{"name": "x","type": "continuous"}],
+  "outputs": [{"name": "y","type": "continuous"}],
+  "data": {"data": [["9E-01", 0.1], [1.7E12, 0.2]], "index": [0, 1], "columns": ["x", "y"]}
+}
