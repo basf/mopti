@@ -24,7 +24,7 @@ pre-commit install
 ## Publishing
 
 We have a github action set up to publish on PyPI.
-The action is triggered on tagged commits, where the tag starts with a "v".
+The action is triggered on tagged commits to the main branch, where the tag starts with a "v".
 
 Example:
 ```
