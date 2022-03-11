@@ -169,14 +169,12 @@ def reduce(problem: Problem) -> ReducedProblem:
         return problem
 
     # find linear equality constraints
-    linearEqualityConstraints, otherConstraints = find_linear_constraints(
+    linearEqualityConstraints, otherConstraints = find_linear_equality_constraints(
         problem.constraints
     )
-    linearEqualityConstraints = Constraints(linearEqualityConstraints)
 
     # only consider continuous inputs
     inputs, otherInputs = find_continuous_inputs(problem.inputs)
-    inputs = Parameters(inputs)
 
     # Assemble Matrix A from equality constraints
     N = len(linearEqualityConstraints)
@@ -215,14 +213,14 @@ def reduce(problem: Problem) -> ReducedProblem:
         B[p + M - 1, :] += A_aug_rref[i, :]
 
     # build up reduced problem
-    _inputs = otherInputs
+    _inputs = list(otherInputs.parameters.values())
     for i in range(len(inputs)):
         # add all inputs that were not eliminated
         if i not in pivots:
             _inputs.append(inputs[names[i]])
     _inputs = Parameters(_inputs)
 
-    _constraints = otherConstraints
+    _constraints = otherConstraints.constraints
     for i in pivots:
         ind = np.where(B[i, :-1] != 0)[0]
         if len(ind) > 0:
@@ -305,7 +303,7 @@ def reduce(problem: Problem) -> ReducedProblem:
     return _problem
 
 
-def find_linear_constraints(constraints: Constraints) -> List:
+def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
     linearEqualityConstraints = []
     otherConstraints = []
     for c in constraints:
@@ -313,10 +311,10 @@ def find_linear_constraints(constraints: Constraints) -> List:
             linearEqualityConstraints.append(c)
         else:
             otherConstraints.append(c)
-    return [linearEqualityConstraints, otherConstraints]
+    return [Constraints(linearEqualityConstraints), Constraints(otherConstraints)]
 
 
-def find_continuous_inputs(inputs: Parameters) -> List:
+def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
     contInputs = []
     otherInputs = []
     for p in inputs:
@@ -324,7 +322,7 @@ def find_continuous_inputs(inputs: Parameters) -> List:
             contInputs.append(p)
         else:
             otherInputs.append(p)
-    return [contInputs, otherInputs]
+    return [Parameters(contInputs), Parameters(otherInputs)]
 
 
 def check_problem_for_reduction(problem: Problem) -> bool:
@@ -334,17 +332,15 @@ def check_problem_for_reduction(problem: Problem) -> bool:
         return False
 
     # Are there any linear equality constraints?
-    linearEqualityConstraints, otherConstraints = find_linear_constraints(
+    linearEqualityConstraints, otherConstraints = find_linear_equality_constraints(
         problem.constraints
     )
-    linearEqualityConstraints = Constraints(linearEqualityConstraints)
 
     if len(linearEqualityConstraints) == 0:
         return False
 
     # identify continuous inputs
     inputs, otherInputs = find_continuous_inputs(problem.inputs)
-    inputs = Parameters(inputs)
 
     if len(inputs) == 0:
         return False
