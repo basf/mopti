@@ -31,7 +31,7 @@
         {
             "type": "linear-equality",
             "names": ["flour", "water", "salt", "yeast"],
-            "rhs": 1
+            "rhs": 1000
         },
         {
             "type": "linear-inequality",

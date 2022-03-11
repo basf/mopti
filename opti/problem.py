@@ -20,7 +20,6 @@ ModelsLike = Union[Models, List[Model], List[Dict]]
 DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
-
 class Problem:
     def __init__(
         self,
@@ -50,6 +49,7 @@ class Problem:
             optima: Pareto optima.
             name: Name of the problem.
         """
+
         self.name = name if name is not None else "Problem"
         self.inputs = inputs if isinstance(inputs, Parameters) else Parameters(inputs)
         self.outputs = (
@@ -96,6 +96,7 @@ class Problem:
         self.set_optima(optima)
         self.check_problem()
         self.check_models()
+
 
     @property
     def n_inputs(self) -> int:
@@ -173,6 +174,7 @@ class Problem:
             b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
             outfile.write(b.encode("utf-8"))
 
+
     def check_problem(self) -> None:
         """Check if input and output parameters are consistent."""
         # check for duplicate names
@@ -184,6 +186,7 @@ class Problem:
         for obj in self.objectives:
             if obj.name not in self.outputs.names:
                 raise ValueError(f"Objective refers to unknown parameter: {obj.name}")
+
 
     def check_data(self, data: pd.DataFrame) -> None:
         """Check if data is consistent with input and output parameters."""
