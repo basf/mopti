@@ -1,24 +1,17 @@
-#%%
-
-from copy import deepcopy
-import numpy as np
-import pandas as pd                                                     
-from typing import Callable, Dict, List, Optional, Union
-
-from opti import Problem
-from opti.constraint import Constraints, LinearEquality, LinearInequality
-from opti.objective import Objectives
-from opti.parameter import Continuous, Parameters, Categorical, Discrete
-from sympy import Matrix
-
 import json
 import os
-import re
+from copy import deepcopy
+from typing import Callable, Dict, List, Optional, Union
 
-from opti.constraint import Constraint, Constraints
+import numpy as np
+import pandas as pd
+from sympy import Matrix
+
+from opti import Problem
+from opti.constraint import Constraint, Constraints, LinearEquality, LinearInequality
 from opti.model import Model, Models
 from opti.objective import Objective, Objectives
-from opti.parameter import Parameter, Parameters
+from opti.parameter import Continuous, Parameter, Parameters
 
 ParametersLike = Union[Parameters, List[Parameter], List[Dict]]
 ObjectivesLike = Union[Objectives, List[Objective], List[Dict]]
@@ -26,6 +19,7 @@ ConstraintsLike = Union[Constraints, List[Constraint], List[Dict]]
 ModelsLike = Union[Models, List[Model], List[Dict]]
 DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
+
 
 class ReducedProblem(Problem):
     def __init__(
@@ -40,7 +34,7 @@ class ReducedProblem(Problem):
         data: Optional[DataFrameLike] = None,
         optima: Optional[DataFrameLike] = None,
         name: Optional[str] = None,
-        _equalities: Union[List[str], str, None] = None, #!
+        _equalities: Optional[List[str]] = None,
         **kwargs,
     ):
         """An optimization problem.
@@ -56,51 +50,54 @@ class ReducedProblem(Problem):
             data: Experimental data.
             optima: Pareto optima.
             name: Name of the problem.
-            equalities: Only in case of problem reduction due to equality con
+            _equalities: Only in case of problem reduction due to equality con
                 straints. Used to augment the solution of the reduced problem.
         """
         super().__init__(
-            inputs, 
-            outputs, 
-            objectives, 
-            constraints, 
-            output_constraints, 
-            f, 
-            models, 
-            data, 
-            optima, 
-            name
-            )
+            inputs,
+            outputs,
+            objectives,
+            constraints,
+            output_constraints,
+            f,
+            models,
+            data,
+            optima,
+            name,
+        )
 
-        if isinstance(equalities, List):
-            self.equalities = equalities
-        elif equalities is not None:
-            if isinstance(equalities, str):
-                self.equalities = eval(equalities)
+        if isinstance(_equalities, List):
+            if len(_equalities) == 0:
+                _equalities = None
             else:
-                raise ValueError("Equalities must be a list or a string.")
+                self._equalities = _equalities
+        elif _equalities is None:
+            _equalities = None
         else:
-            self.equalities = None 
+            raise ValueError("_equalities must be a List or None")
 
-        #check if the names in self.equalities are valid
+        # check if the names and values in self.equalities are valid
         if self.n_equalities > 0:
-            for lhs, rhs in self.equalities:
-                rhs = re.findall("(?<=\*\s)[^\*]*(?=\s\+)", rhs)
-                for name in rhs:
+            for name_lhs, names_rhs, coeffs in self._equalities:
+                for name in names_rhs:
                     if name not in self.inputs.names:
-                        raise ValueError(f"Equality refers to unknown parameter: {name}")
+                        raise ValueError(
+                            f"Equality refers to unknown parameter: {name}"
+                        )
+                if not all(np.isfinite(coeffs)):
+                    raise ValueError("Equality contains non-finite value.")
 
     @property
     def n_equalities(self) -> int:
-        return 0 if self.equalities is None else len(self.equalities)
-    
+        return 0 if self._equalities is None else len(self._equalities)
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
         s = super().__str__()
-        if self.equalities is not None:
-            s = s[:-1] + f"equalities=\n{self.equalities}\n"
+        if self._equalities is not None:
+            s = s[:-1] + f"_equalities=\n{self._equalities}\n"
         return "Reduced" + s + ")"
 
     @staticmethod
@@ -110,8 +107,8 @@ class ReducedProblem(Problem):
 
     def to_config(self) -> dict:
         config = super().to_config()
-        if self.equalities is not None:
-            config["equalities"] = self.equalities
+        if self._equalities is not None:
+            config["equalities"] = self._equalities
         return config
 
     @staticmethod
@@ -127,7 +124,33 @@ class ReducedProblem(Problem):
             b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
             outfile.write(b.encode("utf-8"))
 
-    #augment_data hier
+    @staticmethod
+    def augment_data(
+        data: pd.DataFrame, _equalities: List[str], names: List[str] = None
+    ):
+        """Computes augmented DataFrame based on dependencies givern by a set of equalities.
+
+        Args:
+            data (DataFrame): data to be augmented.
+            equalities (List[str]): Set of equalities used for the augmentation
+            names (List[str]): name of all columns given in a certain order to determine the
+            order of the columns of the returned data.
+
+        Returns:
+            A DataFrame with additional columns (augmented data)
+        """
+        data = data.copy()
+
+        for name_lhs, names_rhs, coeffs in _equalities:
+            data[name_lhs] = coeffs[-1]
+            for i, name in enumerate(names_rhs):
+                data[name_lhs] += coeffs[i] * data[name]
+
+        if names is not None:
+            data = data[names]
+
+        return data
+
 
 def reduce(problem: Problem) -> ReducedProblem:
     """Reduce a problem with linear equality constraints and linear inequality constraints
@@ -137,278 +160,228 @@ def reduce(problem: Problem) -> ReducedProblem:
         problem (Problem): problem to be reduced
 
     Returns:
-        Reduced problem where linear equality constraints have been eliminated 
-    
+        Reduced problem where linear equality constraints have been eliminated
+
     """
-    #check if the reduction can be applied or if a trivial case is present
-    #Are there any constraints?
-    if problem.constraints == None:
+    # check if the problem can be reduced
+    if not check_problem_for_reduction(problem):
+        print("hi")
         return problem
-    
-    #find linear equality constraints and write them into a matrix/DataFrame A
-    linearEqualityConstraints = []
-    otherConstraints = []
-    for c in problem.constraints:
-        if isinstance(c, LinearEquality):
-            linearEqualityConstraints.append(c)
-        else:
-            otherConstraints.append(c)
+
+    # find linear equality constraints
+    linearEqualityConstraints, otherConstraints = find_linear_constraints(
+        problem.constraints
+    )
     linearEqualityConstraints = Constraints(linearEqualityConstraints)
 
-    if len(linearEqualityConstraints) == 0:
-        return problem
-    
-    #only consider continuous inputs
-    inputs = []
-    otherInputs = []
-    for p in problem.inputs:
-        if isinstance(p, Continuous):
-            inputs.append(p)
-        else:
-            otherInputs.append(p)
+    # only consider continuous inputs
+    inputs, otherInputs = find_continuous_inputs(problem.inputs)
     inputs = Parameters(inputs)
-    
-    if len(inputs) == 0:
-        return problem
 
-    #check if there are invalid equality constraints (i.e. constraints
-    #containing non-continuous parameters)
-    for c in linearEqualityConstraints:
-        for name in c.names:
-            if name not in inputs.names:
-                raise RuntimeError(f"Linear equality constraint {c} contains "
-                "a non-continuous parameter. Problem reduction for this situation"
-                " is not supported.")
-
-
+    # Assemble Matrix A from equality constraints
     N = len(linearEqualityConstraints)
     M = len(inputs) + 1
     names = np.concatenate((inputs.names, ["rhs"]))
-    
-    A_aug = pd.DataFrame(data=np.zeros(shape=(N,M)), columns=names)
-    
+
+    A_aug = pd.DataFrame(data=np.zeros(shape=(N, M)), columns=names)
+
     for i in range(len(linearEqualityConstraints)):
         c = linearEqualityConstraints[i]
 
         A_aug.loc[i, c.names] = c.lhs
         A_aug.loc[i, "rhs"] = c.rhs
     A_aug = A_aug.values
-    A = A_aug[:,:-1]
-    b = A_aug[:,-1]
 
-    #catch special cases
-    rk_A_aug = np.linalg.matrix_rank(A_aug)
-    rk_A = np.linalg.matrix_rank(A)
+    # catch special cases TESTEN
+    check_existence_of_solution(A_aug, M - 1)
 
-    if (rk_A == rk_A_aug):
-        pass
-    elif (rk_A < rk_A_aug):
-        raise Warning("There is no solution fulfilling the linear equality constraints")
-    else:
-        raise Warning("Something went wrong. Rank of coefficient matrix must not be "
-        "larger than rank of augmented coefficient matrix")
-
-    if (rk_A == M-1):
-        x = np.linalg.solve(A,b)
-        raise Warning("There is a unique solution x for the linear inequalities: x=" + str(x))
-            
-    #bring A_aug to reduced row-echelon form
+    # bring A_aug to reduced row-echelon form
     A_aug_rref, pivots = Matrix(A_aug).rref()
     pivots = np.array(pivots)
     A_aug_rref = np.array(A_aug_rref).astype(np.float64)
 
-    #formulate box bounds as linear inequality constraints in matrix form
-    B = np.zeros(shape=(2*(M-1), M))
-    B[:M-1, :M-1] = np.eye(M-1)
-    B[M-1:, :M-1] = -np.eye(M-1)
+    # formulate box bounds as linear inequality constraints in matrix form
+    B = np.zeros(shape=(2 * (M - 1), M))
+    B[: M - 1, : M - 1] = np.eye(M - 1)
+    B[M - 1 :, : M - 1] = -np.eye(M - 1)
 
-    B[:M-1,-1] = inputs.bounds.loc["max"]
-    B[M-1:,-1] = -inputs.bounds.loc["min"]
+    B[: M - 1, -1] = inputs.bounds.loc["max"]
+    B[M - 1 :, -1] = -inputs.bounds.loc["min"]
 
-    #eliminate columns with pivot element
+    # eliminate columns with pivot element
     for i in range(len(pivots)):
         p = pivots[i]
-        B[p,:] -= A_aug_rref[i,:]
-        B[p+M-1,:] += A_aug_rref[i,:]
+        B[p, :] -= A_aug_rref[i, :]
+        B[p + M - 1, :] += A_aug_rref[i, :]
 
-
-    #build up reduced problem
+    # build up reduced problem
     _inputs = otherInputs
     for i in range(len(inputs)):
-        #add all inputs that were not eliminated
+        # add all inputs that were not eliminated
         if i not in pivots:
             _inputs.append(inputs[names[i]])
     _inputs = Parameters(_inputs)
 
     _constraints = otherConstraints
     for i in pivots:
-        ind = np.where(B[i,:-1] != 0)[0]
-        if len(ind)>0:
-            c = LinearInequality(names=list(names[ind]),lhs=B[i,ind],rhs=B[i,-1])
+        ind = np.where(B[i, :-1] != 0)[0]
+        if len(ind) > 0:
+            c = LinearInequality(names=list(names[ind]), lhs=B[i, ind], rhs=B[i, -1])
             _constraints.append(c)
         else:
-            if B[i,-1] < -1e-16:
-                raise Warning("There is no solution in the domain of the variables "
-                "that fulfills the constraints.")
-        
-        ind = np.where(B[i+M-1,:-1] != 0)[0]
-        if len(ind)>0:
-            c = LinearInequality(names=list(names[ind]),lhs=B[i+M-1,ind],rhs=B[i+M-1,-1])
+            if B[i, -1] < -1e-16:
+                raise Warning(
+                    "There is no solution in the domain of the variables "
+                    "that fulfills the constraints."
+                )
+
+        ind = np.where(B[i + M - 1, :-1] != 0)[0]
+        if len(ind) > 0:
+            c = LinearInequality(
+                names=list(names[ind]), lhs=B[i + M - 1, ind], rhs=B[i + M - 1, -1]
+            )
             _constraints.append(c)
         else:
-            if B[i+M-1,-1] < -1e-16:
-                raise Warning("There is no solution in the domain of the variables "
-                "that fulfills the constraints.")
+            if B[i + M - 1, -1] < -1e-16:
+                raise Warning(
+                    "There is no solution in the domain of the variables "
+                    "that fulfills the constraints."
+                )
     _constraints = Constraints(_constraints)
 
-    equalities = []
+    # assemble equalities
+    _equalities = []
     for i in range(len(pivots)):
-        name = names[pivots[i]]
-        lhs = ""
-        
-        for j in range(len(names)-1):
-            if (A_aug_rref[i,j] != 0 and j != pivots[i]):
-                lhs += "("+str(-A_aug_rref[i,j]) + ") * " + names[j] + " + "
-            
-        if A_aug_rref[i,-1] != 0:
-            lhs += "("+str(A_aug_rref[i,-1])+")"
-        else:
-            lhs = lhs[:-1]
-        
-        if lhs=="":
-            lhs = "0"
+        name_lhs = names[pivots[i]]
+        names_rhs = []
+        coeffs = []
 
-        equalities.append([name, lhs])
+        for j in range(len(names) - 1):
+            if A_aug_rref[i, j] != 0 and j != pivots[i]:
+                coeffs.append(-A_aug_rref[i, j])
+                names_rhs.append(names[j])
 
-    
+        coeffs.append(A_aug_rref[i, -1])
+
+        _equalities.append([name_lhs, names_rhs, coeffs])
+
     _data = problem.data
-    #We do not drop the values of the eliminated variables.
-    #drop = []           
-    #if _data is not None:
+    # We do not drop the values of the eliminated variables.
+    # drop = []
+    # if _data is not None:
     #    for col in _data.columns:
     #        if col not in _inputs.names and col not in problem.outputs.names:
     #            drop.append(col)
     #    _data = _data.drop(columns=drop)
 
-    
     _models = problem.models
-    #We ignorie the models attribute for now
-    #if _models is not None:
+    # We ignorie the models attribute for now
+    # if _models is not None:
     #    pass
 
-    #Wrap f, if defined
+    # Wrap f, if defined
     _f = None
-    if 'f' in list(vars(problem).keys()):
+    if "f" in list(vars(problem).keys()):
         if problem.f is not None:
+
             def _f(X: pd.DataFrame) -> pd.DataFrame:
-                return problem.f(augment_data(X, equalities, inputs.names))
-            
+                return problem.f(
+                    ReducedProblem.augment_data(X, _equalities, inputs.names)
+                )
 
     _problem = ReducedProblem(
-        inputs = deepcopy(_inputs),
-        outputs = deepcopy(problem.outputs),
-        objectives = deepcopy(problem.objectives),
-        constraints = deepcopy(_constraints),
-        f = deepcopy(_f),
-        models = deepcopy(_models),
-        data = deepcopy(_data),
-        optima = deepcopy(problem.optima),
-        name = deepcopy(problem.name),
-        equalities = deepcopy(equalities)
+        inputs=deepcopy(_inputs),
+        outputs=deepcopy(problem.outputs),
+        objectives=deepcopy(problem.objectives),
+        constraints=deepcopy(_constraints),
+        f=deepcopy(_f),
+        models=deepcopy(_models),
+        data=deepcopy(_data),
+        optima=deepcopy(problem.optima),
+        name=deepcopy(problem.name),
+        _equalities=deepcopy(_equalities),
     )
 
     return _problem
 
 
-def augment_data(data: pd.DataFrame, equalities: List[str], names: List[str] = None):
-    """Computes augmented DataFrame based on dependencies givern by a set of equalities.
-
-    Args:
-        data (DataFrame): data to be augmented.
-        equalities (List[str]): Set of equalities used for the augmentation
-        names (List[str]): name of all columns given in a certain order to determine the 
-        order of the columns of the returned data.
-
-    Returns:
-        A DataFrame with additional columns (augmented data)
-    """
-    data = data.copy()
-
-    for lhs, rhs in equalities:
-        data[lhs] = data.eval(rhs) #rhs nicht als string!
-
-    if names is not None:
-        data = data[names]
-    
-    return data
+def find_linear_constraints(constraints: Constraints) -> List:
+    linearEqualityConstraints = []
+    otherConstraints = []
+    for c in constraints:
+        if isinstance(c, LinearEquality):
+            linearEqualityConstraints.append(c)
+        else:
+            otherConstraints.append(c)
+    return [linearEqualityConstraints, otherConstraints]
 
 
+def find_continuous_inputs(inputs: Parameters) -> List:
+    contInputs = []
+    otherInputs = []
+    for p in inputs:
+        if isinstance(p, Continuous):
+            contInputs.append(p)
+        else:
+            otherInputs.append(p)
+    return [contInputs, otherInputs]
 
 
+def check_problem_for_reduction(problem: Problem) -> bool:
+    """Checks if the reduction can be applied or if a trivial case is present."""
+    # Are there any constraints?
+    if problem.constraints is None:
+        return False
 
-import opti
+    # Are there any linear equality constraints?
+    linearEqualityConstraints, otherConstraints = find_linear_constraints(
+        problem.constraints
+    )
+    linearEqualityConstraints = Constraints(linearEqualityConstraints)
 
-problem = opti.Problem(
-    inputs=[
-        opti.Continuous("in_a", [0, 0.6]),
-        opti.Continuous("in_b", [0, 0.75]),
-        opti.Continuous("in_c", [0, 0.85]),
-        opti.Continuous("in_d", [15, 40]),
-        opti.Categorical("in_e", domain=["A", "B"]),
-        opti.Discrete("in_f", [0,4,8]),
-        opti.Continuous("in_g", [2, 5]),
-        opti.Continuous("in_h", [0, np.log(3 + 1)]),
-        opti.Continuous("in_i", [0, np.log(300 + 1)]),
-        opti.Continuous("in_j", [0, np.log(150 + 1)]),
-        opti.Continuous("in_k", [0, np.log(250 + 1)]),
-    ],
-    outputs=[
-        opti.Continuous("out_a"),
-        opti.Continuous("out_b"),
-        opti.Continuous("out_c"),
-        opti.Continuous("out_d"),
-        opti.Continuous("out_e"),
-    ],
-    objectives=[
-        opti.Maximize("obj_1"),
-        opti.Maximize("obj_2"),
-        opti.Maximize("obj_3"),
-        opti.Maximize("obj_4"),
-        opti.Minimize("obj_5"),
-    ],
-    constraints=[
-        opti.LinearEquality(["in_a", "in_b", "in_c"], rhs=1),
-#        opti.LinearEquality(["in_b", "in_c"], rhs=1),
-#        opti.LinearEquality(["in_a"], rhs=0)
-    ],
-)
+    if len(linearEqualityConstraints) == 0:
+        return False
+
+    # identify continuous inputs
+    inputs, otherInputs = find_continuous_inputs(problem.inputs)
+    inputs = Parameters(inputs)
+
+    if len(inputs) == 0:
+        return False
+
+    # check if there are invalid equality constraints (i.e. constraints
+    # containing non-continuous parameters)
+    for c in linearEqualityConstraints:
+        for name in c.names:
+            if name not in inputs.names:
+                raise RuntimeError(
+                    f"Linear equality constraint {c} contains "
+                    "a non-continuous parameter. Problem reduction for this situation"
+                    " is not supported."
+                )
+    return True
 
 
-print(problem)
-_problem = reduce(problem)
-print(_problem)
+def check_existence_of_solution(A_aug, len_inputs):
+    A = A_aug[:, :-1]
+    b = A_aug[:, -1]
 
+    # catch special cases
+    rk_A_aug = np.linalg.matrix_rank(A_aug)
+    rk_A = np.linalg.matrix_rank(A)
 
+    if rk_A == rk_A_aug:
+        pass
+    elif rk_A < rk_A_aug:
+        raise Warning("There is no solution fulfilling the linear equality constraints")
+    else:
+        raise Warning(
+            "Something went wrong. Rank of coefficient matrix must not be "
+            "larger than rank of augmented coefficient matrix"
+        )
 
-
-
-
-
-
-#def f(X: pd.DataFrame) -> pd.DataFrame:
-#    Y = X.iloc[:,:2].copy()
-#    cols = Y.columns
-#    #Y = Y.rename(columns={cols[0]:"out1", cols[1]:"out2"})
-#    return Y
-
-# from opti.problem import read_json
-
-#problem = read_json("examples/bread.json")
-#problem.f = f
-#_problem = reduce(problem)
-
-#cols = problem.data.columns
-#
-#print(_problem.data)
-#print(augment_data(_problem.data, _problem.equalities, names=cols))
-#print(problem.data)
+    if rk_A == len_inputs:
+        x = np.linalg.solve(A, b)
+        raise Warning(
+            "There is a unique solution x for the linear inequalities: x=" + str(x)
+        )

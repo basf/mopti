@@ -106,7 +106,7 @@ class CloseToTarget(Objective):
     def __call__(self, y: pd.Series) -> pd.Series:
         return (
             y - self.target
-        ).abs() ** self.exponent - self.tolerance**self.exponent
+        ).abs() ** self.exponent - self.tolerance ** self.exponent
 
     def __repr__(self):
         return f"CloseToTarget('{self.name}', target={self.target})"

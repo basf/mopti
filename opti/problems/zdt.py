@@ -140,5 +140,5 @@ class ZDT6(Problem):
 
     def get_optima(self, points=100):
         x = np.linspace(0.2807753191, 1, points)
-        y = np.stack([x, 1 - x**2], axis=1)
+        y = np.stack([x, 1 - x ** 2], axis=1)
         return pd.DataFrame(y, columns=self.outputs.names)
