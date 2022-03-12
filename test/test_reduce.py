@@ -1,3 +1,4 @@
+from opti import Problem
 from opti.constraint import (
     Constraint,
     Constraints,
@@ -6,7 +7,8 @@ from opti.constraint import (
     NonlinearEquality,
     NonlinearInequality,
 )
-from opti.tools.reduce import find_linear_equality_constraints
+from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
+from opti.tools.reduce import find_continuous_inputs, find_linear_equality_constraints
 
 
 def test_find_linear_constraints():
@@ -83,10 +85,178 @@ def test_find_linear_constraints():
         assert not isinstance(c, LinearEquality)
 
 
-# def test_find_continuous_inputs():
-# TODO
+def test_find_continuous_inputs():
+    # define input parameters
+    inputs = Parameters(
+        [
+            Parameter(),
+            Continuous("n1", [0, 1]),
+            Discrete("n2", [0, 1, 2]),
+            Categorical("n3"),
+            Continuous("n4", [1, 2]),
+        ]
+    )
+    contInputs, otherInputs = find_continuous_inputs(inputs)
+
+    assert isinstance(contInputs, Parameters)
+    assert len(contInputs) == 2
+    for p in contInputs:
+        assert isinstance(p, Continuous)
+
+    assert isinstance(otherInputs, Parameters)
+    assert len(contInputs) == 3
+    for p in otherInputs:
+        assert not isinstance(p, Continuous)
+
+    # define input parameters
+    inputs = Parameters(
+        [
+            Parameter(),
+            Continuous("n1", [0, 1]),
+            Discrete("n2", [0, 1, 2]),
+            Categorical("n3"),
+            Continuous("n4", [1, 2]),
+        ]
+    )
+    contInputs, otherInputs = find_continuous_inputs(inputs)
+
+    assert isinstance(contInputs, Parameters)
+    assert len(contInputs) == 2
+    for p in contInputs:
+        assert isinstance(p, Continuous)
+
+    assert isinstance(otherInputs, Parameters)
+    assert len(otherInputs) == 3
+    for p in otherInputs:
+        assert not isinstance(p, Continuous)
+
+    # define input parameters
+    inputs = Parameters([])
+    contInputs, otherInputs = find_continuous_inputs(inputs)
+
+    assert isinstance(contInputs, Parameters)
+    assert len(contInputs) == 0
+
+    assert isinstance(otherInputs, Parameters)
+    assert len(otherInputs) == 0
+
+    # define input parameters
+    inputs = Parameters(
+        [
+            Continuous("n1", [0, 1]),
+            Continuous("n2", [1, 2]),
+            Continuous("n3", [2, 4]),
+        ]
+    )
+    contInputs, otherInputs = find_continuous_inputs(inputs)
+
+    assert isinstance(contInputs, Parameters)
+    assert len(contInputs) == 3
+    for p in contInputs:
+        assert isinstance(p, Continuous)
+
+    assert isinstance(otherInputs, Parameters)
+    assert len(otherInputs) == 0
+
+    # define input parameters
+    inputs = Parameters(
+        [
+            Parameter(),
+            Discrete("n2", [0, 1, 2]),
+            Categorical("n3"),
+        ]
+    )
+    contInputs, otherInputs = find_continuous_inputs(inputs)
+
+    assert isinstance(contInputs, Parameters)
+    assert len(contInputs) == 0
+
+    assert isinstance(otherInputs, Parameters)
+    assert len(otherInputs) == 3
+    for p in otherInputs:
+        assert not isinstance(p, Continuous)
 
 
+def check_problem_for_reduction():
+    # define test problem: no constraints
+    problem = Problem(
+        inputs=[
+            {"name": "x1", "type": "continuous", "domain": [1, 10]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+        ],
+        outputs=[
+            {"name": "y1", "type": "continuous", "domain": [1, 10]},
+            {"name": "y2", "type": "discrete", "domain": [1, 2, 3]},
+        ],
+    )
+    assert not check_problem_for_reduction(problem)
+
+    # define test problem: no linear equality constraints
+    problem = Problem(
+        inputs=[
+            {"name": "x1", "type": "continuous", "domain": [1, 10]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+        ],
+        outputs=[
+            {"name": "y1", "type": "continuous", "domain": [1, 10]},
+            {"name": "y2", "type": "discrete", "domain": [1, 2, 3]},
+        ],
+        constraints=Constraints(
+            [
+                Constraint(),
+                NonlinearEquality("x1**2 + x2**2 - 1"),
+                NonlinearInequality("x1**4 + x2**4 - 1"),
+                LinearInequality(["x1", "x2"], [4, 5], 6),
+            ]
+        ),
+    )
+    assert not check_problem_for_reduction(problem)
+
+    # define test problem: no continuous input
+    problem = Problem(
+        inputs=[
+            {"name": "x1", "type": "discrete", "domain": [1, 10]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+        ],
+        outputs=[
+            {"name": "y1", "type": "continuous", "domain": [1, 10]},
+            {"name": "y2", "type": "discrete", "domain": [1, 2, 3]},
+        ],
+        constraints=Constraints([LinearInequality(["x1", "x2"], [4, 5], 6)]),
+    )
+    assert not check_problem_for_reduction(problem)
+
+    # define test problem: invalid linear inequalities
+    problem = Problem(
+        inputs=[
+            {"name": "x1", "type": "continuous", "domain": [1, 10]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+        ],
+        outputs=[
+            {"name": "y1", "type": "continuous", "domain": [1, 10]},
+            {"name": "y2", "type": "discrete", "domain": [1, 2, 3]},
+        ],
+        constraints=Constraints([LinearInequality(["x1", "x2"], [4, 5], 6)]),
+    )
+    assert not check_problem_for_reduction(problem)
+
+    # define test problem: everything okay
+    problem = Problem(
+        inputs=[
+            {"name": "x1", "type": "continuous", "domain": [1, 10]},
+            {"name": "x2", "type": "continuous", "domain": ["A", "B", 3]},
+        ],
+        outputs=[
+            {"name": "y1", "type": "continuous", "domain": [1, 10]},
+            {"name": "y2", "type": "discrete", "domain": [1, 2, 3]},
+        ],
+        constraints=Constraints([LinearInequality(["x1", "x2"], [4, 5], 6)]),
+    )
+    assert check_problem_for_reduction(problem)
+
+
+# def test_reduce()
+# teste fall: nur nullconstraint
 """
 import opti
 
