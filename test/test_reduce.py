@@ -1,3 +1,6 @@
+import numpy as np
+import pytest
+
 from opti import Problem
 from opti.constraint import (
     Constraint,
@@ -8,7 +11,12 @@ from opti.constraint import (
     NonlinearInequality,
 )
 from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
-from opti.tools.reduce import find_continuous_inputs, find_linear_equality_constraints
+from opti.tools.reduce import (
+    check_existence_of_solution,
+    find_continuous_inputs,
+    find_linear_equality_constraints,
+    reduce,
+)
 
 
 def test_find_linear_constraints():
@@ -182,7 +190,7 @@ def check_problem_for_reduction():
     problem = Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
-            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B"]},
         ],
         outputs=[
             {"name": "y1", "type": "continuous", "domain": [1, 10]},
@@ -195,7 +203,7 @@ def check_problem_for_reduction():
     problem = Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
-            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B"]},
         ],
         outputs=[
             {"name": "y1", "type": "continuous", "domain": [1, 10]},
@@ -216,7 +224,7 @@ def check_problem_for_reduction():
     problem = Problem(
         inputs=[
             {"name": "x1", "type": "discrete", "domain": [1, 10]},
-            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B"]},
         ],
         outputs=[
             {"name": "y1", "type": "continuous", "domain": [1, 10]},
@@ -230,7 +238,7 @@ def check_problem_for_reduction():
     problem = Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
-            {"name": "x2", "type": "categorical", "domain": ["A", "B", 3]},
+            {"name": "x2", "type": "categorical", "domain": ["A", "B"]},
         ],
         outputs=[
             {"name": "y1", "type": "continuous", "domain": [1, 10]},
@@ -238,13 +246,14 @@ def check_problem_for_reduction():
         ],
         constraints=Constraints([LinearInequality(["x1", "x2"], [4, 5], 6)]),
     )
-    assert not check_problem_for_reduction(problem)
+    with pytest.raises(RuntimeError):
+        check_problem_for_reduction(problem)
 
     # define test problem: everything okay
     problem = Problem(
         inputs=[
             {"name": "x1", "type": "continuous", "domain": [1, 10]},
-            {"name": "x2", "type": "continuous", "domain": ["A", "B", 3]},
+            {"name": "x2", "type": "continuous", "domain": [1, 3]},
         ],
         outputs=[
             {"name": "y1", "type": "continuous", "domain": [1, 10]},
@@ -255,66 +264,201 @@ def check_problem_for_reduction():
     assert check_problem_for_reduction(problem)
 
 
+def test_check_existence_of_solution():
+    # rk(A) = rk(A_aug) = 1, 3 inputs
+    A_aug = np.array([[1, 0, 0, -0.5], [1, 0, 0, -0.5]])
+    check_existence_of_solution(A_aug)
+
+    # rk(A) = 1, rk(A_aug) = 2, 3 inputs
+    A_aug = np.array([[1, 0, 0, 0.5], [1, 0, 0, -0.5]])
+    with pytest.raises(Warning):
+        check_existence_of_solution(A_aug)
+
+    # rk(A) = rk(A_aug) = 2, 3 inputs
+    A_aug = np.array([[1, 0, 0, -0.5], [0, 1, 0, -0.5]])
+    check_existence_of_solution(A_aug)
+
+    # rk(A) = rk(A_aug) = 0, 3 inputs
+    A_aug = np.array([[0, 0, 0, 0], [0, 0, 0, 0]])
+    check_existence_of_solution(A_aug)
+
+    # rk(A) = rk(A_aug) = 2, 2 inputs
+    A_aug = np.array([[1, 0, -0.5], [0, 1, -0.5]])
+    with pytest.raises(Warning):
+        check_existence_of_solution(A_aug)
+
+
 # def test_reduce()
 # teste fall: nur nullconstraint
-"""
-import opti
-
-problem = opti.Problem(
-    inputs=[
-        opti.Continuous("in_a", [0, 0.6]),
-        opti.Continuous("in_b", [0, 0.75]),
-        opti.Continuous("in_c", [0, 0.85]),
-        opti.Continuous("in_d", [15, 40]),
-        opti.Categorical("in_e", domain=["A", "B"]),
-        opti.Discrete("in_f", [0, 4, 8]),
-        opti.Continuous("in_g", [2, 5]),
-        opti.Continuous("in_h", [0, np.log(3 + 1)]),
-        opti.Continuous("in_i", [0, np.log(300 + 1)]),
-        opti.Continuous("in_j", [0, np.log(150 + 1)]),
-        opti.Continuous("in_k", [0, np.log(250 + 1)]),
-    ],
-    outputs=[
-        opti.Continuous("out_a"),
-        opti.Continuous("out_b"),
-        opti.Continuous("out_c"),
-        opti.Continuous("out_d"),
-        opti.Continuous("out_e"),
-    ],
-    objectives=[
-        opti.Maximize("out_a"),
-        opti.Maximize("out_b"),
-        opti.Maximize("out_c"),
-        opti.Maximize("out_d"),
-        opti.Minimize("out_e"),
-    ],
-    constraints=[
-        opti.LinearEquality(["in_a", "in_b", "in_c"], rhs=1),
-        #        opti.LinearEquality(["in_b", "in_c"], rhs=1),
-        #        opti.LinearEquality(["in_a"], rhs=0)
-    ],
-)
+# EINBAUEN: WAS PASSIERT MIT DOMAIN [NONE, X], [X, NONE]?
+# TESTE: KANN EIN REDUZIERTES PROBLEM WIEDER REDUZIERT WERDEN?
+# --> übernehme zusätzlich alte equalities, oder: werfe NotImplementedError
+# PROBLEM: Alles, was nicht linear inequality ist, bleibt bestehen --> problem, da zum teil Variablen verschwinden
+# --> nachdem neues problem aufgebaut wurde: def refresh_constraints
 
 
-print(problem)
-_problem = reduce(problem)
-print(_problem)
-"""
+def test_reduce_1_independent_linear_equality_constraints():
+    # define problem: standard case
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [1, 2]),
+                Continuous("x2", [-1, 1]),
+                Categorical("x3", ["A", "B"]),
+                Discrete("x4", [-1, 0, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+                LinearEquality(names=["x1", "x2"], lhs=[-0.5, -0.5], rhs=0),
+                LinearInequality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+            ]
+        ),
+    )
+    _problem = reduce(problem)
 
-# def f(X: pd.DataFrame) -> pd.DataFrame:
-#    Y = X.iloc[:,:2].copy()
-#    cols = Y.columns
-#    #Y = Y.rename(columns={cols[0]:"out1", cols[1]:"out2"})
-#    return Y
-#
-# from opti.problem import read_json
-#
-# problem = read_json("examples/bread.json")
-# problem.f = f
-# _problem = reduce(problem)
-#
-# cols = problem.data.columns
-#
-# print(_problem.data)
-# print(ReducedProblem.augment_data(_problem.data, _problem._equalities, names=cols))
-# print(problem.data)
+    assert len(_problem.inputs) == 3
+
+    assert len(_problem.constraints) == 2
+    lhs = [-1, 1]
+    rhs = [2, 1]
+    for i, c in enumerate(_problem.constraints):
+        assert isinstance(c, LinearInequality)
+        assert c.names == [
+            "x2"
+        ]  # NOCH NICHT ERFÜLLT, DA ERSTE LIN INEQ NOCH NICHT VON X1 BEREINIGT WURDE
+        assert c.rhs == [rhs[i]]
+        assert c.lhs == lhs[i]
+
+    assert _problem._equalities == [["x1", ["x2"], [-1.0, 0.0]]]
+
+    # define problem: irreducible problem
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [1, 2]),
+                Continuous("x2", [-1, 1]),
+                Categorical("x3", ["A", "B"]),
+                Discrete("x4", [-1, 0, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints([]),
+    )
+    assert problem == reduce(problem)
+
+    # define problem: invalid constraint (nonexisting name in linear equality constraint)
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [-1, 2]),
+                Continuous("x2", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["a", "x2"], lhs=[1, 1], rhs=0),
+                LinearEquality(names=["x1", "x2"], lhs=[-0.5, -0.5], rhs=0),
+            ]
+        ),
+    )
+    with pytest.raises(RuntimeError):
+        reduce(problem)
+
+    # define problem: invalid constraint (non-continuous parameter in linear equality constraint)
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [-1, 2]),
+                Continuous("x2", [-1, 1]),
+                Categorical("x3", ["A", "B"]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["x3", "x2"], lhs=[1, 1], rhs=0),
+                LinearEquality(names=["x1", "x2"], lhs=[-0.5, -0.5], rhs=0),
+            ]
+        ),
+    )
+    with pytest.raises(RuntimeError):
+        reduce(problem)
+
+    # define problem: linear equality constraints can't be fulfilled inside the domain
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [1, 2]),
+                Continuous("x2", [None, None]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["x1", "x2"], lhs=[1, 0], rhs=0),
+            ]
+        ),
+    )
+    with pytest.raises(Warning):
+        reduce(problem)
+
+
+def test_reduce_2_independent_linear_equality_constraints():
+    # define problem: standard case
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [-1, 1]),
+                Continuous("x2", [-1, 1]),
+                Continuous("x3", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[1, 1, 1], rhs=1),
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[1, 2, 1], rhs=2),
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[-1, -1, -1], rhs=-1),
+            ]
+        ),
+    )
+    _problem = reduce(problem)
+
+    assert len(_problem.inputs) == 1
+    lhs = [-1, 1]
+    rhs = [1, 1]
+    for i, c in enumerate(_problem.constraints):
+        assert c.names == ["x3"]
+        assert c.lhs == [lhs[i]]
+        assert c.rhs == rhs[i]
+    assert _problem._equalities == [["x1", ["x3"], [-1.0, 0.0]], ["x2", [], [1.0]]]
+
+
+def test_reduce_3_independent_linear_equality_constraints():
+    # define problem: standard case
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [-1, 1]),
+                Continuous("x2", [-1, 1]),
+                Continuous("x3", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[1, 1, 1], rhs=1),
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[1, 2, 1], rhs=2),
+                LinearEquality(names=["x1", "x2", "x3"], lhs=[0, 0, 1], rhs=3),
+            ]
+        ),
+    )
+    with pytest.raises(Warning):
+        reduce(problem)
+
+
+# test: resfresh constriants

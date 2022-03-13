@@ -165,7 +165,6 @@ def reduce(problem: Problem) -> ReducedProblem:
     """
     # check if the problem can be reduced
     if not check_problem_for_reduction(problem):
-        print("hi")
         return problem
 
     # find linear equality constraints
@@ -191,7 +190,7 @@ def reduce(problem: Problem) -> ReducedProblem:
     A_aug = A_aug.values
 
     # catch special cases TESTEN
-    check_existence_of_solution(A_aug, M - 1)
+    check_existence_of_solution(A_aug)
 
     # bring A_aug to reduced row-echelon form
     A_aug_rref, pivots = Matrix(A_aug).rref()
@@ -203,8 +202,8 @@ def reduce(problem: Problem) -> ReducedProblem:
     B[: M - 1, : M - 1] = np.eye(M - 1)
     B[M - 1 :, : M - 1] = -np.eye(M - 1)
 
-    B[: M - 1, -1] = inputs.bounds.loc["max"]
-    B[M - 1 :, -1] = -inputs.bounds.loc["min"]
+    B[: M - 1, -1] = inputs.bounds.loc["max"].copy()
+    B[M - 1 :, -1] = -inputs.bounds.loc["min"].copy()
 
     # eliminate columns with pivot element
     for i in range(len(pivots)):
@@ -303,6 +302,7 @@ def reduce(problem: Problem) -> ReducedProblem:
     return _problem
 
 
+# TEST GESCHRIEBEN
 def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
     linearEqualityConstraints = []
     otherConstraints = []
@@ -314,6 +314,7 @@ def find_linear_equality_constraints(constraints: Constraints) -> List[Constrain
     return [Constraints(linearEqualityConstraints), Constraints(otherConstraints)]
 
 
+# TEST GESCHRIEBEN
 def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
     contInputs = []
     otherInputs = []
@@ -325,6 +326,7 @@ def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
     return [Parameters(contInputs), Parameters(otherInputs)]
 
 
+# TEST GESCHRIEBEN
 def check_problem_for_reduction(problem: Problem) -> bool:
     """Checks if the reduction can be applied or if a trivial case is present."""
     # Are there any constraints?
@@ -352,32 +354,35 @@ def check_problem_for_reduction(problem: Problem) -> bool:
             if name not in inputs.names:
                 raise RuntimeError(
                     f"Linear equality constraint {c} contains "
-                    "a non-continuous parameter. Problem reduction for this situation"
+                    "a non-continuous or non-existing parameter. Problem reduction for this situation"
                     " is not supported."
                 )
     return True
 
 
-def check_existence_of_solution(A_aug, len_inputs):
+# TEST GESCHRIEBEN
+def check_existence_of_solution(A_aug):
     A = A_aug[:, :-1]
     b = A_aug[:, -1]
+    len_inputs = np.shape(A)[1]
 
     # catch special cases
     rk_A_aug = np.linalg.matrix_rank(A_aug)
     rk_A = np.linalg.matrix_rank(A)
 
     if rk_A == rk_A_aug:
-        pass
+        if rk_A == len_inputs:
+            x = np.linalg.solve(A, b)
+            raise Warning(
+                "There is a unique solution x for the linear equality constraints: x="
+                + str(x)
+            )
+        else:
+            pass
     elif rk_A < rk_A_aug:
         raise Warning("There is no solution fulfilling the linear equality constraints")
     else:
         raise Warning(
             "Something went wrong. Rank of coefficient matrix must not be "
             "larger than rank of augmented coefficient matrix"
-        )
-
-    if rk_A == len_inputs:
-        x = np.linalg.solve(A, b)
-        raise Warning(
-            "There is a unique solution x for the linear inequalities: x=" + str(x)
         )
