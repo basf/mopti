@@ -223,7 +223,7 @@ def reduce(problem: Problem) -> ReducedProblem:
     _constraints = otherConstraints.constraints
     for i in pivots:
         ind = np.where(B[i, :-1] != 0)[0]
-        if len(ind) > 0:
+        if len(ind) > 0 and B[i, -1] < np.inf:
             c = LinearInequality(names=list(names[ind]), lhs=B[i, ind], rhs=B[i, -1])
             _constraints.append(c)
         else:
@@ -234,7 +234,7 @@ def reduce(problem: Problem) -> ReducedProblem:
                 )
 
         ind = np.where(B[i + M - 1, :-1] != 0)[0]
-        if len(ind) > 0:
+        if len(ind) > 0 and B[i + M - 1, -1] < np.inf:
             c = LinearInequality(
                 names=list(names[ind]), lhs=B[i + M - 1, ind], rhs=B[i + M - 1, -1]
             )
@@ -457,6 +457,8 @@ def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
                 pass
             elif len(_c.names) == 0 and _c.rhs < 0:
                 raise RuntimeError("Linear constraints cannot be fulfilled.")
+            elif np.isinf(_c.rhs):
+                pass
             else:
                 constraints.append(_c)
     problem.constraints = Constraints(constraints)

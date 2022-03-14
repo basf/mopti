@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pytest
 
 from opti import Problem
@@ -288,15 +289,6 @@ def test_check_existence_of_solution():
     A_aug = np.array([[1, 0, -0.5], [0, 1, -0.5]])
     with pytest.raises(Warning):
         check_existence_of_solution(A_aug)
-
-
-# def test_reduce()
-# teste fall: nur nullconstraint
-# EINBAUEN: WAS PASSIERT MIT DOMAIN [NONE, X], [X, NONE]?
-# TESTE: KANN EIN REDUZIERTES PROBLEM WIEDER REDUZIERT WERDEN?
-# --> übernehme zusätzlich alte equalities, oder: werfe NotImplementedError
-# PROBLEM: Alles, was nicht linear inequality ist, bleibt bestehen --> problem, da zum teil Variablen verschwinden
-# --> nachdem neues problem aufgebaut wurde: def refresh_constraints
 
 
 def test_reduce_1_independent_linear_equality_constraints():
@@ -694,5 +686,75 @@ def test_ReducedProblem_augment_data():
 
     assert [column in data.columns for column in data_rec.columns]
     assert [column in data_rec.columns for column in data.columns]
+    data[["elasticity", "taste"]] = data[["elasticity", "taste"]].fillna(0)
+    data_rec[["elasticity", "taste"]] = data_rec[["elasticity", "taste"]].fillna(0)
     for col in data.columns:
-        data[col].eq(data_rec[col])
+        assert all(data[col] == data_rec[col])
+
+
+def test_reduce_large_problem():
+    def f(data: pd.DataFrame) -> pd.DataFrame:
+        data["y1"] = data["x1"] + 2 * data["x2"] + data["x3"] + 2 * data["x4"]
+        return data.loc[:, ["y1"]]
+
+    data = pd.DataFrame(
+        [
+            [-0.5, 0.5, 1, 0, 1.5],
+            [-1.0, 0.5, 1.0, 0.5, 2.0],
+            [-1.0, 1.0, 0.0, 1.0, 3.0],
+        ],
+        columns=["x1", "x2", "x3", "x4", "y1"],
+    )
+
+    problem = Problem(
+        inputs=Parameters(
+            [
+                Continuous("x1", [-1, 1]),
+                Continuous("x2", [None, 1]),
+                Continuous("x3", [None, None]),
+                Continuous("x4", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearEquality(["x1", "x2", "x4"], [1.0, -1.0, 1.0], -1.0),
+                LinearEquality(["x2", "x3"], [2, 1], 2.0),
+                LinearEquality(["x1", "x2", "x3", "x4"], [1.0, 1.0, 1.0, 1.0], 1.0),
+                LinearInequality(["x1", "x2"], [1.0, 1.0], 1.0),
+                LinearInequality(["x1", "x2", "x4"], [1.0, -1.0, 1.0], 0.0),
+            ]
+        ),
+        f=f,
+        data=data,
+    )
+
+    _problem = reduce(problem)
+
+    assert all(data["y1"] == _problem.f(data)["y1"])
+    assert _problem._equalities == [
+        ["x1", ["x3", "x4"], [-0.5, -1.0, 0.0]],
+        ["x2", ["x3"], [-0.5, 1.0]],
+    ]
+    assert len(_problem.constraints) == 4
+
+    assert all(_problem.constraints[0].names == np.array(["x3", "x4"]))
+    assert all(_problem.constraints[0].lhs == [-1.0, -1.0])
+    assert _problem.constraints[0].rhs == 0.0
+
+    assert all(_problem.constraints[1].names == np.array(["x3", "x4"]))
+    assert all(_problem.constraints[1].lhs == [-0.5, -1.0])
+    assert _problem.constraints[1].rhs == 1.0
+
+    assert all(_problem.constraints[2].names == np.array(["x3", "x4"]))
+    assert all(_problem.constraints[2].lhs == np.array([0.5, 1.0]))
+    assert _problem.constraints[2].rhs == 1.0
+
+    assert _problem.constraints[3].names == ["x3"]
+    assert _problem.constraints[3].lhs == [-0.5]
+    assert _problem.constraints[3].rhs == 0.0
+
+    _data = _problem.data[["x3", "x4", "y1"]]
+    data_rec = ReducedProblem.augment_data(_data, _problem._equalities)
+    for col in data.columns:
+        assert all(data[col] == data_rec[col])
