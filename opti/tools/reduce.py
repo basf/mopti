@@ -69,11 +69,11 @@ class ReducedProblem(Problem):
 
         if isinstance(_equalities, List):
             if len(_equalities) == 0:
-                _equalities = None
+                self._equalities = None
             else:
                 self._equalities = _equalities
         elif _equalities is None:
-            _equalities = None
+            self._equalities = None
         else:
             raise ValueError("_equalities must be a List or None")
 
@@ -109,7 +109,7 @@ class ReducedProblem(Problem):
     def to_config(self) -> dict:
         config = super().to_config()
         if self._equalities is not None:
-            config["equalities"] = self._equalities
+            config["_equalities"] = self._equalities
         return config
 
     @staticmethod
@@ -153,7 +153,6 @@ class ReducedProblem(Problem):
         return data
 
 
-# TESTS GESCHRIEBEN
 def reduce(problem: Problem) -> ReducedProblem:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
@@ -191,7 +190,7 @@ def reduce(problem: Problem) -> ReducedProblem:
         A_aug.loc[i, "rhs"] = c.rhs
     A_aug = A_aug.values
 
-    # catch special cases TESTEN
+    # catch special cases
     check_existence_of_solution(A_aug)
 
     # bring A_aug to reduced row-echelon form
@@ -307,7 +306,6 @@ def reduce(problem: Problem) -> ReducedProblem:
     return _problem
 
 
-# TEST GESCHRIEBEN
 def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
     """Returns a list two Constraints objects - one containing all linear equality constraints
     the other one containing all the rest.
@@ -322,7 +320,6 @@ def find_linear_equality_constraints(constraints: Constraints) -> List[Constrain
     return [Constraints(linearEqualityConstraints), Constraints(otherConstraints)]
 
 
-# TEST GESCHRIEBEN
 def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
     """Returns a list of two Parameters objects - one containing all continuous inputs, "
     the other one containing all the rest.
@@ -337,7 +334,6 @@ def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
     return [Parameters(contInputs), Parameters(otherInputs)]
 
 
-# TEST GESCHRIEBEN
 def check_problem_for_reduction(problem: Problem) -> bool:
     """Checks if the reduction can be applied or if a trivial case is present."""
     # Are there any constraints?
@@ -371,7 +367,6 @@ def check_problem_for_reduction(problem: Problem) -> bool:
     return True
 
 
-# TEST GESCHRIEBEN
 def check_existence_of_solution(A_aug):
     """Given an augmented coefficient matrix this function determines the existence
     (and uniqueness) of solution using the rank theorem."""
@@ -401,8 +396,8 @@ def check_existence_of_solution(A_aug):
         )
 
 
-# TEST GESCHRIEBEN
 def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
+    """Eliminates remaining occurences of eliminated inputs in linear constraints."""
     inputs_names = problem.inputs.names
     M = len(inputs_names)
 

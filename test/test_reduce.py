@@ -605,7 +605,7 @@ def test_remove_eliminated_inputs():
     assert _problem.constraints[2].rhs == -2.0
 
 
-def test_from_json():
+def test_ReducedProblem_from_json():
     # define reduced problem
     problem = ReducedProblem(
         name="A simple problem.",
@@ -626,71 +626,73 @@ def test_from_json():
         _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
     )
     _problem = ReducedProblem.from_json("examples/simpleReducedProblem.json")
-
     assert _problem._equalities == problem._equalities
 
 
-test_from_json()
-test_check_existence_of_solution()
-test_find_continuous_inputs()
-test_find_linear_constraints()
-test_reduce_1_independent_linear_equality_constraints()
-test_reduce_2_independent_linear_equality_constraints()
-test_reduce_3_independent_linear_equality_constraints()
-test_remove_eliminated_inputs()
+def test_ReducedProblem_invalid_equalities():
+    # define problem: everything ok
+    ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+                Continuous("x3", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
+    )
 
-# def f(X: pd.DataFrame) -> pd.DataFrame:
-#    Y = X.iloc[:,:2].copy()
-#    cols = Y.columns
-#    #Y = Y.rename(columns={cols[0]:"out1", cols[1]:"out2"})
-#    return Y
-#
-# from opti.problem import read_json
-#
-# problem = read_json("examples/bread.json")
-# problem.f = f
-# _problem = reduce(problem)
-#
-# cols = problem.data.columns
-#
-# print(_problem.data)
-# print(ReducedProblem.augment_data(_problem.data, _problem._equalities, names=cols))
-# print(problem.data)
+    # define problem: invalid name in equalities
+    with pytest.raises(ValueError):
+        ReducedProblem(
+            inputs=Parameters(
+                [
+                    Continuous("x2", [-1, 1]),
+                    Continuous("x3", [-1, 1]),
+                ]
+            ),
+            outputs=Parameters([Continuous("y1")]),
+            _equalities=[["x1", ["a", "x3"], [-1.0, -1.0, 1.0]]],
+        )
 
-"""
-import opti
-problem = opti.Problem(
-    inputs=[
-        opti.Continuous("in_a", [0, 0.6]),
-        opti.Continuous("in_b", [0, 0.75]),
-        opti.Continuous("in_c", [0, 0.85]),
-        opti.Continuous("in_d", [15, 40]),
-        opti.Categorical("in_e", domain=["A", "B"]),
-        opti.Discrete("in_f", [0, 4, 8]),
-        opti.Continuous("in_g", [2, 5]),
-        opti.Continuous("in_h", [0, np.log(3 + 1)]),
-        opti.Continuous("in_i", [0, np.log(300 + 1)]),
-        opti.Continuous("in_j", [0, np.log(150 + 1)]),
-        opti.Continuous("in_k", [0, np.log(250 + 1)]),
-    ],
-    outputs=[
-        opti.Continuous("out_a"),
-        opti.Continuous("out_b"),
-        opti.Continuous("out_c"),
-        opti.Continuous("out_d"),
-        opti.Continuous("out_e"),
-    ],
-    objectives=[
-        opti.Maximize("out_a"),
-        opti.Maximize("out_b"),
-        opti.Maximize("out_c"),
-        opti.Maximize("out_d"),
-        opti.Minimize("out_e"),
-    ],
-    constraints=[
-        opti.LinearEquality(["in_a", "in_b", "in_c"], rhs=1),
-        #        opti.LinearEquality(["in_b", "in_c"], rhs=1),
-        #        opti.LinearEquality(["in_a"], rhs=0)
-    ],
-)
-"""
+    # define problem: invalid coefficient in equalities (inf)
+    with pytest.raises(ValueError):
+        ReducedProblem(
+            inputs=Parameters(
+                [
+                    Continuous("x2", [-1, 1]),
+                    Continuous("x3", [-1, 1]),
+                ]
+            ),
+            outputs=Parameters([Continuous("y1")]),
+            _equalities=[["x1", ["x2", "x3"], [-1.0, -np.inf, 1.0]]],
+        )
+
+    # define problem: invalid coefficient in equalities (inf)
+    with pytest.raises(ValueError):
+        ReducedProblem(
+            inputs=Parameters(
+                [
+                    Continuous("x2", [-1, 1]),
+                    Continuous("x3", [-1, 1]),
+                ]
+            ),
+            outputs=Parameters([Continuous("y1")]),
+            _equalities=[["x1", ["x2", "x3"], [-1.0, np.nan, 1.0]]],
+        )
+
+
+def test_ReducedProblem_augment_data():
+    problem = Problem.from_json("examples/bread.json")
+    data = problem.data
+
+    _problem = reduce(problem)
+    names = np.concatenate((_problem.inputs.names, problem.outputs.names))
+    _problem.data = data[names]
+
+    data_rec = ReducedProblem.augment_data(_problem.data, _problem._equalities)
+
+    assert [column in data.columns for column in data_rec.columns]
+    assert [column in data_rec.columns for column in data.columns]
+    for col in data.columns:
+        data[col].eq(data_rec[col])
