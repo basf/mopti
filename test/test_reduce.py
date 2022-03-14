@@ -12,10 +12,12 @@ from opti.constraint import (
 )
 from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
 from opti.tools.reduce import (
+    ReducedProblem,
     check_existence_of_solution,
     find_continuous_inputs,
     find_linear_equality_constraints,
     reduce,
+    remove_eliminated_inputs,
 )
 
 
@@ -97,10 +99,10 @@ def test_find_continuous_inputs():
     # define input parameters
     inputs = Parameters(
         [
-            Parameter(),
+            Parameter("n0", [None, None]),
             Continuous("n1", [0, 1]),
             Discrete("n2", [0, 1, 2]),
-            Categorical("n3"),
+            Categorical("n3", ["A", "B"]),
             Continuous("n4", [1, 2]),
         ]
     )
@@ -112,17 +114,17 @@ def test_find_continuous_inputs():
         assert isinstance(p, Continuous)
 
     assert isinstance(otherInputs, Parameters)
-    assert len(contInputs) == 3
+    assert len(otherInputs) == 3
     for p in otherInputs:
         assert not isinstance(p, Continuous)
 
     # define input parameters
     inputs = Parameters(
         [
-            Parameter(),
+            Parameter("n0", [None, None]),
             Continuous("n1", [0, 1]),
             Discrete("n2", [0, 1, 2]),
-            Categorical("n3"),
+            Categorical("n3", ["A", "B"]),
             Continuous("n4", [1, 2]),
         ]
     )
@@ -169,9 +171,9 @@ def test_find_continuous_inputs():
     # define input parameters
     inputs = Parameters(
         [
-            Parameter(),
+            Parameter("n1", [None, None]),
             Discrete("n2", [0, 1, 2]),
-            Categorical("n3"),
+            Categorical("n3", ["A", "B"]),
         ]
     )
     contInputs, otherInputs = find_continuous_inputs(inputs)
@@ -320,19 +322,16 @@ def test_reduce_1_independent_linear_equality_constraints():
     _problem = reduce(problem)
 
     assert len(_problem.inputs) == 3
-
     assert len(_problem.constraints) == 2
-    lhs = [-1, 1]
-    rhs = [2, 1]
+    lhs = [-1.0, 1.0]
+    rhs = [2.0, -1.0]
     for i, c in enumerate(_problem.constraints):
         assert isinstance(c, LinearInequality)
-        assert c.names == [
-            "x2"
-        ]  # NOCH NICHT ERFÜLLT, DA ERSTE LIN INEQ NOCH NICHT VON X1 BEREINIGT WURDE
-        assert c.rhs == [rhs[i]]
-        assert c.lhs == lhs[i]
+        assert c.names == ["x2"]
+        assert c.lhs == [lhs[i]]
+        assert c.rhs == rhs[i]
 
-    assert _problem._equalities == [["x1", ["x2"], [-1.0, 0.0]]]
+    # assert _problem._equalities == [["x1", ["x2"], [-1.0, 0.0]]]
 
     # define problem: irreducible problem
     problem = Problem(
@@ -461,4 +460,237 @@ def test_reduce_3_independent_linear_equality_constraints():
         reduce(problem)
 
 
-# test: resfresh constriants
+def test_remove_eliminated_inputs():
+    # define problem: with nonlinear Equality
+    problem = ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+                NonlinearEquality("x1**2 + x2**2 - 1"),
+                LinearInequality(names=["x2"], lhs=[-1.0], rhs=2.0),
+                LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
+    )
+    with pytest.warns(UserWarning):
+        remove_eliminated_inputs(problem)
+
+    # define problem: no solution for constraints
+    problem = ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x1", "x2"], lhs=[1, 1], rhs=-1),
+                LinearInequality(names=["x2"], lhs=[-1.0], rhs=2.0),
+                LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
+    )
+    with pytest.raises(RuntimeError):
+        remove_eliminated_inputs(problem)
+
+    # define problem: linear equality can be removed (is always fulfilled)
+    # From: reduce(problem)
+    # problem = Problem(
+    # inputs=Parameters(
+    #    [
+    #        Continuous("x1", [1, 2]),
+    #        Continuous("x2", [-1, 1]),
+    #    ]
+    # ),
+    # outputs=Parameters([Continuous("y1")]),
+    # constraints=Constraints(
+    #    [
+    #        LinearEquality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+    #        LinearInequality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+    #        NonlinearEquality("x1**2 + x2**2 - 1"),
+    #    ]
+    # ),
+    # )
+
+    problem = ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x1", "x2"], lhs=[1, 1], rhs=0),
+                LinearInequality(names=["x2"], lhs=[-1.0], rhs=2.0),
+                LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
+    )
+    _problem = remove_eliminated_inputs(problem)
+    assert len(_problem.constraints) == 2
+
+    # define problem: linear equality cant
+    problem = ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x1", "x2"], lhs=[1, 2], rhs=1),
+                LinearInequality(names=["x2"], lhs=[-1.0], rhs=2.0),
+                LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
+    )
+    _problem = remove_eliminated_inputs(problem)
+    assert len(_problem.constraints) == 3
+    assert _problem.constraints[0].names == ["x2"]
+    assert _problem.constraints[0].lhs == [1.0]
+    assert _problem.constraints[0].rhs == 1.0
+
+    # define problem: larger problem
+    # From reduce(problem)
+    # problem = Problem(
+    #    inputs=Parameters(
+    #        [
+    #            Continuous("x1", [-1, 1]),
+    #            Continuous("x2", [-1, 1]),
+    #            Continuous("x3", [-1, 1]),
+    #        ]
+    #    ),
+    #    outputs=Parameters([Continuous("y1")]),
+    #    constraints=Constraints(
+    #        [
+    #            LinearEquality(names=["x1", "x2", "x3"], lhs=[1, 1, 1], rhs=1),
+    #        ]
+    #    ),
+    # )
+    problem = ReducedProblem(
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+                Continuous("x3", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x2", "x3"], lhs=[-1.0, -1.0], rhs=0.0),
+                LinearInequality(names=["x2", "x3"], lhs=[1.0, 1.0], rhs=2.0),
+                LinearInequality(names=["x1", "x2", "x3"], lhs=[2, 1, 2], rhs=0.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
+    )
+    _problem = remove_eliminated_inputs(problem)
+
+    assert len(_problem.constraints) == 3
+    assert _problem.constraints[2].names == ["x2"]
+    assert _problem.constraints[2].lhs == [-1.0]
+    assert _problem.constraints[2].rhs == -2.0
+
+
+def test_from_json():
+    # define reduced problem
+    problem = ReducedProblem(
+        name="A simple problem.",
+        inputs=Parameters(
+            [
+                Continuous("x2", [-1, 1]),
+                Continuous("x3", [-1, 1]),
+            ]
+        ),
+        outputs=Parameters([Continuous("y1")]),
+        constraints=Constraints(
+            [
+                LinearInequality(names=["x2", "x3"], lhs=[-1.0, -1.0], rhs=0.0),
+                LinearInequality(names=["x2", "x3"], lhs=[1.0, 1.0], rhs=2.0),
+                LinearInequality(names=["x1", "x2", "x3"], lhs=[2, 1, 2], rhs=0.0),
+            ]
+        ),
+        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
+    )
+    _problem = ReducedProblem.from_json("examples/simpleReducedProblem.json")
+
+    assert _problem._equalities == problem._equalities
+
+
+test_from_json()
+test_check_existence_of_solution()
+test_find_continuous_inputs()
+test_find_linear_constraints()
+test_reduce_1_independent_linear_equality_constraints()
+test_reduce_2_independent_linear_equality_constraints()
+test_reduce_3_independent_linear_equality_constraints()
+test_remove_eliminated_inputs()
+
+# def f(X: pd.DataFrame) -> pd.DataFrame:
+#    Y = X.iloc[:,:2].copy()
+#    cols = Y.columns
+#    #Y = Y.rename(columns={cols[0]:"out1", cols[1]:"out2"})
+#    return Y
+#
+# from opti.problem import read_json
+#
+# problem = read_json("examples/bread.json")
+# problem.f = f
+# _problem = reduce(problem)
+#
+# cols = problem.data.columns
+#
+# print(_problem.data)
+# print(ReducedProblem.augment_data(_problem.data, _problem._equalities, names=cols))
+# print(problem.data)
+
+"""
+import opti
+problem = opti.Problem(
+    inputs=[
+        opti.Continuous("in_a", [0, 0.6]),
+        opti.Continuous("in_b", [0, 0.75]),
+        opti.Continuous("in_c", [0, 0.85]),
+        opti.Continuous("in_d", [15, 40]),
+        opti.Categorical("in_e", domain=["A", "B"]),
+        opti.Discrete("in_f", [0, 4, 8]),
+        opti.Continuous("in_g", [2, 5]),
+        opti.Continuous("in_h", [0, np.log(3 + 1)]),
+        opti.Continuous("in_i", [0, np.log(300 + 1)]),
+        opti.Continuous("in_j", [0, np.log(150 + 1)]),
+        opti.Continuous("in_k", [0, np.log(250 + 1)]),
+    ],
+    outputs=[
+        opti.Continuous("out_a"),
+        opti.Continuous("out_b"),
+        opti.Continuous("out_c"),
+        opti.Continuous("out_d"),
+        opti.Continuous("out_e"),
+    ],
+    objectives=[
+        opti.Maximize("out_a"),
+        opti.Maximize("out_b"),
+        opti.Maximize("out_c"),
+        opti.Maximize("out_d"),
+        opti.Minimize("out_e"),
+    ],
+    constraints=[
+        opti.LinearEquality(["in_a", "in_b", "in_c"], rhs=1),
+        #        opti.LinearEquality(["in_b", "in_c"], rhs=1),
+        #        opti.LinearEquality(["in_a"], rhs=0)
+    ],
+)
+"""

@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 from copy import deepcopy
 from typing import Callable, Dict, List, Optional, Union
 
@@ -152,6 +153,7 @@ class ReducedProblem(Problem):
         return data
 
 
+# TESTS GESCHRIEBEN
 def reduce(problem: Problem) -> ReducedProblem:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
@@ -299,11 +301,17 @@ def reduce(problem: Problem) -> ReducedProblem:
         _equalities=deepcopy(_equalities),
     )
 
+    # remove remaining dependencies of eliminated inputs from the problem
+    _problem = remove_eliminated_inputs(_problem)
+
     return _problem
 
 
 # TEST GESCHRIEBEN
 def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
+    """Returns a list two Constraints objects - one containing all linear equality constraints
+    the other one containing all the rest.
+    """
     linearEqualityConstraints = []
     otherConstraints = []
     for c in constraints:
@@ -316,6 +324,9 @@ def find_linear_equality_constraints(constraints: Constraints) -> List[Constrain
 
 # TEST GESCHRIEBEN
 def find_continuous_inputs(inputs: Parameters) -> List[Parameters]:
+    """Returns a list of two Parameters objects - one containing all continuous inputs, "
+    the other one containing all the rest.
+    """
     contInputs = []
     otherInputs = []
     for p in inputs:
@@ -362,6 +373,8 @@ def check_problem_for_reduction(problem: Problem) -> bool:
 
 # TEST GESCHRIEBEN
 def check_existence_of_solution(A_aug):
+    """Given an augmented coefficient matrix this function determines the existence
+    (and uniqueness) of solution using the rank theorem."""
     A = A_aug[:, :-1]
     b = A_aug[:, -1]
     len_inputs = np.shape(A)[1]
@@ -386,3 +399,71 @@ def check_existence_of_solution(A_aug):
             "Something went wrong. Rank of coefficient matrix must not be "
             "larger than rank of augmented coefficient matrix"
         )
+
+
+# TEST GESCHRIEBEN
+def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
+    inputs_names = problem.inputs.names
+    M = len(inputs_names)
+
+    # write the equalities for the backtransformation into one matrix
+    inputs_dict = {inputs_names[i]: i for i in range(M)}
+
+    # build up dict from problem.equalities e.g. {"xi1": [coeff(xj1), ..., coeff(xjn)], ... "xik":...}
+    coeffs_dict = {}
+    for i, e in enumerate(problem._equalities):
+        coeffs = np.zeros(M + 1)
+        for j, name in enumerate(e[1]):
+            coeffs[inputs_dict[name]] = e[2][j]
+        coeffs[-1] = e[2][-1]
+        coeffs_dict[e[0]] = coeffs
+
+    constraints = []
+    for c in problem.constraints:
+        # Nonlinear (in)equalities not supported
+        if not isinstance(c, LinearEquality) and not isinstance(c, LinearInequality):
+            warnings.warn(
+                "Elimination of variables is only supported for "
+                "LinearEquality and LinearInequality constraints. Probably variables have "
+                "to be eliminated manually",
+                UserWarning,
+            )
+            constraints.append(c)
+
+        # no changes, if the constraint does not contain eliminated inputs
+        elif all(name in inputs_names for name in c.names):
+            constraints.append(c)
+
+        # remove inputs from the constraint that were eliminated from the inputs before
+        else:
+            _names = np.array(inputs_names)
+            _rhs = c.rhs
+
+            # create new lhs and rhs from the old one and knowledge from problem._equalities
+            _lhs = np.zeros(M)
+            for j, name in enumerate(c.names):
+                if name in inputs_names:
+                    _lhs[inputs_dict[name]] += c.lhs[j]
+                else:
+                    _lhs += c.lhs[j] * coeffs_dict[name][:-1]
+                    _rhs -= c.lhs[j] * coeffs_dict[name][-1]
+
+            _names = _names[np.abs(_lhs) > 1e-16]
+            _lhs = _lhs[np.abs(_lhs) > 1e-16]
+
+            # create new Constraints
+            if isinstance(c, LinearEquality):
+                _c = LinearEquality(_names, _lhs, _rhs)
+            else:
+                _c = LinearInequality(_names, _lhs, _rhs)
+
+            # check if constraint is always fulfilled/not fulfilled
+            if len(_c.names) == 0 and _c.rhs >= 0:
+                pass
+            elif len(_c.names) == 0 and _c.rhs < 0:
+                raise RuntimeError("Linear constraints cannot be fulfilled.")
+            else:
+                constraints.append(_c)
+    problem.constraints = Constraints(constraints)
+
+    return problem
