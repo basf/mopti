@@ -97,7 +97,7 @@ def test_sanitize_problem():
         f=lambda df: pd.DataFrame(
             {
                 "ultimate_goal": np.linalg.norm(df.to_numpy(), axis=1),
-                "mega_goal": np.sum(df ** 2, axis=1),
+                "mega_goal": np.sum(df**2, axis=1),
                 "super_goal": np.linalg.norm(df, axis=1) ** 0.5,
             }
         ),

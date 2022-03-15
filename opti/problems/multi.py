@@ -225,7 +225,7 @@ class OmniTest(Problem):
         C = np.moveaxis(C, 1, 2).reshape(-1, 2)
         X = pd.DataFrame(C, columns=self.inputs.names)
         XY = pd.concat([X, self.f(X)], axis=1)
-        XY["_patch"] = np.repeat(np.arange(3 ** self.n_inputs), n)
+        XY["_patch"] = np.repeat(np.arange(3**self.n_inputs), n)
         return XY
 
 
@@ -292,8 +292,8 @@ class WeldedBeam(Problem):
         x1, x2, x3, x4 = self.get_X(X).T
         return pd.DataFrame(
             {
-                "cost": 1.10471 * x1 ** 2 * x2 + 0.04811 * x3 * x4 * (14 + x2),
-                "deflection": 2.1952 / (x4 * x3 ** 3),
+                "cost": 1.10471 * x1**2 * x2 + 0.04811 * x3 * x4 * (14 + x2),
+                "deflection": 2.1952 / (x4 * x3**3),
             },
             index=X.index,
         )
