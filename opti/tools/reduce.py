@@ -6,7 +6,6 @@ from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
-from sympy import Matrix
 
 from opti import Problem
 from opti.constraint import Constraint, Constraints, LinearEquality, LinearInequality
@@ -194,7 +193,7 @@ def reduce(problem: Problem) -> ReducedProblem:
     check_existence_of_solution(A_aug)
 
     # bring A_aug to reduced row-echelon form
-    A_aug_rref, pivots = Matrix(A_aug).rref()
+    A_aug_rref, pivots = rref(A_aug)
     pivots = np.array(pivots)
     A_aug_rref = np.array(A_aug_rref).astype(np.float64)
 
@@ -464,3 +463,43 @@ def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
     problem.constraints = Constraints(constraints)
 
     return problem
+
+
+def rref(A: np.ndarray, tol=1e-8) -> np.ndarray:
+    """Computes the reduced row echelon form of a Matrix
+
+    Args:
+        A (ndarray): 2d array representing a matrix.
+        tol (float): tolerance for rounding to 0
+
+    Returns:
+        [A_rref, pivots], where A_rref is the reduced row echelon form of A and pivots
+        is a numpy array containing the pivot columns of A_rref
+    """
+    A = np.array(A, dtype=np.float64)
+    n, m = np.shape(A)
+
+    col = 0
+    row = 0
+    pivots = []
+
+    for col in range(m):
+        # does a pivot element exist?
+        if all(np.abs(A[row:, col]) < tol):
+            pass
+        # if yes: start elimination
+        else:
+            pivots.append(col)
+            max_row = np.argmax(np.abs(A[row:, col])) + row
+            # switch to most stable row
+            A[[row, max_row], :] = A[[max_row, row], :]
+            # normalize row
+            A[row, :] /= A[row, col]
+            # eliminate other elements from column
+            for r in range(n):
+                if r != row:
+                    A[r, :] -= A[r, col] / A[row, col] * A[row, :]
+            row += 1
+
+    prec = int(-np.log10(tol))
+    return [np.round(A, prec), pivots]

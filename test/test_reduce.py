@@ -19,6 +19,7 @@ from opti.tools.reduce import (
     find_linear_equality_constraints,
     reduce,
     remove_eliminated_inputs,
+    rref,
 )
 
 
@@ -758,3 +759,73 @@ def test_reduce_large_problem():
     data_rec = ReducedProblem.augment_data(_data, _problem._equalities)
     for col in data.columns:
         assert all(data[col] == data_rec[col])
+
+
+def test_rref():
+    # define A
+    A = np.vstack(([[np.pi, 1e10, np.log(10), 7]], [[np.pi, 1e10, np.log(10), 7]]))
+    A_rref, pivots = rref(A)
+    B_rref = np.array(
+        [
+            [1.0, 3183098861.837907, 0.7329355988794278, 2.228169203286535],
+            [0.0, 0.0, 0.0, 0.0],
+        ]
+    )
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([0]))
+
+    # define A
+    A = np.array(
+        [
+            [np.pi, 2, 1, 1, 1],
+            [1e10, np.exp(0), 2, 2, 2],
+            [np.log(10), -5.2, 3, 3, 3],
+            [7, -3.5 * 1e-4, 4, 4, 4],
+        ]
+    )
+    A_rref, pivots = rref(A)
+    B_rref = np.array(
+        [
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 1.0, 1.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0],
+        ]
+    )
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([0, 1, 2]))
+
+    # define A
+    A = np.ones(shape=(100, 100))
+    A_rref, pivots = rref(A)
+    B_rref = np.zeros(shape=(100, 100))
+    B_rref[0, :] = 1
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([0]))
+
+    # define A
+    A = np.zeros(shape=(10, 20))
+    A_rref, pivots = rref(A)
+    B_rref = np.zeros(shape=(10, 20))
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([]))
+
+    # define A
+    A = np.array([[0, 1, 2, 2, 3, 4], [0, 5, 10, 6, 7, 8], [0, 9, 18, 10, 11, 12]])
+    A_rref, pivots = rref(A)
+    B_rref = np.array([[0, 1, 2, 0, -1, -2], [0, 0, 0, 1, 2, 3], [0, 0, 0, 0, 0, 0]])
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([1, 3]))
+
+    # define A
+    A = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+    A_rref, pivots = rref(A)
+    B_rref = np.array([[1, 0, -1, -2], [0, 1, 2, 3], [0, 0, 0, 0]])
+
+    assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
+    assert all(np.array(pivots) == np.array([0, 1]))
