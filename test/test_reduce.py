@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from opti import Problem
+from opti import Problem, read_json
 from opti.constraint import (
     Constraint,
     Constraints,
@@ -13,7 +13,7 @@ from opti.constraint import (
 )
 from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
 from opti.tools.reduce import (
-    ReducedProblem,
+    AffineTransform,
     check_existence_of_solution,
     find_continuous_inputs,
     find_linear_equality_constraints,
@@ -312,7 +312,7 @@ def test_reduce_1_independent_linear_equality_constraints():
             ]
         ),
     )
-    _problem = reduce(problem)
+    _problem, transform = reduce(problem)
 
     assert len(_problem.inputs) == 3
     assert len(_problem.constraints) == 2
@@ -323,8 +323,6 @@ def test_reduce_1_independent_linear_equality_constraints():
         assert c.names == ["x2"]
         assert c.lhs == [lhs[i]]
         assert c.rhs == rhs[i]
-
-    # assert _problem._equalities == [["x1", ["x2"], [-1.0, 0.0]]]
 
     # define problem: irreducible problem
     problem = Problem(
@@ -339,7 +337,7 @@ def test_reduce_1_independent_linear_equality_constraints():
         outputs=Parameters([Continuous("y1")]),
         constraints=Constraints([]),
     )
-    assert problem == reduce(problem)
+    assert problem == reduce(problem)[0]
 
     # define problem: invalid constraint (nonexisting name in linear equality constraint)
     problem = Problem(
@@ -418,7 +416,7 @@ def test_reduce_2_independent_linear_equality_constraints():
             ]
         ),
     )
-    _problem = reduce(problem)
+    _problem, transform = reduce(problem)
 
     assert len(_problem.inputs) == 1
     lhs = [-1, 1]
@@ -427,7 +425,7 @@ def test_reduce_2_independent_linear_equality_constraints():
         assert c.names == ["x3"]
         assert c.lhs == [lhs[i]]
         assert c.rhs == rhs[i]
-    assert _problem._equalities == [["x1", ["x3"], [-1.0, 0.0]], ["x2", [], [1.0]]]
+    assert transform.equalities == [["x1", ["x3"], [-1.0, 0.0]], ["x2", [], [1.0]]]
 
 
 def test_reduce_3_independent_linear_equality_constraints():
@@ -455,7 +453,7 @@ def test_reduce_3_independent_linear_equality_constraints():
 
 def test_remove_eliminated_inputs():
     # define problem: with nonlinear Equality
-    problem = ReducedProblem(
+    problem = Problem(
         inputs=Parameters(
             [
                 Continuous("x2", [-1, 1]),
@@ -470,13 +468,13 @@ def test_remove_eliminated_inputs():
                 LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
             ]
         ),
-        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
     )
+    transform = AffineTransform(equalities=[["x1", ["x2"], [-1.0, 0.0]]])
     with pytest.warns(UserWarning):
-        remove_eliminated_inputs(problem)
+        remove_eliminated_inputs(problem, transform)
 
     # define problem: no solution for constraints
-    problem = ReducedProblem(
+    problem = Problem(
         inputs=Parameters(
             [
                 Continuous("x2", [-1, 1]),
@@ -490,10 +488,10 @@ def test_remove_eliminated_inputs():
                 LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
             ]
         ),
-        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
     )
+    transform = AffineTransform(equalities=[["x1", ["x2"], [-1.0, 0.0]]])
     with pytest.raises(RuntimeError):
-        remove_eliminated_inputs(problem)
+        remove_eliminated_inputs(problem, transform)
 
     # define problem: linear equality can be removed (is always fulfilled)
     # From: reduce(problem)
@@ -514,7 +512,7 @@ def test_remove_eliminated_inputs():
     # ),
     # )
 
-    problem = ReducedProblem(
+    problem = Problem(
         inputs=Parameters(
             [
                 Continuous("x2", [-1, 1]),
@@ -528,13 +526,13 @@ def test_remove_eliminated_inputs():
                 LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
             ]
         ),
-        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
     )
-    _problem = remove_eliminated_inputs(problem)
+    transform = AffineTransform(equalities=[["x1", ["x2"], [-1.0, 0.0]]])
+    _problem = remove_eliminated_inputs(problem, transform)
     assert len(_problem.constraints) == 2
 
     # define problem: linear equality cant
-    problem = ReducedProblem(
+    problem = Problem(
         inputs=Parameters(
             [
                 Continuous("x2", [-1, 1]),
@@ -548,9 +546,9 @@ def test_remove_eliminated_inputs():
                 LinearInequality(names=["x2"], lhs=[1.0], rhs=-1.0),
             ]
         ),
-        _equalities=[["x1", ["x2"], [-1.0, 0.0]]],
     )
-    _problem = remove_eliminated_inputs(problem)
+    transform = AffineTransform(equalities=[["x1", ["x2"], [-1.0, 0.0]]])
+    _problem = remove_eliminated_inputs(problem, transform)
     assert len(_problem.constraints) == 3
     assert _problem.constraints[0].names == ["x2"]
     assert _problem.constraints[0].lhs == [1.0]
@@ -573,7 +571,7 @@ def test_remove_eliminated_inputs():
     #        ]
     #    ),
     # )
-    problem = ReducedProblem(
+    problem = Problem(
         inputs=Parameters(
             [
                 Continuous("x2", [-1, 1]),
@@ -588,109 +586,63 @@ def test_remove_eliminated_inputs():
                 LinearInequality(names=["x1", "x2", "x3"], lhs=[2, 1, 2], rhs=0.0),
             ]
         ),
-        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
     )
-    _problem = remove_eliminated_inputs(problem)
-
+    transform = AffineTransform(equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]])
+    _problem = remove_eliminated_inputs(problem, transform)
     assert len(_problem.constraints) == 3
     assert _problem.constraints[2].names == ["x2"]
     assert _problem.constraints[2].lhs == [-1.0]
     assert _problem.constraints[2].rhs == -2.0
 
 
-def test_ReducedProblem_from_json():
-    # define reduced problem
-    problem = ReducedProblem(
-        name="A simple problem.",
-        inputs=Parameters(
-            [
-                Continuous("x2", [-1, 1]),
-                Continuous("x3", [-1, 1]),
-            ]
-        ),
-        outputs=Parameters([Continuous("y1")]),
-        constraints=Constraints(
-            [
-                LinearInequality(names=["x2", "x3"], lhs=[-1.0, -1.0], rhs=0.0),
-                LinearInequality(names=["x2", "x3"], lhs=[1.0, 1.0], rhs=2.0),
-                LinearInequality(names=["x1", "x2", "x3"], lhs=[2, 1, 2], rhs=0.0),
-            ]
-        ),
-        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
-    )
-    _problem = ReducedProblem.from_json("examples/simpleReducedProblem.json")
-    assert _problem._equalities == problem._equalities
-
-
-def test_ReducedProblem_invalid_equalities():
-    # define problem: everything ok
-    ReducedProblem(
-        inputs=Parameters(
-            [
-                Continuous("x2", [-1, 1]),
-                Continuous("x3", [-1, 1]),
-            ]
-        ),
-        outputs=Parameters([Continuous("y1")]),
-        _equalities=[["x1", ["x2", "x3"], [-1.0, -1.0, 1.0]]],
-    )
-
-    # define problem: invalid name in equalities
-    with pytest.raises(ValueError):
-        ReducedProblem(
-            inputs=Parameters(
-                [
-                    Continuous("x2", [-1, 1]),
-                    Continuous("x3", [-1, 1]),
-                ]
-            ),
-            outputs=Parameters([Continuous("y1")]),
-            _equalities=[["x1", ["a", "x3"], [-1.0, -1.0, 1.0]]],
-        )
-
-    # define problem: invalid coefficient in equalities (inf)
-    with pytest.raises(ValueError):
-        ReducedProblem(
-            inputs=Parameters(
-                [
-                    Continuous("x2", [-1, 1]),
-                    Continuous("x3", [-1, 1]),
-                ]
-            ),
-            outputs=Parameters([Continuous("y1")]),
-            _equalities=[["x1", ["x2", "x3"], [-1.0, -np.inf, 1.0]]],
-        )
-
-    # define problem: invalid coefficient in equalities (inf)
-    with pytest.raises(ValueError):
-        ReducedProblem(
-            inputs=Parameters(
-                [
-                    Continuous("x2", [-1, 1]),
-                    Continuous("x3", [-1, 1]),
-                ]
-            ),
-            outputs=Parameters([Continuous("y1")]),
-            _equalities=[["x1", ["x2", "x3"], [-1.0, np.nan, 1.0]]],
-        )
-
-
-def test_ReducedProblem_augment_data():
-    problem = Problem.from_json("examples/bread.json")
+def test_AffineTransform_augment_data():
+    problem = read_json("examples/bread.json")
     data = problem.data
 
-    _problem = reduce(problem)
-    names = np.concatenate((_problem.inputs.names, problem.outputs.names))
+    _problem, transform = reduce(problem)
+    names = np.concatenate((_problem.inputs.names, _problem.outputs.names))
     _problem.data = data[names]
 
-    data_rec = ReducedProblem.augment_data(_problem.data, _problem._equalities)
+    data_rec = transform.augment_data(_problem.data)
 
-    assert [column in data.columns for column in data_rec.columns]
-    assert [column in data_rec.columns for column in data.columns]
+    assert all([column in data.columns for column in data_rec.columns])
+    assert all([column in data_rec.columns for column in data.columns])
     data[["elasticity", "taste"]] = data[["elasticity", "taste"]].fillna(0)
     data_rec[["elasticity", "taste"]] = data_rec[["elasticity", "taste"]].fillna(0)
     for col in data.columns:
         assert all(data[col] == data_rec[col])
+
+
+def test_AffineTransform_drop_data():
+    # define problem and transform
+    problem = read_json("examples/bread.json")
+    data = problem.data
+
+    _problem, transform = reduce(problem)
+    names = np.concatenate((_problem.inputs.names, _problem.outputs.names))
+
+    data_drop = transform.drop_data(problem.data)
+    _data = problem.data[names].copy()
+
+    assert all([column in _data.columns for column in data_drop.columns])
+    assert all([column in data_drop.columns for column in _data.columns])
+    _data.loc[:, ["elasticity", "taste"]] = _data.loc[
+        :, ["elasticity", "taste"]
+    ].fillna(0)
+    data_drop.loc[:, ["elasticity", "taste"]] = data_drop.loc[
+        :, ["elasticity", "taste"]
+    ].fillna(0)
+    for col in _data.columns:
+        assert all(_data[col] == data_drop[col])
+
+    # the same situation again, but this time two columns have already been dropped
+    data_drop = transform.drop_data(data.drop(columns=["elasticity", "taste"]))
+    _data = data[names].drop(columns=["elasticity", "taste"])
+
+    assert all([column in _data.columns for column in data_drop.columns])
+    assert all([column in data_drop.columns for column in _data.columns])
+    for col in _data.columns:
+        assert all(_data[col] == data_drop[col])
 
 
 def test_reduce_large_problem():
@@ -730,10 +682,10 @@ def test_reduce_large_problem():
         data=data,
     )
 
-    _problem = reduce(problem)
+    _problem, transform = reduce(problem)
 
     assert all(data["y1"] == _problem.f(data)["y1"])
-    assert _problem._equalities == [
+    assert transform.equalities == [
         ["x1", ["x3", "x4"], [-0.5, -1.0, 0.0]],
         ["x2", ["x3"], [-0.5, 1.0]],
     ]
@@ -756,7 +708,7 @@ def test_reduce_large_problem():
     assert _problem.constraints[3].rhs == 0.0
 
     _data = _problem.data[["x3", "x4", "y1"]]
-    data_rec = ReducedProblem.augment_data(_data, _problem._equalities)
+    data_rec = transform.augment_data(_data)
     for col in data.columns:
         assert all(data[col] == data_rec[col])
 

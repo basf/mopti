@@ -1,8 +1,7 @@
-import json
 import os
 import warnings
 from copy import deepcopy
-from typing import Callable, Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd
@@ -21,138 +20,59 @@ DataFrameLike = Union[pd.DataFrame, Dict]
 PathLike = Union[str, bytes, os.PathLike]
 
 
-class ReducedProblem(Problem):
-    def __init__(
-        self,
-        inputs: ParametersLike,
-        outputs: ParametersLike,
-        objectives: Optional[ObjectivesLike] = None,
-        constraints: Optional[ConstraintsLike] = None,
-        output_constraints: Optional[ObjectivesLike] = None,
-        f: Optional[Callable] = None,
-        models: Optional[ModelsLike] = None,
-        data: Optional[DataFrameLike] = None,
-        optima: Optional[DataFrameLike] = None,
-        name: Optional[str] = None,
-        _equalities: Optional[List[str]] = None,
-        **kwargs,
-    ):
-        """An optimization problem.
-
-        Args:
-            inputs: Input parameters.
-            outputs: Output parameters.
-            objectives: Optimization objectives. Defaults to minimization.
-            constraints: Constraints on the inputs.
-            output_constraints: Constraints on the outputs.
-            f: Function to evaluate the outputs for given inputs.
-                Must have the signature: f(x: pd.DataFrame) -> pd.DataFrame
-            data: Experimental data.
-            optima: Pareto optima.
-            name: Name of the problem.
-            _equalities: Only in case of problem reduction due to equality con
-                straints. Used to augment the solution of the reduced problem.
-        """
-        super().__init__(
-            inputs,
-            outputs,
-            objectives,
-            constraints,
-            output_constraints,
-            f,
-            models,
-            data,
-            optima,
-            name,
-        )
-
-        if isinstance(_equalities, List):
-            if len(_equalities) == 0:
-                self._equalities = None
+class AffineTransform:
+    def __init__(self, equalities):
+        if isinstance(equalities, List):
+            if len(equalities) == 0:
+                self.equalities = None
             else:
-                self._equalities = _equalities
-        elif _equalities is None:
+                self.equalities = equalities
+        elif equalities is None:
             self._equalities = None
         else:
-            raise ValueError("_equalities must be a List or None")
-
-        # check if the names and values in self.equalities are valid
-        if self.n_equalities > 0:
-            for name_lhs, names_rhs, coeffs in self._equalities:
-                for name in names_rhs:
-                    if name not in self.inputs.names:
-                        raise ValueError(
-                            f"Equality refers to unknown parameter: {name}"
-                        )
-                if not all(np.isfinite(coeffs)):
-                    raise ValueError("Equality contains non-finite value.")
+            raise ValueError("equalities must be a List or None")
 
     @property
     def n_equalities(self) -> int:
         return 0 if self._equalities is None else len(self._equalities)
 
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        s = super().__str__()
-        if self._equalities is not None:
-            s = s[:-1] + f"_equalities=\n{self._equalities}\n"
-        return "Reduced" + s + ")"
-
-    @staticmethod
-    def from_config(config: dict) -> "ReducedProblem":
-        """Create a Problem instance from a configuration dict."""
-        return ReducedProblem(**config)
-
-    def to_config(self) -> dict:
-        config = super().to_config()
-        if self._equalities is not None:
-            config["_equalities"] = self._equalities
-        return config
-
-    @staticmethod
-    def from_json(fname: PathLike) -> "ReducedProblem":
-        """Read a problem from a JSON file."""
-        with open(fname, "rb") as infile:
-            config = json.loads(infile.read())
-        return ReducedProblem(**config)
-
-    def to_json(self, fname: PathLike) -> None:
-        """Save a problem from a JSON file."""
-        with open(fname, "wb") as outfile:
-            b = json.dumps(self.to_config(), ensure_ascii=False, separators=(",", ":"))
-            outfile.write(b.encode("utf-8"))
-
-    @staticmethod
-    def augment_data(
-        data: pd.DataFrame, _equalities: List[str], names: List[str] = None
-    ):
-        """Computes augmented DataFrame based on dependencies givern by a set of equalities.
+    def augment_data(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Computes augmented DataFrame based on dependencies given by a set of linear equalities.
+        This is an affine transformation.
 
         Args:
             data (DataFrame): data to be augmented.
-            equalities (List[str]): Set of equalities used for the augmentation
-            names (List[str]): name of all columns given in a certain order to determine the
-            order of the columns of the returned data.
 
         Returns:
             A DataFrame with additional columns (augmented data)
         """
         data = data.copy()
 
-        for name_lhs, names_rhs, coeffs in _equalities:
+        for name_lhs, names_rhs, coeffs in self.equalities:
             data[name_lhs] = coeffs[-1]
             for i, name in enumerate(names_rhs):
                 data[name_lhs] += coeffs[i] * data[name]
 
-        if names is not None:
-            data = data[names]
-
         return data
 
+    def drop_data(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Inversion of augment_data.
 
-def reduce(problem: Problem) -> ReducedProblem:
+        Args:
+            data (DataFrame): data to be augmented.
+
+        Returns:
+            A DataFrame with additional columns (augmented data)
+        """
+
+        drop = []
+        for name_lhs, names_rhs, coeffs in self.equalities:
+            if name_lhs in data.columns:
+                drop.append(name_lhs)
+        return data.drop(columns=drop)
+
+
+def reduce(problem: Problem) -> List:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
 
@@ -160,12 +80,13 @@ def reduce(problem: Problem) -> ReducedProblem:
         problem (Problem): problem to be reduced
 
     Returns:
-        Reduced problem where linear equality constraints have been eliminated
+        [problem, trafo]. Problem is the reduced problem where linear equality constraints
+        have been eliminated. trafo is the according transformation.
 
     """
     # check if the problem can be reduced
     if not check_problem_for_reduction(problem):
-        return problem
+        return [problem, AffineTransform([])]
 
     # find linear equality constraints
     linearEqualityConstraints, otherConstraints = find_linear_equality_constraints(
@@ -271,8 +192,10 @@ def reduce(problem: Problem) -> ReducedProblem:
     #            drop.append(col)
     #    _data = _data.drop(columns=drop)
 
+    trafo = AffineTransform(_equalities)
+
     _models = problem.models
-    # We ignorie the models attribute for now
+    # We ignore the models attribute for now
     # if _models is not None:
     #    pass
 
@@ -282,11 +205,9 @@ def reduce(problem: Problem) -> ReducedProblem:
         if problem.f is not None:
 
             def _f(X: pd.DataFrame) -> pd.DataFrame:
-                return problem.f(
-                    ReducedProblem.augment_data(X, _equalities, inputs.names)
-                )
+                return problem.f(trafo.augment_data(X)[inputs.names])
 
-    _problem = ReducedProblem(
+    _problem = Problem(
         inputs=deepcopy(_inputs),
         outputs=deepcopy(problem.outputs),
         objectives=deepcopy(problem.objectives),
@@ -296,13 +217,12 @@ def reduce(problem: Problem) -> ReducedProblem:
         data=deepcopy(_data),
         optima=deepcopy(problem.optima),
         name=deepcopy(problem.name),
-        _equalities=deepcopy(_equalities),
     )
 
     # remove remaining dependencies of eliminated inputs from the problem
-    _problem = remove_eliminated_inputs(_problem)
+    _problem = remove_eliminated_inputs(_problem, trafo)
 
-    return _problem
+    return [_problem, trafo]
 
 
 def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
@@ -395,7 +315,8 @@ def check_existence_of_solution(A_aug):
         )
 
 
-def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
+# TODO: UPDATE
+def remove_eliminated_inputs(problem: Problem, transform: AffineTransform) -> Problem:
     """Eliminates remaining occurences of eliminated inputs in linear constraints."""
     inputs_names = problem.inputs.names
     M = len(inputs_names)
@@ -405,7 +326,7 @@ def remove_eliminated_inputs(problem: ReducedProblem) -> ReducedProblem:
 
     # build up dict from problem.equalities e.g. {"xi1": [coeff(xj1), ..., coeff(xjn)], ... "xik":...}
     coeffs_dict = {}
-    for i, e in enumerate(problem._equalities):
+    for i, e in enumerate(transform.equalities):
         coeffs = np.zeros(M + 1)
         for j, name in enumerate(e[1]):
             coeffs[inputs_dict[name]] = e[2][j]
