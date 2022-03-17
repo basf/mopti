@@ -1,7 +1,7 @@
 import os
 import warnings
 from copy import deepcopy
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -72,7 +72,7 @@ class AffineTransform:
         return data.drop(columns=drop)
 
 
-def reduce(problem: Problem) -> List:
+def reduce_problem(problem: Problem) -> Tuple[Problem, AffineTransform]:
     """Reduce a problem with linear equality constraints and linear inequality constraints
     to a subproblem with linear inequality constraints and no linear equality constraints.
 
@@ -80,13 +80,13 @@ def reduce(problem: Problem) -> List:
         problem (Problem): problem to be reduced
 
     Returns:
-        [problem, trafo]. Problem is the reduced problem where linear equality constraints
+        (problem, trafo). Problem is the reduced problem where linear equality constraints
         have been eliminated. trafo is the according transformation.
 
     """
     # check if the problem can be reduced
     if not check_problem_for_reduction(problem):
-        return [problem, AffineTransform([])]
+        return problem, AffineTransform([])
 
     # find linear equality constraints
     linearEqualityConstraints, otherConstraints = find_linear_equality_constraints(
@@ -222,7 +222,7 @@ def reduce(problem: Problem) -> List:
     # remove remaining dependencies of eliminated inputs from the problem
     _problem = remove_eliminated_inputs(_problem, trafo)
 
-    return [_problem, trafo]
+    return _problem, trafo
 
 
 def find_linear_equality_constraints(constraints: Constraints) -> List[Constraints]:
@@ -315,7 +315,6 @@ def check_existence_of_solution(A_aug):
         )
 
 
-# TODO: UPDATE
 def remove_eliminated_inputs(problem: Problem, transform: AffineTransform) -> Problem:
     """Eliminates remaining occurences of eliminated inputs in linear constraints."""
     inputs_names = problem.inputs.names
@@ -386,7 +385,7 @@ def remove_eliminated_inputs(problem: Problem, transform: AffineTransform) -> Pr
     return problem
 
 
-def rref(A: np.ndarray, tol=1e-8) -> np.ndarray:
+def rref(A: np.ndarray, tol=1e-8) -> Tuple[np.ndarray, List[int]]:
     """Computes the reduced row echelon form of a Matrix
 
     Args:
@@ -394,7 +393,7 @@ def rref(A: np.ndarray, tol=1e-8) -> np.ndarray:
         tol (float): tolerance for rounding to 0
 
     Returns:
-        [A_rref, pivots], where A_rref is the reduced row echelon form of A and pivots
+        (A_rref, pivots), where A_rref is the reduced row echelon form of A and pivots
         is a numpy array containing the pivot columns of A_rref
     """
     A = np.array(A, dtype=np.float64)
@@ -423,4 +422,4 @@ def rref(A: np.ndarray, tol=1e-8) -> np.ndarray:
             row += 1
 
     prec = int(-np.log10(tol))
-    return [np.round(A, prec), pivots]
+    return np.round(A, prec), pivots

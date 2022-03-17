@@ -12,12 +12,12 @@ from opti.constraint import (
     NonlinearInequality,
 )
 from opti.parameter import Categorical, Continuous, Discrete, Parameter, Parameters
-from opti.tools.reduce import (
+from opti.tools.reduce_problem import (
     AffineTransform,
     check_existence_of_solution,
     find_continuous_inputs,
     find_linear_equality_constraints,
-    reduce,
+    reduce_problem,
     remove_eliminated_inputs,
     rref,
 )
@@ -312,7 +312,7 @@ def test_reduce_1_independent_linear_equality_constraints():
             ]
         ),
     )
-    _problem, transform = reduce(problem)
+    _problem, transform = reduce_problem(problem)
 
     assert len(_problem.inputs) == 3
     assert len(_problem.constraints) == 2
@@ -337,7 +337,7 @@ def test_reduce_1_independent_linear_equality_constraints():
         outputs=Parameters([Continuous("y1")]),
         constraints=Constraints([]),
     )
-    assert problem == reduce(problem)[0]
+    assert problem == reduce_problem(problem)[0]
 
     # define problem: invalid constraint (nonexisting name in linear equality constraint)
     problem = Problem(
@@ -356,7 +356,7 @@ def test_reduce_1_independent_linear_equality_constraints():
         ),
     )
     with pytest.raises(RuntimeError):
-        reduce(problem)
+        reduce_problem(problem)
 
     # define problem: invalid constraint (non-continuous parameter in linear equality constraint)
     problem = Problem(
@@ -376,7 +376,7 @@ def test_reduce_1_independent_linear_equality_constraints():
         ),
     )
     with pytest.raises(RuntimeError):
-        reduce(problem)
+        reduce_problem(problem)
 
     # define problem: linear equality constraints can't be fulfilled inside the domain
     problem = Problem(
@@ -394,7 +394,7 @@ def test_reduce_1_independent_linear_equality_constraints():
         ),
     )
     with pytest.raises(Warning):
-        reduce(problem)
+        reduce_problem(problem)
 
 
 def test_reduce_2_independent_linear_equality_constraints():
@@ -416,7 +416,7 @@ def test_reduce_2_independent_linear_equality_constraints():
             ]
         ),
     )
-    _problem, transform = reduce(problem)
+    _problem, transform = reduce_problem(problem)
 
     assert len(_problem.inputs) == 1
     lhs = [-1, 1]
@@ -448,7 +448,7 @@ def test_reduce_3_independent_linear_equality_constraints():
         ),
     )
     with pytest.raises(Warning):
-        reduce(problem)
+        reduce_problem(problem)
 
 
 def test_remove_eliminated_inputs():
@@ -494,7 +494,7 @@ def test_remove_eliminated_inputs():
         remove_eliminated_inputs(problem, transform)
 
     # define problem: linear equality can be removed (is always fulfilled)
-    # From: reduce(problem)
+    # From: reduce_problem(problem)
     # problem = Problem(
     # inputs=Parameters(
     #    [
@@ -555,7 +555,7 @@ def test_remove_eliminated_inputs():
     assert _problem.constraints[0].rhs == 1.0
 
     # define problem: larger problem
-    # From reduce(problem)
+    # From reduce_problem(problem)
     # problem = Problem(
     #    inputs=Parameters(
     #        [
@@ -599,7 +599,7 @@ def test_AffineTransform_augment_data():
     problem = read_json("examples/bread.json")
     data = problem.data
 
-    _problem, transform = reduce(problem)
+    _problem, transform = reduce_problem(problem)
     names = np.concatenate((_problem.inputs.names, _problem.outputs.names))
     _problem.data = data[names]
 
@@ -618,7 +618,7 @@ def test_AffineTransform_drop_data():
     problem = read_json("examples/bread.json")
     data = problem.data
 
-    _problem, transform = reduce(problem)
+    _problem, transform = reduce_problem(problem)
     names = np.concatenate((_problem.inputs.names, _problem.outputs.names))
 
     data_drop = transform.drop_data(problem.data)
@@ -682,7 +682,7 @@ def test_reduce_large_problem():
         data=data,
     )
 
-    _problem, transform = reduce(problem)
+    _problem, transform = reduce_problem(problem)
 
     assert all(data["y1"] == _problem.f(data)["y1"])
     assert transform.equalities == [
@@ -781,3 +781,16 @@ def test_rref():
 
     assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
     assert all(np.array(pivots) == np.array([0, 1]))
+
+
+test_AffineTransform_augment_data()
+test_AffineTransform_drop_data()
+test_check_existence_of_solution()
+test_find_continuous_inputs()
+test_find_linear_constraints()
+test_reduce_1_independent_linear_equality_constraints()
+test_reduce_2_independent_linear_equality_constraints()
+test_reduce_3_independent_linear_equality_constraints()
+test_reduce_large_problem()
+test_remove_eliminated_inputs()
+test_rref()
