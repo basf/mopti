@@ -28,7 +28,7 @@ class Minimize(Objective):
 
         Args:
             name: output to minimize
-            target: value below which no further improvement is required
+            target: only when used as output constraint. value below which no further improvement is required
         """
         super().__init__(name)
         self.target = target
@@ -58,7 +58,7 @@ class Maximize(Objective):
 
         Args:
             name: output to maximize
-            target: value above which no further improvement is required
+            target: only when used as output constraint. value above which no further improvement is required
         """
         super().__init__(name)
         self.target = target
@@ -96,7 +96,7 @@ class CloseToTarget(Objective):
             name: output to optimize
             target: target value
             exponent: exponent of the difference
-            tolerance: distance to target below which no further improvement is required
+            tolerance: only when used as output constraint. distance to target below which no further improvement is required
         """
         super().__init__(name)
         self.target = target
