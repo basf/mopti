@@ -6,7 +6,7 @@ repo_url: https://github.com/basf/mopti
 nav:
   - index.md
   - Install: install.md
-  - Overview: overview.md
+  - Problem definition: problem.md
   - Datasets:
     - datasets/alkox.md
     - datasets/benzylation.md
