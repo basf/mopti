@@ -781,16 +781,3 @@ def test_rref():
 
     assert np.all(np.round(A_rref, 8) == np.round(B_rref, 8))
     assert all(np.array(pivots) == np.array([0, 1]))
-
-
-test_AffineTransform_augment_data()
-test_AffineTransform_drop_data()
-test_check_existence_of_solution()
-test_find_continuous_inputs()
-test_find_linear_constraints()
-test_reduce_1_independent_linear_equality_constraints()
-test_reduce_2_independent_linear_equality_constraints()
-test_reduce_3_independent_linear_equality_constraints()
-test_reduce_large_problem()
-test_remove_eliminated_inputs()
-test_rref()

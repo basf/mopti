@@ -278,7 +278,7 @@ class NChooseK(Constraint):
         self.is_equality = False
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
-        x = data[self.names].values
+        x = np.abs(data[self.names].values)
         num_zeros = x.shape[1] - self.max_active
         violation = np.apply_along_axis(
             func1d=lambda r: sum(sorted(r)[:num_zeros]), axis=1, arr=x
