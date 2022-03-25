@@ -1,7 +1,7 @@
 """Specifications and tools for multi-objective optimization problems."""
 # flake8: noqa
 
-__version__ = "0.10.4"
+__version__ = "0.10.5"
 
 from opti import (
     constraint,
@@ -12,7 +12,6 @@ from opti import (
     problem,
     problems,
     sampling,
-    tools,
 )
 from opti.constraint import (
     Constraints,
@@ -28,3 +27,5 @@ from opti.objective import CloseToTarget, Maximize, Minimize, Objectives, make_o
 from opti.parameter import Categorical, Continuous, Discrete, Parameters, make_parameter
 from opti.problem import Problem, read_json
 from opti.tools.modde import read_modde
+
+from opti import tools  # isort:skip
