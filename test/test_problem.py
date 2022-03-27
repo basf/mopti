@@ -344,7 +344,10 @@ def test_models():
         inputs=[Continuous(f"x{i}", [0, 1]) for i in range(D)],
         outputs=[Continuous(f"y{i}") for i in range(M)],
         objectives=[Minimize(f"y{i}") for i in range(M - 1)],
-        models=[LinearModel([f"y{i}"], coefficients=np.ones(D)) for i in range(M)],
+        models=[
+            LinearModel([f"y{i}"], coefficients={f"x{i}": 1 for i in range(D)})
+            for i in range(M)
+        ],
     )
 
     X = problem.sample_inputs(10)
