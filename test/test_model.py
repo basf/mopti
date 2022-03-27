@@ -74,8 +74,3 @@ def test_custom_model():
 
     # to config, the custom model is omitted
     assert len(models.to_config()) == 1
-
-
-test_linear_model()
-test_models()
-test_custom_model()
