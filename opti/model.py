@@ -28,7 +28,7 @@ class Model:
 class LinearModel(Model):
     """Model to compute an output as a linear/affine function of the inputs."""
 
-    def __init__(self, names: List[str], coefficients, offset: float = 0):
+    def __init__(self, names: List[str], coefficients: Dict, offset: float = 0):
         super().__init__(names)
         if len(names) > 1:
             raise ValueError("LinearModel can only describe a single output.")
@@ -36,7 +36,9 @@ class LinearModel(Model):
         self.offset = offset
 
     def __call__(self, df: pd.DataFrame) -> pd.DataFrame:
-        y = df.to_numpy() @ self.coefficients + self.offset
+        coefficients_values = list(self.coefficients.values())
+        coefficients_names = list(self.coefficients.keys())
+        y = df[coefficients_names].to_numpy() @ coefficients_values + self.offset
         return pd.DataFrame(y, columns=self.names)
 
     def __repr__(self):
