@@ -472,10 +472,11 @@ class TestParameters:
         assert (params.bounds.loc["min"] == 0).all()
         assert (params.bounds.loc["max"] == 1).all()
 
-        # no bounds when space includes categorical parameters
-        with pytest.raises(TypeError):
-            params = Parameters(self.mixed_parameters)
-            params.bounds
+        params = self.mixed_parameters
+        assert np.allclose(params.bounds.loc["min"], [np.nan, 5.0, 3.0], equal_nan=True)
+        assert np.allclose(
+            params.bounds.loc["max"], [np.nan, 20.0, 27.0], equal_nan=True
+        )
 
     def test_transform(self):
         # transform to the unit-range

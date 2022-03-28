@@ -240,6 +240,11 @@ class Categorical(Parameter):
     def __repr__(self):
         return f"Categorical('{self.name}', domain={self.domain})"
 
+    @property
+    def bounds(self) -> Tuple[float, float]:
+        """Return the domain bounds."""
+        return np.nan, np.nan
+
     def contains(self, point):
         """Check if a point is in contained in the domain.
 
@@ -408,11 +413,6 @@ class Parameters:
     @property
     def bounds(self) -> pd.DataFrame:
         """Return the parameter bounds."""
-        for p in self:
-            if isinstance(p, Categorical):
-                raise TypeError(
-                    f"Contains categorical parameter {p.name} which is not bounded."
-                )
         return pd.DataFrame({p.name: p.bounds for p in self}, index=["min", "max"])
 
     def contains(self, points: pd.DataFrame) -> pd.Series:
