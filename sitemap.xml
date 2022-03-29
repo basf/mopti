@@ -115,4 +115,9 @@
          <lastmod>2022-03-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
+    <url>
+         <loc>https://basf.github.io/mopti/examples/problem_reduction/</loc>
+         <lastmod>2022-03-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
 </urlset>
