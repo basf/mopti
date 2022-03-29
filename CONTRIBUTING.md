@@ -37,4 +37,4 @@ git push --follow-tags
 ## Documentation
 
 We use mkdocs for documentation.
-The docs are built by a github action, which is triggered on commiting to the "docs" branch. 
+The docs are built by a github action, which is triggered on commiting to the "main" branch. 
