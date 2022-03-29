@@ -1,4 +1,4 @@
-# Problem definition
+# Getting started
 
 Opti problems consist of a definition of 
 
