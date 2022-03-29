@@ -8,6 +8,5 @@ __pycache__
 *.zip
 *.mip
 .idea
-examples
 build
 dist

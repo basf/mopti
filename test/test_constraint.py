@@ -96,12 +96,22 @@ def test_nonlinear_inequality():
 
 
 def test_nchoosek():
-    names = ["x1", "x2", "x3", "x4"]
-    constraint = NChooseK(names=names, max_active=3)
+    constraint = NChooseK(names=["x1", "x2", "x3", "x4"], max_active=3)
 
-    df = pd.DataFrame([[1, 0, 1, 1], [1, 2, 4, 4]], columns=names)
+    df = pd.DataFrame(
+        [
+            [99, 0, 0, 0, True, 0],
+            [0.5, 0.5, 0, 0, True, 0],
+            [0.3, 0.5, 0, 0.2, True, 0],
+            [1, 2, 3, 4, False, 1],
+            [-1.1, 2, 3, 4, False, 1.1],
+            [1, 1, 1e-9, 1, False, 1e-9],
+        ],
+        columns=["x1", "x2", "x3", "x4", "satisfied", "violation"],
+    )
 
-    assert np.allclose(constraint.satisfied(df), [True, False])
+    assert np.all(constraint.satisfied(df) == df["satisfied"])
+    assert np.allclose(constraint(df), df["violation"])
 
     eval(constraint.__repr__())
     json.dumps(constraint.to_config())
