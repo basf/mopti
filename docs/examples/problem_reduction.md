@@ -34,7 +34,8 @@ Given a problem containing any number of linear inequalities and at least one eq
 ```python
 reduced_problem, transform = opti.tools.reduce_problem(problem)
 print(reduced_problem)
->>> Problem(
+>>> 
+Problem(
     inputs=Parameters([
         Continuous('x2', domain=[0.0, 0.8]), 
         Continuous('x3', domain=[0.1, 1.0])
@@ -99,7 +100,8 @@ We end up 7 out of 9 initial inputs and 5 inequality constraints, which are only
 ```python
 reduced_problem, transform = opti.tools.reduce_problem(problem)
 print(reduced_problem)
->>> Problem(
+>>> 
+Problem(
     inputs=Parameters([
         Discrete('Temperature', domain=[20.0, 25.0, 30.0]),
         Categorical('Process', domain=['process 1', 'process 2', 'process 3']),
@@ -123,7 +125,7 @@ print(reduced_problem)
 
 The function `f(X)` was automaticaly wrapped so the in the reduced problem it can be evaluated for points in the reduced space, with the same result.
 
-```
+```python
 Xr = reduced_problem.sample_inputs(10)
 X = transform.augment_data(Xr)
 y1 = problem.f(X)
