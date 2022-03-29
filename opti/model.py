@@ -9,7 +9,7 @@ class Model:
         """Base class for models of outputs as function of inputs.
 
         Args:
-            names: names of the modeled outputs
+            names: names of the modeled outputs.
         """
         for name in names:
             if not isinstance(name, str):
@@ -26,9 +26,19 @@ class Model:
 
 
 class LinearModel(Model):
-    """Model to compute an output as a linear/affine function of the inputs."""
+    def __init__(
+        self,
+        names: List[str],
+        coefficients: Dict[str, float],
+        offset: float = 0,
+    ):
+        """Model to compute an output as a linear/affine function of the inputs, $y = ax + b$.
 
-    def __init__(self, names: List[str], coefficients: Dict, offset: float = 0):
+        Args:
+            names: name of the modeled output.
+            coefficients: dictionary mapping input name to the corresponding coefficient a.
+            offset: the offset b.
+        """
         super().__init__(names)
         if len(names) > 1:
             raise ValueError("LinearModel can only describe a single output.")
@@ -54,9 +64,13 @@ class LinearModel(Model):
 
 
 class CustomModel(Model):
-    """Custom model for arbitrary functions."""
-
     def __init__(self, names: List[str], f: Callable):
+        """Custom model for arbitrary functions.
+
+        Args:
+            names: names of the modeled outputs.
+            f: Callable that takes a DataFrame of inputs and returns a DataFrame of outputs.
+        """
         super().__init__(names)
         self.f = f
 
@@ -68,9 +82,12 @@ class CustomModel(Model):
 
 
 class Models:
-    """Container for models."""
-
     def __init__(self, models: Union[List[Model], List[Dict]]):
+        """Container for models.
+
+        Args:
+            models: list of models or model configurations.
+        """
         _models = []
         for m in models:
             if isinstance(m, Model):
@@ -108,6 +125,7 @@ class Models:
 
 
 def make_model(type, **kwargs):
+    """Make a model object from a configuration dict."""
     t = type.lower()
     if t == "linear-model":
         return LinearModel(**kwargs)
