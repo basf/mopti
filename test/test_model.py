@@ -9,7 +9,7 @@ from opti.model import CustomModel, LinearModel, Models, make_model
 
 
 def test_linear_model():
-    model = LinearModel(["y"], [1, 2, 3], 10)
+    model = LinearModel(["y"], {"x1": 1, "x2": 2, "x3": 3}, 10)
     assert model.names == ["y"]
     eval(model.__repr__())
 
@@ -25,8 +25,8 @@ def test_linear_model():
 
 
 def test_models():
-    model1 = LinearModel(["cost"], [1, 2, 3])
-    model2 = LinearModel(["pcf"], [5, 2.1, 0.9])
+    model1 = LinearModel(["cost"], {"x1": 1, "x2": 2, "x3": 3})
+    model2 = LinearModel(["pcf"], {"x1": 5, "x2": 2.1, "x3": 0.9})
     models = Models([model1, model2])
 
     assert models[0] == model1
@@ -61,7 +61,7 @@ def test_custom_model():
     )
 
     # linear model
-    model2 = LinearModel(["cost"], [1, 2, 3, 4, 5])
+    model2 = LinearModel(["cost"], {"x0": 1, "x1": 2, "x2": 3, "x3": 4, "x4": 5})
 
     models = Models([model1, model2])
     assert models.names == ["y1", "y2", "y3", "cost"]
