@@ -19,8 +19,8 @@ In statistical modeling linear equalities lead to multicollinearities, which mak
 For modeling tasks this collinearity can be addressed by e.g. dropping one input parameter for each corresponding equality constraint.
 
 For sampling and optimization tasks this becomes a bit trickier as the parameter bounds and inequality constraints need to be adapted as well.
-Consider in the initial example we drop $x3$ together with the linear equality. 
-To ensure that solutions ($x1$, $x2$) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
+Consider in the initial example we drop $x_3$ together with the linear equality. 
+To ensure that solutions ($x_1$, $x_2$) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
 $$
 \begin{align}
 x_3 \geq 0.3 \Longleftrightarrow x_1 + x_2 \leq 0.7 \newline
