@@ -475,7 +475,7 @@ class Parameters:
                 elif discrete == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    raise ValueError(f"Unknown discrete transform {continuous}.")
+                    raise ValueError(f"Unknown discrete transform {discrete}.")
             if isinstance(p, Categorical):
                 if categorical == "none":
                     transformed.append(s)
@@ -486,7 +486,7 @@ class Parameters:
                 elif categorical == "label-encode":
                     transformed.append(p.to_label_encoding(s))
                 else:
-                    raise ValueError(f"Unknown categorical transform {continuous}.")
+                    raise ValueError(f"Unknown categorical transform {categorical}.")
         return pd.concat(transformed, axis=1)
 
     def to_config(self) -> List[dict]:
