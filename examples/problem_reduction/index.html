@@ -778,7 +778,7 @@ We end up 7 out of 9 initial inputs and 5 inequality constraints, which are only
     <span class="p">])</span>
 <span class="p">)</span>
 </code></pre></div></p>
-<p>The function <code>f(X)</code> was automaticaly wrapped so the in the reduced problem it can be evaluated for points in the reduced space, with the same result.</p>
+<p>The function <code>f(X)</code> was automaticaly wrapped so in the reduced problem it can be evaluated for points in the reduced space, with the same result.</p>
 <div class="highlight"><pre><span></span><code><span class="n">Xr</span> <span class="o">=</span> <span class="n">reduced_problem</span><span class="o">.</span><span class="n">sample_inputs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">augment_data</span><span class="p">(</span><span class="n">Xr</span><span class="p">)</span>
 <span class="n">y1</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
