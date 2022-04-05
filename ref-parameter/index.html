@@ -849,6 +849,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#opti.parameter.Parameters.to_df" class="md-nav__link">
+    to_df()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#opti.parameter.Parameters.transform" class="md-nav__link">
     transform()
   </a>
@@ -2711,6 +2718,14 @@ Parameters        </code>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get all parameters of the given type(s).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Parameters</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">types</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">to_numeric</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create a dataframe for a given numpy array of parameter values.&quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_numeric</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">Continuous</span><span class="p">,</span> <span class="n">Discrete</span><span class="p">))</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">X</span>
 </code></pre></div>
         </details>
 
@@ -2960,6 +2975,37 @@ Parameters(conf).to_config() == conf</p>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Configuration of the parameter space.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">to_config</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.parameter.Parameters.to_df" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">to_numeric</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Create a dataframe for a given numpy array of parameter values.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/parameter.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">to_numeric</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create a dataframe for a given numpy array of parameter values.&quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_numeric</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">Continuous</span><span class="p">,</span> <span class="n">Discrete</span><span class="p">))</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">X</span>
 </code></pre></div>
         </details>
     </div>
