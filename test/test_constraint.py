@@ -132,6 +132,14 @@ def test_constraints():
     df = pd.DataFrame({"x1": [0.1, 0.3], "x2": [0.2, 0.3], "x3": [0.7, 0.4]})
     assert np.allclose(constraints.satisfied(df), [True, False])
 
+    # get constraints of certain types
+    cx = constraints.get(LinearEquality)
+    assert len(cx) == 1
+    cx = constraints.get((NChooseK, NonlinearInequality))
+    assert len(cx) == 2
+    for c in cx:
+        assert isinstance(c, (NChooseK, NonlinearInequality))
+
     # serialize
     config = constraints.to_config()
     constraints = Constraints(config)

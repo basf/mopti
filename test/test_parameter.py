@@ -525,3 +525,25 @@ class TestParameters:
         both = params1 + params2
         assert isinstance(both, Parameters)
         assert len(both) == 6
+
+    def test_get(self):
+        # get parameters of certain types
+        params = Parameters(
+            [
+                Continuous("x1"),
+                Continuous("x2"),
+                Continuous("x3"),
+                Categorical("x4", ["A", "B", "C"]),
+                Discrete("x5", [3, 8, 16, 21, 24, 27]),
+            ]
+        )
+
+        px = params.get(Continuous)
+        assert len(px) == 3
+        for c in px:
+            assert isinstance(c, Continuous)
+
+        px = params.get((Categorical, Discrete))
+        assert len(px) == 2
+        for c in px:
+            assert isinstance(c, (Categorical, Discrete))

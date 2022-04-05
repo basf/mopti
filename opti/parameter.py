@@ -492,3 +492,7 @@ class Parameters:
     def to_config(self) -> List[dict]:
         """Configuration of the parameter space."""
         return [param.to_config() for param in self.parameters.values()]
+
+    def get(self, types) -> "Parameters":
+        """Get all parameters of the given type(s)."""
+        return Parameters([p for p in self if isinstance(p, types)])
