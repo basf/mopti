@@ -642,6 +642,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#opti.constraint.Constraints.get" class="md-nav__link">
+    get()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#opti.constraint.Constraints.satisfied" class="md-nav__link">
     satisfied()
   </a>
@@ -1038,12 +1045,12 @@ Constraints        </code>
 
     <div class="doc doc-contents ">
 
-      <p>List of optimization constraints</p>
+      <p>List of input constraints</p>
 
         <details class="quote">
           <summary>Source code in <code>opti/constraint.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Constraints</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;List of optimization constraints&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;List of input constraints&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1092,6 +1099,10 @@ Constraints        </code>
 
     <span class="k">def</span> <span class="nf">to_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">to_config</span><span class="p">()</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Constraints&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get all constraints of the given type(s).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Constraints</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">types</span><span class="p">)])</span>
 </code></pre></div>
         </details>
 
@@ -1180,6 +1191,33 @@ Constraints        </code>
 
 
 
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="opti.constraint.Constraints.get" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Get all constraints of the given type(s).</p>
+
+        <details class="quote">
+          <summary>Source code in <code>opti/constraint.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Constraints&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get all constraints of the given type(s).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Constraints</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">types</span><span class="p">)])</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
