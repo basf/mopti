@@ -547,3 +547,18 @@ class TestParameters:
         assert len(px) == 2
         for c in px:
             assert isinstance(c, (Categorical, Discrete))
+
+    def test_df(self):
+        params = self.mixed_parameters
+
+        # Numpy arrays have a single data type. When the data constains string this dtype is object.
+        # to_numeric enforces that columns for discrete and continuous parameters are numeric.
+        X1 = params.sample(100)
+        X2 = params.to_df(X1.to_numpy(), to_numeric=True)
+        for n in params.get((Continuous, Discrete)).names:
+            assert np.allclose(X1[n], X2[n])
+
+        # also works for a single point
+        x = params.sample(1).to_numpy().ravel()
+        X = params.to_df(x, to_numeric=True)
+        assert params.contains(X)

@@ -496,3 +496,11 @@ class Parameters:
     def get(self, types) -> "Parameters":
         """Get all parameters of the given type(s)."""
         return Parameters([p for p in self if isinstance(p, types)])
+
+    def to_df(self, x: np.ndarray, to_numeric=False) -> pd.DataFrame:
+        """Create a dataframe for a given numpy array of parameter values."""
+        X = pd.DataFrame(np.atleast_2d(x), columns=self.names)
+        if to_numeric:
+            for n in self.get((Continuous, Discrete)).names:
+                X[n] = pd.to_numeric(X[n])
+        return X
