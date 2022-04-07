@@ -182,6 +182,10 @@ class Objectives:
     def to_config(self) -> List[Dict]:
         return [obj.to_config() for obj in self.objectives]
 
+    def get(self, types) -> "Objectives":
+        """Get all parameters of the given type(s)."""
+        return Objectives([o for o in self if isinstance(o, types)])
+
 
 def make_objective(type: str, name: str, **kwargs) -> Objective:
     """Make an objective from a configuration.

@@ -76,6 +76,18 @@ def test_objectives():
     assert len(Z) == len(df)
     assert np.all(Z.columns == objectives.names)
 
+    objs = objectives.get(Minimize)
+    assert isinstance(objs, Objectives)
+    assert len(objs) == 1
+    for o in objs:
+        assert isinstance(o, Minimize)
+
+    objs = objectives.get((Maximize, CloseToTarget))
+    assert isinstance(objs, Objectives)
+    assert len(objs) == 2
+    for o in objs:
+        assert isinstance(o, (Maximize, CloseToTarget))
+
 
 def test_ideal_nadir():
     # problem with maximize objectives

@@ -20,58 +20,6 @@ class Constraint:
         raise NotImplementedError
 
 
-class Constraints:
-    """List of optimization constraints"""
-
-    def __init__(self, constraints: Sequence):
-        self.constraints = []
-        for c in constraints:
-            if not isinstance(c, Constraint):
-                if "names" in c and len(c["names"]) == 0:
-                    continue  # skip empty constraints
-                c = make_constraint(**c)
-            self.constraints.append(c)
-
-    def __repr__(self):
-        return "Constraints(\n" + pprint.pformat(self.constraints) + "\n)"
-
-    def __iter__(self):
-        return iter(self.constraints)
-
-    def __len__(self):
-        return len(self.constraints)
-
-    def __getitem__(self, i):
-        return self.constraints[i]
-
-    def __call__(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Numerically evaluate all constraints.
-
-        Args:
-            data: Data to evaluate the constraints on.
-
-        Returns:
-            Constraint evaluation g(x) for each of the constraints.
-        """
-        return pd.concat([c(data) for c in self.constraints], axis=1)
-
-    def satisfied(self, data: pd.DataFrame) -> pd.Series:
-        """Check if all constraints are satisfied.
-
-        Args:
-            data: Data to evaluate the constraints on.
-
-        Returns:
-            Series of booleans indicating if all constraints are satisfied.
-        """
-        return pd.concat([c.satisfied(data) for c in self.constraints], axis=1).all(
-            axis=1
-        )
-
-    def to_config(self) -> List[Dict]:
-        return [obj.to_config() for obj in self.constraints]
-
-
 class LinearEquality(Constraint):
     def __init__(
         self,
@@ -293,6 +241,62 @@ class NChooseK(Constraint):
 
     def to_config(self) -> Dict:
         return dict(type="n-choose-k", names=self.names, max_active=self.max_active)
+
+
+class Constraints:
+    """List of input constraints"""
+
+    def __init__(self, constraints: Sequence):
+        self.constraints = []
+        for c in constraints:
+            if not isinstance(c, Constraint):
+                if "names" in c and len(c["names"]) == 0:
+                    continue  # skip empty constraints
+                c = make_constraint(**c)
+            self.constraints.append(c)
+
+    def __repr__(self):
+        return "Constraints(\n" + pprint.pformat(self.constraints) + "\n)"
+
+    def __iter__(self):
+        return iter(self.constraints)
+
+    def __len__(self):
+        return len(self.constraints)
+
+    def __getitem__(self, i):
+        return self.constraints[i]
+
+    def __call__(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Numerically evaluate all constraints.
+
+        Args:
+            data: Data to evaluate the constraints on.
+
+        Returns:
+            Constraint evaluation g(x) for each of the constraints.
+        """
+        return pd.concat([c(data) for c in self.constraints], axis=1)
+
+    def satisfied(self, data: pd.DataFrame) -> pd.Series:
+        """Check if all constraints are satisfied.
+
+        Args:
+            data: Data to evaluate the constraints on.
+
+        Returns:
+            Series of booleans indicating if all constraints are satisfied.
+        """
+        return pd.concat([c.satisfied(data) for c in self.constraints], axis=1).all(
+            axis=1
+        )
+
+    def to_config(self) -> List[Dict]:
+        return [obj.to_config() for obj in self.constraints]
+
+    def get(self, types) -> "Constraints":
+        """Get all constraints of the given type(s)."""
+        return Constraints([c for c in self if isinstance(c, types)])
 
 
 def make_constraint(type, **kwargs):

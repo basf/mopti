@@ -123,7 +123,7 @@ Problem(
 )
 ```
 
-The function `f(X)` was automaticaly wrapped so the in the reduced problem it can be evaluated for points in the reduced space, with the same result.
+The function `f(X)` was automaticaly wrapped so in the reduced problem it can be evaluated for points in the reduced space, with the same result.
 
 ```python
 Xr = reduced_problem.sample_inputs(10)
