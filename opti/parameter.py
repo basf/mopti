@@ -475,7 +475,7 @@ class Parameters:
                 elif discrete == "normalize":
                     transformed.append(p.to_unit_range(s))
                 else:
-                    raise ValueError(f"Unknown discrete transform {continuous}.")
+                    raise ValueError(f"Unknown discrete transform {discrete}.")
             if isinstance(p, Categorical):
                 if categorical == "none":
                     transformed.append(s)
@@ -486,9 +486,21 @@ class Parameters:
                 elif categorical == "label-encode":
                     transformed.append(p.to_label_encoding(s))
                 else:
-                    raise ValueError(f"Unknown categorical transform {continuous}.")
+                    raise ValueError(f"Unknown categorical transform {categorical}.")
         return pd.concat(transformed, axis=1)
 
     def to_config(self) -> List[dict]:
         """Configuration of the parameter space."""
         return [param.to_config() for param in self.parameters.values()]
+
+    def get(self, types) -> "Parameters":
+        """Get all parameters of the given type(s)."""
+        return Parameters([p for p in self if isinstance(p, types)])
+
+    def to_df(self, x: np.ndarray, to_numeric=False) -> pd.DataFrame:
+        """Create a dataframe for a given numpy array of parameter values."""
+        X = pd.DataFrame(np.atleast_2d(x), columns=self.names)
+        if to_numeric:
+            for n in self.get((Continuous, Discrete)).names:
+                X[n] = pd.to_numeric(X[n])
+        return X
