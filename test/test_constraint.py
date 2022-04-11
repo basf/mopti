@@ -20,7 +20,7 @@ def test_linear_equality():
     constraint = LinearEquality(names=names, lhs=np.ones(5), rhs=5)
 
     df = pd.DataFrame([[1, 1, 1, 1, 1], [1, 2, 3, 4, 5]], columns=names)
-    assert np.allclose(constraint(df), [0, 10])
+    assert np.allclose(constraint(df), [0, 10] / np.sqrt(5))
     assert np.allclose(constraint.satisfied(df), [True, False])
 
     eval(constraint.__repr__())
@@ -41,7 +41,7 @@ def test_linear_inequality():
     constraint = LinearInequality(names=names, lhs=np.ones(5), rhs=5)
 
     df = pd.DataFrame([[1, 0.1, 1, 1, 1], [1, 2, 3, 4, 5]], columns=names)
-    assert np.allclose(constraint(df), [-0.9, 10])
+    assert np.allclose(constraint(df), [-0.9, 10] / np.sqrt(5))
     assert np.allclose(constraint.satisfied(df), [True, False])
 
     eval(constraint.__repr__())
