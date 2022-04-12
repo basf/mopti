@@ -55,7 +55,7 @@ class LinearEquality(Constraint):
         self.is_equality = True
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
-        return data[self.names] @ self.lhs - self.rhs
+        return (data[self.names] @ self.lhs - self.rhs) / np.linalg.norm(self.lhs)
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return pd.Series(np.isclose(self(data), 0), index=data.index)
@@ -114,7 +114,7 @@ class LinearInequality(Constraint):
         self.is_equality = False
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
-        return data[self.names] @ self.lhs - self.rhs
+        return (data[self.names] @ self.lhs - self.rhs) / np.linalg.norm(self.lhs)
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return self(data) <= 0
