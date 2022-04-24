@@ -676,7 +676,7 @@
 For example in a formulation all ingredients of a mixture add up to 1. </p>
 <div class="highlight"><pre><span></span><code><span class="n">problem</span> <span class="o">=</span> <span class="n">opti</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">opti</span><span class="o">.</span><span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+        <span class="n">opti</span><span class="o">.</span><span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]),</span>
         <span class="n">opti</span><span class="o">.</span><span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]),</span>
         <span class="n">opti</span><span class="o">.</span><span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]),</span>
     <span class="p">],</span>
@@ -687,12 +687,12 @@ For example in a formulation all ingredients of a mixture add up to 1. </p>
 <p>In statistical modeling linear equalities lead to multicollinearities, which makes the coefficients of linear models sensitive to noise.
 For modeling tasks this collinearity can be addressed by e.g. dropping one input parameter for each corresponding equality constraint.</p>
 <p>For sampling and optimization tasks this becomes a bit trickier as the parameter bounds and inequality constraints need to be adapted as well.
-Consider in the initial example we drop <span class="arithmatex">\(x_3\)</span> together with the linear equality. 
-To ensure that solutions (<span class="arithmatex">\(x_1\)</span>, <span class="arithmatex">\(x_2\)</span>) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
+Consider in the initial example we drop <span class="arithmatex">\(x_1\)</span> together with the linear equality. 
+To ensure that solutions (<span class="arithmatex">\(x_2\)</span>, <span class="arithmatex">\(x_3\)</span>) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
 $$
 \begin{align}
-x_3 \geq 0.3 \Longleftrightarrow x_1 + x_2 \leq 0.7 \newline
-x_3 \leq 0.9 \Longleftrightarrow x_1 + x_2 \geq 0.1
+x_1 \geq 0.1 \Longleftrightarrow x_2 + x_3 \leq 0.9 \newline
+x_1 \leq 0.7 \Longleftrightarrow x_2 + x_3 \geq 0.3
 \end{align}
 $$</p>
 <p>The function <a href="/mopti/ref-tools/#opti.tools.reduce.reduce_problem"><code>reduce_problem</code></a> automates this tedious task.
@@ -703,21 +703,21 @@ Given a problem containing any number of linear inequalities and at least one eq
 <span class="n">Problem</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">Parameters</span><span class="p">([</span>
         <span class="n">Continuous</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]),</span> 
-        <span class="n">Continuous</span><span class="p">(</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+        <span class="n">Continuous</span><span class="p">(</span><span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
     <span class="p">]),</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">Parameters</span><span class="p">([</span><span class="n">Continuous</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)]),</span>
     <span class="n">objectives</span><span class="o">=</span><span class="n">Objectives</span><span class="p">([</span><span class="n">Minimize</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)]),</span>
     <span class="n">constraints</span><span class="o">=</span><span class="n">Constraints</span><span class="p">([</span>
-        <span class="n">LinearInequality</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">lhs</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">rhs</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">),</span>
-        <span class="n">LinearInequality</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">lhs</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">rhs</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">LinearInequality</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">lhs</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">rhs</span><span class="o">=-</span><span class="mf">0.3</span><span class="p">),</span>
+        <span class="n">LinearInequality</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">],</span> <span class="n">lhs</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">rhs</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
     <span class="p">])</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>The transformer object allows to transfrom data to and from the reduced space.</p>
-<div class="highlight"><pre><span></span><code><span class="n">X</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">sample_inputs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">Xr</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">drop_data</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">X1</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">sample_inputs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">Xr</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">drop_data</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
 <span class="n">X2</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">augment_data</span><span class="p">(</span><span class="n">Xr</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X2</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">[</span><span class="n">X1</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
 </code></pre></div>
 <p>Equality constraints are not well supported in sampling (any form of acceptance-rejection sampling will not work) and optimization methods. 
 For example population-based optimization approaches such as evolutionary algorithms only approximately support linear equalities via penalties or a conversion to two-sided inequalites.
