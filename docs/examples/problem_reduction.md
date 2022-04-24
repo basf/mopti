@@ -6,7 +6,7 @@ For example in a formulation all ingredients of a mixture add up to 1.
 ```python
 problem = opti.Problem(
     inputs=[
-        opti.Continuous("x1", [0.1, 1]),
+        opti.Continuous("x1", [0.1, 0.7]),
         opti.Continuous("x2", [0, 0.8]),
         opti.Continuous("x3", [0.3, 0.9]),
     ],
@@ -19,12 +19,12 @@ In statistical modeling linear equalities lead to multicollinearities, which mak
 For modeling tasks this collinearity can be addressed by e.g. dropping one input parameter for each corresponding equality constraint.
 
 For sampling and optimization tasks this becomes a bit trickier as the parameter bounds and inequality constraints need to be adapted as well.
-Consider in the initial example we drop $x_3$ together with the linear equality. 
-To ensure that solutions ($x_1$, $x_2$) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
+Consider in the initial example we drop $x_1$ together with the linear equality. 
+To ensure that solutions ($x_2$, $x_3$) still satisfy the box bounds and constraints, we need to add the following two inequality constraints:
 $$
 \begin{align}
-x_3 \geq 0.3 \Longleftrightarrow x_1 + x_2 \leq 0.7 \newline
-x_3 \leq 0.9 \Longleftrightarrow x_1 + x_2 \geq 0.1
+x_1 \geq 0.1 \Longleftrightarrow x_2 + x_3 \leq 0.9 \newline
+x_1 \leq 0.7 \Longleftrightarrow x_2 + x_3 \geq 0.3
 \end{align}
 $$
 
@@ -38,13 +38,13 @@ print(reduced_problem)
 Problem(
     inputs=Parameters([
         Continuous('x2', domain=[0.0, 0.8]), 
-        Continuous('x3', domain=[0.1, 1.0])
+        Continuous('x3', domain=[0.3, 0.9])
     ]),
     outputs=Parameters([Continuous('y')]),
     objectives=Objectives([Minimize('y')]),
     constraints=Constraints([
-        LinearInequality(names=['x2', 'x3'], lhs=[-1.0, -1.0], rhs=-0.1),
-        LinearInequality(names=['x2', 'x3'], lhs=[1.0, 1.0], rhs=0.7)
+        LinearInequality(names=['x2', 'x3'], lhs=[-1.0, -1.0], rhs=-0.3),
+        LinearInequality(names=['x2', 'x3'], lhs=[1.0, 1.0], rhs=0.9)
     ])
 )
 ```
@@ -52,10 +52,10 @@ Problem(
 The transformer object allows to transfrom data to and from the reduced space.
 
 ```python
-X = problem.sample_inputs(10)
-Xr = transform.drop_data(X)
+X1 = problem.sample_inputs(10)
+Xr = transform.drop_data(X1)
 X2 = transform.augment_data(Xr)
-assert np.allclose(X, X2[X.columns])
+assert np.allclose(X1, X2[X1.columns])
 ```
 
 Equality constraints are not well supported in sampling (any form of acceptance-rejection sampling will not work) and optimization methods. 
