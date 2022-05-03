@@ -1,5 +1,7 @@
+import numpy as np
 import pandas as pd
 
+import opti
 from opti import Problem
 from opti.constraint import (
     Constraints,
@@ -58,3 +60,60 @@ def test_overview():
     Problem(
         inputs=inputs, outputs=outputs, constraints=constraints, objectives=objectives
     )
+
+
+def test_problem_reduction():
+    problem = opti.Problem(
+        inputs=[
+            opti.Continuous("x1", [0.1, 0.7]),
+            opti.Continuous("x2", [0, 0.8]),
+            opti.Continuous("x3", [0.3, 0.9]),
+        ],
+        outputs=[opti.Continuous("y")],
+        constraints=[opti.LinearEquality(["x1", "x2", "x3"], rhs=1)],
+    )
+
+    reduced_problem, transform = opti.tools.reduce_problem(problem)
+    print(reduced_problem)
+
+    X1 = problem.sample_inputs(10)
+    Xr = transform.drop_data(X1)
+    X2 = transform.augment_data(Xr)
+    assert np.allclose(X1, X2[X1.columns])
+
+    def f(X):
+        y = X[["A1", "A2", "A3", "A4"]] @ [1, -2, 3, 2]
+        y += X[["B1", "B2", "B3"]] @ [0.1, 0.4, 0.3]
+        y += X["Temperature"] / 30
+        y += X["Process"] == "process 2"
+        return pd.DataFrame({"y": y})
+
+    problem = opti.Problem(
+        inputs=[
+            opti.Continuous("A1", [0, 0.9]),
+            opti.Continuous("A2", [0, 0.8]),
+            opti.Continuous("A3", [0, 0.9]),
+            opti.Continuous("A4", [0, 0.9]),
+            opti.Continuous("B1", [0.3, 0.9]),
+            opti.Continuous("B2", [0, 0.8]),
+            opti.Continuous("B3", [0.1, 1]),
+            opti.Discrete("Temperature", [20, 25, 30]),
+            opti.Categorical("Process", ["process 1", "process 2", "process 3"]),
+        ],
+        outputs=[opti.Continuous("y")],
+        constraints=[
+            opti.LinearEquality(["A1", "A2", "A3", "A4"], rhs=1),
+            opti.LinearEquality(["B1", "B2", "B3"], rhs=1),
+            opti.LinearInequality(["A1", "A2"], lhs=[1, 2], rhs=0.8),
+        ],
+        f=f,
+    )
+
+    reduced_problem, transform = opti.tools.reduce_problem(problem)
+    print(reduced_problem)
+
+    Xr = reduced_problem.sample_inputs(10)
+    X = transform.augment_data(Xr)
+    y1 = problem.f(X)
+    y2 = reduced_problem.f(Xr)
+    assert np.allclose(y1, y2)
