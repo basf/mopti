@@ -1,7 +1,7 @@
 """Specifications and tools for multi-objective optimization problems."""
 # flake8: noqa
 
-__version__ = "0.10.7"
+__version__ = "0.10.8"
 
 from opti import (
     constraint,
