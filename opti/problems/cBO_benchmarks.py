@@ -326,7 +326,7 @@ class Pressure_Vessel(Problem):
 # Here we use the bounds in [1] that contains the best known solution found in [2]. 
 # Note that the fourth constraint always holds after bounding the input variables. Therefore, we remove it. 
 # An interesting setting is that the first two variables (x1 and x2) have to be multiples of 0.0625 and are rounded to the closest such value before evaluating the objective and constraints.
-# However, the NonlinearInequality class in mopti doesn't support 'round'. Here I remove this setting (By Shiqiang)
+# However, this setting is removed here since the 'NonlinearInequality' class in mopti doesn't support 'round'.
 # [1] Eriksson and Poloczek 2021. http://proceedings.mlr.press/v130/eriksson21a/eriksson21a.pdf   
 # [2] Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23 
     def __init__(self):
