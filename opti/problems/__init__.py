@@ -46,3 +46,18 @@ from opti.problems.single import (
 )
 from opti.problems.univariate import Line1D, Parabola1D, Sigmoid1D, Sinus1D, Step1D
 from opti.problems.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
+from opti.problems.cbo_benchmarks import (
+    Gardner,
+    Gramacy,
+    Sasena,
+    G4,
+    G6,
+    G7,
+    G8,
+    G9,
+    G10,
+    Tension_Compression,
+    Pressure_Vessel,
+    Welded_Beam,
+    Speed_Reducer,
+)
