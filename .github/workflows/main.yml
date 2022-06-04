@@ -23,5 +23,5 @@ jobs:
           isort . --check-only --verbose
       - name: Run tests
         run: |
-          pip install .[testing]
+          pip install .[tests]
           pytest

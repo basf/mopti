@@ -43,5 +43,13 @@ setup(
     package_data={"": ["problems/data/*"]},
     include_package_data=True,
     install_requires=["numpy", "pandas", "scipy>=1.7"],
-    extras_require={"testing": ["pytest", "scikit-learn"]},
+    extras_require={
+        "tests": ["pytest", "scikit-learn"],
+        "docs": [
+            "mkdocs",
+            "mkdocs-material",
+            "mkdocstrings>=0.18",
+            "mkdocstrings-python-legacy",
+        ],
+    },
 )
