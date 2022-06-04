@@ -763,8 +763,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#opti.problems.cbo_benchmarks.WeldedBeam" class="md-nav__link">
-    WeldedBeam
+  <a href="#opti.problems.cbo_benchmarks.WeldedBeam1" class="md-nav__link">
+    WeldedBeam1
   </a>
   
 </li>
@@ -2414,9 +2414,9 @@ tension/compression spring under 4 mechanical constraints.</p>
 
 
 
-<h3 id="opti.problems.cbo_benchmarks.WeldedBeam" class="doc doc-heading">
+<h3 id="opti.problems.cbo_benchmarks.WeldedBeam1" class="doc doc-heading">
         <code>
-WeldedBeam            (<a class="autorefs autorefs-internal" title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
+WeldedBeam1            (<a class="autorefs autorefs-internal" title="opti.problem.Problem" href="../ref-problem/#opti.problem.Problem">Problem</a>)
         </code>
 
 
@@ -2425,7 +2425,7 @@ WeldedBeam            (<a class="autorefs autorefs-internal" title="opti.problem
 
     <div class="doc doc-contents ">
 
-      <p>Welded beam test problem: 4 inputs, 5 constraints.</p>
+      <p>Welded beam test problem: 1 output, 4 inputs, 5 constraints.</p>
 <p>In this problem the cost of a welded beam is minimized subject to 5 constraints.
 The original version of this problem in [1] had 7 constraints, 2 of which could be
 shrunk into the bounds. Here we use the formulations in [2].</p>
@@ -2434,8 +2434,8 @@ shrunk into the bounds. Here we use the formulations in [2].</p>
 
         <details class="quote">
           <summary>Source code in <code>opti/problems/cbo_benchmarks.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WeldedBeam</span><span class="p">(</span><span class="n">Problem</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Welded beam test problem: 4 inputs, 5 constraints.</span>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WeldedBeam1</span><span class="p">(</span><span class="n">Problem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Welded beam test problem: 1 output, 4 inputs, 5 constraints.</span>
 
 <span class="sd">    In this problem the cost of a welded beam is minimized subject to 5 constraints.</span>
 <span class="sd">    The original version of this problem in [1] had 7 constraints, 2 of which could be</span>
@@ -2447,7 +2447,7 @@ shrunk into the bounds. Here we use the formulations in [2].</p>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Welded beam (d=4, p=5)&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Single-objective welded beam problem (d=4, p=5)&quot;</span><span class="p">,</span>
             <span class="n">inputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]),</span>
                 <span class="n">Continuous</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]),</span>
