@@ -515,8 +515,8 @@ class PressureVessel(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
-class WeldedBeam(Problem):
-    """Welded beam test problem: 4 inputs, 5 constraints.
+class WeldedBeam1(Problem):
+    """Welded beam test problem: 1 output, 4 inputs, 5 constraints.
 
     In this problem the cost of a welded beam is minimized subject to 5 constraints.
     The original version of this problem in [1] had 7 constraints, 2 of which could be
@@ -528,7 +528,7 @@ class WeldedBeam(Problem):
 
     def __init__(self):
         super().__init__(
-            name="Welded beam (d=4, p=5)",
+            name="Single-objective welded beam problem (d=4, p=5)",
             inputs=[
                 Continuous("x1", domain=[0.125, 10.0]),
                 Continuous("x2", domain=[0.1, 10.0]),

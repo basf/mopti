@@ -165,7 +165,7 @@ def test_cbo_benchmarks():
         opti.problems.G10,
         opti.problems.TensionCompression,
         opti.problems.PressureVessel,
-        opti.problems.WeldedBeam,
+        opti.problems.WeldedBeam1,
         opti.problems.SpeedReducer,
     ):
         problem = _Problem()

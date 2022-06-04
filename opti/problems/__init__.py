@@ -12,7 +12,7 @@ from opti.problems.cbo_benchmarks import (
     Sasena,
     SpeedReducer,
     TensionCompression,
-    WeldedBeam,
+    WeldedBeam1,
 )
 from opti.problems.datasets import (
     HPLC,
