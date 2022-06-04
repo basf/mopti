@@ -1,3 +1,4 @@
+"""Constrained, single-objective benchmark problems from the Bayesian optimization literature."""
 import numpy as np
 import pandas as pd
 
@@ -8,11 +9,14 @@ from opti.problem import Problem
 
 
 class Gardner(Problem):
-    # 2D Gardner problem with 1 constraint
-    # From Gardner et al. 2014. http://proceedings.mlr.press/v32/gardner14.pdf
+    """Gardner test problem: 2 inputs, 1 constraint.
+
+    From Gardner et al. 2014. http://proceedings.mlr.press/v32/gardner14.pdf
+    """
+
     def __init__(self):
         super().__init__(
-            name="Gardner(d=2,p=1)",
+            name="Gardner (d=2, p=1)",
             inputs=[
                 Continuous("x1", domain=[0, 2.0 * np.pi]),
                 Continuous("x2", domain=[0, 2.0 * np.pi]),
@@ -23,7 +27,12 @@ class Gardner(Problem):
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y0": X.eval("sin(x1) + x2"),}, index=X.index,)
+        return pd.DataFrame(
+            {
+                "y0": X.eval("sin(x1) + x2"),
+            },
+            index=X.index,
+        )
 
     def get_optima(self) -> pd.DataFrame:
         x = np.array([[1.5 * np.pi, np.arcsin(0.95)]])
@@ -32,11 +41,14 @@ class Gardner(Problem):
 
 
 class Gramacy(Problem):
-    # 2D Gramacy problem with 2 constraints
-    # From Gramacy et al. 2016. https://arxiv.org/pdf/1403.4890.pdf
+    """Gramacy test problem: 2 inputs, 2 constraints
+
+    From Gramacy et al. 2016. https://arxiv.org/pdf/1403.4890.pdf
+    """
+
     def __init__(self):
         super().__init__(
-            name="Gramacy(d=2,p=2)",
+            name="Gramacy (d=2, p=2)",
             inputs=[
                 Continuous("x1", domain=[0, 1.0]),
                 Continuous("x2", domain=[0, 1.0]),
@@ -52,7 +64,12 @@ class Gramacy(Problem):
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y0": X.eval("x1 + x2"),}, index=X.index,)
+        return pd.DataFrame(
+            {
+                "y0": X.eval("x1 + x2"),
+            },
+            index=X.index,
+        )
 
     def get_optima(self) -> pd.DataFrame:
         x = np.array([[0.1954, 0.4044]])
@@ -61,11 +78,15 @@ class Gramacy(Problem):
 
 
 class Sasena(Problem):
-    # 2D Sasena problem with 3 constraints
-    # From Sasena's PhD thesis 2002. https://www.mat.univie.ac.at/~neum/glopt/mss/Sas02.pdf
+    """Sasena test problem: 2 inputs, 3 constraints.
+
+    From Sasena's PhD thesis 2002. https://www.mat.univie.ac.at/~neum/glopt/mss/Sas02.pdf
+    """
+
+    #
     def __init__(self):
         super().__init__(
-            name="Sasena(d=2,p=3)",
+            name="Sasena (d=2, p=3)",
             inputs=[
                 Continuous("x1", domain=[0, 1.0]),
                 Continuous("x2", domain=[0, 1.0]),
@@ -83,7 +104,10 @@ class Sasena(Problem):
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
-            {"y0": X.eval("-(x1 - 1.0)**2 - (x2 - 0.5)**2"),}, index=X.index,
+            {
+                "y0": X.eval("-(x1 - 1.0)**2 - (x2 - 0.5)**2"),
+            },
+            index=X.index,
         )
 
     def get_optima(self) -> pd.DataFrame:
@@ -93,11 +117,14 @@ class Sasena(Problem):
 
 
 class G4(Problem):
-    # 5D G4 problem with 6 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G4 test problme: 5 inputs, 6 constraints.
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G4(d=5,p=6)",
+            name="G4 (d=5, p=6)",
             inputs=[
                 Continuous("x1", domain=[78.0, 102.0]),
                 Continuous("x2", domain=[33.0, 45.0]),
@@ -146,11 +173,14 @@ class G4(Problem):
 
 
 class G6(Problem):
-    # 2D G6 problem with 2 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G6 test problem: 2 inputs, 2 constraints.
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G6(d=2,p=2)",
+            name="G6 (d=2, p=2)",
             inputs=[
                 Continuous("x1", domain=[13.5, 14.5]),
                 Continuous("x2", domain=[0.5, 1.5]),
@@ -165,7 +195,10 @@ class G6(Problem):
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
-            {"y0": X.eval("(x1 - 10.0)**3 + (x2 - 20.0)**3"),}, index=X.index,
+            {
+                "y0": X.eval("(x1 - 10.0)**3 + (x2 - 20.0)**3"),
+            },
+            index=X.index,
         )
 
     def get_optima(self) -> pd.DataFrame:
@@ -175,11 +208,14 @@ class G6(Problem):
 
 
 class G7(Problem):
-    # 10D G7 problem with 8 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G7 test problem: 10 inputs, 8 constraints.
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G7(d=10,p=8)",
+            name="G7 (d=10, p=8)",
             inputs=[Continuous(f"x{i+1}", domain=[-10.0, 10.0]) for i in range(10)],
             outputs=[Continuous("y0")],
             objectives=[Minimize("y0")],
@@ -243,11 +279,14 @@ class G7(Problem):
 
 
 class G8(Problem):
-    # 2D G8 problem with 2 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G8 test problem: 2 inputs, 2 constraints
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G8(d=2,p=2)",
+            name="G8 (d=2, p=2)",
             inputs=[
                 Continuous("x1", domain=[0.5, 10.0]),
                 Continuous("x2", domain=[0.5, 10.0]),
@@ -277,11 +316,14 @@ class G8(Problem):
 
 
 class G9(Problem):
-    # 7D G9 problem with 4 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G9 test problem: 7 inputs, 4 constraints.
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G9(d=7,p=4)",
+            name="G9 (d=7, p=4)",
             inputs=[Continuous(f"x{i+1}", domain=[-10.0, 10.0]) for i in range(7)],
             outputs=[Continuous("y0")],
             objectives=[Minimize("y0")],
@@ -320,11 +362,14 @@ class G9(Problem):
 
 
 class G10(Problem):
-    # 8D G10 problem with 6 constraints
-    # From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """G10 test problem: 8 inputs, 6 constraints.
+
+    From Michalewicz and Schoenauer 1996. https://ieeexplore.ieee.org/document/6791784
+    """
+
     def __init__(self):
         super().__init__(
-            name="G10(d=8,p=6)",
+            name="G10 (d=8, p=6)",
             inputs=[
                 Continuous("x1", domain=[100.0, 10000.0]),
                 Continuous("x2", domain=[1000.0, 10000.0]),
@@ -352,7 +397,12 @@ class G10(Problem):
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y0": X.eval("x1 + x2 + x3"),}, index=X.index,)
+        return pd.DataFrame(
+            {
+                "y0": X.eval("x1 + x2 + x3"),
+            },
+            index=X.index,
+        )
 
     def get_optima(self) -> pd.DataFrame:
         x = np.array(
@@ -373,12 +423,18 @@ class G10(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
-class Tension_Compression(Problem):
-    # The 3D tension-compression string design problem aims to minimize the weight of a tension/compression spring under 4 mechanical constraints
-    # From Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+class TensionCompression(Problem):
+    """Tension compression test problem: 3 inputs, 4 constraints.
+
+    The 3D tension-compression string design problem aims to minimize the weight of a
+    tension/compression spring under 4 mechanical constraints.
+
+    From Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+    """
+
     def __init__(self):
         super().__init__(
-            name="Tension_Compression(d=3,p=4)",
+            name="Tension compression",
             inputs=[
                 Continuous("x1", domain=[2.0, 15.0]),
                 Continuous("x2", domain=[0.25, 1.3]),
@@ -397,7 +453,12 @@ class Tension_Compression(Problem):
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y0": X.eval("x3**2 * x2 * (x1 + 2.0)"),}, index=X.index,)
+        return pd.DataFrame(
+            {
+                "y0": X.eval("x3**2 * x2 * (x1 + 2.0)"),
+            },
+            index=X.index,
+        )
 
     def get_optima(self) -> pd.DataFrame:
         x = np.array([[11.21390736278739, 0.35800478345599, 0.05174250340926]])
@@ -405,18 +466,22 @@ class Tension_Compression(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
-class Pressure_Vessel(Problem):
-    # The 4D pressure vessel design problem  aims to minimize the cost of designing a cylindrical vessel subject to 4 constraints.
-    # The original problem did not give the bounds for design variables.
-    # Here we use the bounds in [1] that contains the best known solution found in [2].
-    # Note that the fourth constraint always holds after bounding the input variables. Therefore, we remove it.
-    # An interesting setting is that the first two variables (x1 and x2) have to be multiples of 0.0625 and are rounded to the closest such value before evaluating the objective and constraints.
-    # However, this setting is removed here since the 'NonlinearInequality' class in mopti doesn't support 'round'.
-    # [1] Eriksson and Poloczek 2021. http://proceedings.mlr.press/v130/eriksson21a/eriksson21a.pdf
-    # [2] Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+class PressureVessel(Problem):
+    """Pressure vessel test problem: 4 inputs, 3 constraints.
+
+    The 4D pressure vessel design problem  aims to minimize the cost of designing a
+    cylindrical vessel subject to 4 constraints. The original problem did not give the
+    bounds for design variables. Here we use the bounds in [1] that contains the best
+    known solution found in [2]. Note that the fourth constraint always holds after
+    bounding the input variables. Therefore, we remove it.
+
+    [1] Eriksson and Poloczek 2021. http://proceedings.mlr.press/v130/eriksson21a/eriksson21a.pdf
+    [2] Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+    """
+
     def __init__(self):
         super().__init__(
-            name="Pressure_Vessel(d=4,p=3)",
+            name="Pressure vessel (d=4, p=3)",
             inputs=[
                 Continuous("x1", domain=[0, 10.0]),
                 Continuous("x2", domain=[0, 10.0]),
@@ -450,15 +515,20 @@ class Pressure_Vessel(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
-class Welded_Beam(Problem):
-    # In 4D welded beam design problem, the cost of design a welded beam is minimized subject to 5 constraints.
-    # The original version of this problem in [1] had 7 constraints, 2 of which could be shrunk into the bounds.
-    # Here we use the formulations in [2].
-    # [1] Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
-    # [2] Hedar and Fukushima 2006. https://link.springer.com/article/10.1007/s10898-005-3693-z
+class WeldedBeam(Problem):
+    """Welded beam test problem: 4 inputs, 5 constraints.
+
+    In this problem the cost of a welded beam is minimized subject to 5 constraints.
+    The original version of this problem in [1] had 7 constraints, 2 of which could be
+    shrunk into the bounds. Here we use the formulations in [2].
+
+    [1] Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+    [2] Hedar and Fukushima 2006. https://link.springer.com/article/10.1007/s10898-005-3693-z
+    """
+
     def __init__(self):
         super().__init__(
-            name="Welded_Beam(d=4,p=5)",
+            name="Welded beam (d=4, p=5)",
             inputs=[
                 Continuous("x1", domain=[0.125, 10.0]),
                 Continuous("x2", domain=[0.1, 10.0]),
@@ -482,7 +552,9 @@ class Welded_Beam(Problem):
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
-            {"y0": X.eval("1.10471 * x1**2 * x2 + 0.04811 * x3 * x4 * (14.0 + x2)"),},
+            {
+                "y0": X.eval("1.10471 * x1**2 * x2 + 0.04811 * x3 * x4 * (14.0 + x2)"),
+            },
             index=X.index,
         )
 
@@ -492,13 +564,19 @@ class Welded_Beam(Problem):
         return pd.DataFrame(np.c_[x, y], columns=self.inputs.names + self.outputs.names)
 
 
-class Speed_Reducer(Problem):
-    # The goal of 7D speed reducer problem is to minimize the weight of a speed reducer under 11 mechanical constraints.
-    # The third variable is a category variable. However, regarding it as a continuous variable does not change the optimum.
-    # From Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+class SpeedReducer(Problem):
+    """Speed reducer test problem: 7 inputs, 11 constraints.
+
+    The goal of 7D speed reducer problem is to minimize the weight of a speed reducer
+    under 11 mechanical constraints. The third variable is a category variable.
+    However, regarding it as a continuous variable does not change the optimum.
+
+    From Coello and Mezura-Montes 2002. https://link.springer.com/chapter/10.1007/978-0-85729-345-9_23
+    """
+
     def __init__(self):
         super().__init__(
-            name="Speed_Reducer(d=7,p=11)",
+            name="Speed reducer (d=7, p=11)",
             inputs=[
                 Continuous("x1", domain=[2.6, 3.6]),
                 Continuous("x2", domain=[0.7, 0.8]),
