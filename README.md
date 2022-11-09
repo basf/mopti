@@ -1,3 +1,5 @@
+This project is deprecated. Development continues under  https://github.com/experimental-design/bofire.
+
 # Opti
 
 [![Tests](https://github.com/basf/mopti/actions/workflows/main.yml/badge.svg)](https://github.com/basf/mopti/actions)
