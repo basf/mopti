@@ -419,12 +419,12 @@ class Parameters:
         """Check if points are inside the domain of each parameter."""
         if isinstance(points, pd.DataFrame):
             points = points[self.names]
-        b = np.stack([self[k].contains(v) for k, v in points.iteritems()], axis=1)
+        b = np.stack([self[k].contains(v) for k, v in points.items()], axis=1)
         return b.all(axis=1)
 
     def round(self, points: pd.DataFrame) -> pd.DataFrame:
         """Round points to the closest contained values."""
-        return pd.concat([self[k].round(v) for k, v in points.iteritems()], axis=1)
+        return pd.concat([self[k].round(v) for k, v in points.items()], axis=1)
 
     def sample(self, n: int = 1) -> pd.DataFrame:
         """Draw uniformly distributed random samples."""
