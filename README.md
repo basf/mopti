@@ -19,5 +19,5 @@ Opti ...
 * json-serializes problems for use in RESTful APIs and json/bson DBs, and
 * provides a range of benchmark problems for (multi-objective) optimization and Bayesian optimization.
 
-**Note:** We developing a successor of opti called [BoFire](https://github.com/experimental-design/bofire).
+**Note:** We are developing a successor of opti called [BoFire](https://github.com/experimental-design/bofire).
 
