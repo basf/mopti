@@ -1,7 +1,3 @@
-## Deprecated
-
-**This project is deprecated. Development continues under  https://github.com/experimental-design/bofire.**
-
 ## Opti
 
 [![Tests](https://github.com/basf/mopti/actions/workflows/main.yml/badge.svg)](https://github.com/basf/mopti/actions)
@@ -22,3 +18,6 @@ Opti ...
 * provides sampling methods for constrained mixed variable spaces,
 * json-serializes problems for use in RESTful APIs and json/bson DBs, and
 * provides a range of benchmark problems for (multi-objective) optimization and Bayesian optimization.
+
+**Note:** We developing a successor of opti called [BoFire](https://github.com/experimental-design/bofire).
+
