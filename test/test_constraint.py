@@ -21,7 +21,9 @@ def test_linear_equality():
 
     df = pd.DataFrame([[1, 1, 1, 1, 1], [1, 2, 3, 4, 5]], columns=names)
     assert np.allclose(constraint(df), [0, 10] / np.sqrt(5))
-    assert np.allclose(constraint.jacobian(df), constraint.lhs / np.linalg.norm(constraint.lhs,2))
+    assert np.allclose(
+        constraint.jacobian(df), constraint.lhs / np.linalg.norm(constraint.lhs, 2)
+    )
     assert np.allclose(constraint.satisfied(df), [True, False])
 
     eval(constraint.__repr__())
@@ -43,7 +45,9 @@ def test_linear_inequality():
 
     df = pd.DataFrame([[1, 0.1, 1, 1, 1], [1, 2, 3, 4, 5]], columns=names)
     assert np.allclose(constraint(df), [-0.9, 10] / np.sqrt(5))
-    assert np.allclose(constraint.jacobian(df), constraint.lhs / np.linalg.norm(constraint.lhs,2))
+    assert np.allclose(
+        constraint.jacobian(df), constraint.lhs / np.linalg.norm(constraint.lhs, 2)
+    )
     assert np.allclose(constraint.satisfied(df), [True, False])
 
     eval(constraint.__repr__())
@@ -70,8 +74,8 @@ def test_nonlinear_equality():
     )
 
     assert np.allclose(constraint(df), [0, -0.5, 1])
-    assert np.allclose(constraint.jacobian(df), [[1.2,1.6,0],[1,1,0],[2,2,0]])
-    for i,col in enumerate(constraint.jacobian(df)):
+    assert np.allclose(constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0]])
+    for i, col in enumerate(constraint.jacobian(df)):
         assert col == f"dg/dx{i}"
     assert np.allclose(constraint.satisfied(df), [True, False, False])
 
@@ -92,8 +96,8 @@ def test_nonlinear_inequality():
     )
 
     assert np.allclose(constraint(df), [0, -0.5, 1])
-    assert np.allclose(constraint.jacobian(df), [[1.2,1.6,0],[1,1,0],[2,2,0]])
-    for i,col in enumerate(constraint.jacobian(df)):
+    assert np.allclose(constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0]])
+    for i, col in enumerate(constraint.jacobian(df)):
         assert col == f"dg/dx{i}"
     assert np.allclose(constraint.satisfied(df), [True, True, False])
 
