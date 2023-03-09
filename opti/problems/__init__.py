@@ -1,4 +1,19 @@
 # flake8: noqa
+from opti.problems.cbo_benchmarks import (
+    G4,
+    G6,
+    G7,
+    G8,
+    G9,
+    G10,
+    Gardner,
+    Gramacy,
+    PressureVessel,
+    Sasena,
+    SpeedReducer,
+    TensionCompression,
+    WeldedBeam1,
+)
 from opti.problems.datasets import (
     HPLC,
     Alkox,

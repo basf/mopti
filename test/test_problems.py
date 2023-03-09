@@ -7,7 +7,7 @@ from opti.parameter import Continuous, Discrete
 
 def sample_and_check_function(problem):
     X = problem.sample_inputs(10)
-    X.index += 1000  # change index to test wether it is kept
+    X.index += 1000  # change index to test whether it is kept
     Y = problem.f(X)
     assert np.all(X.index == Y.index)
     assert np.all(problem.outputs.contains(Y))
@@ -150,3 +150,27 @@ def test_mixed_variables_problems():
     x = problem.inputs.sample(1000)
     y = problem.f(x)
     assert np.all(problem.outputs.contains(y))
+
+
+def test_cbo_benchmarks():
+    for _Problem in (
+        opti.problems.Gardner,
+        opti.problems.Gramacy,
+        opti.problems.Sasena,
+        opti.problems.G4,
+        opti.problems.G6,
+        opti.problems.G7,
+        opti.problems.G8,
+        opti.problems.G9,
+        opti.problems.G10,
+        opti.problems.TensionCompression,
+        opti.problems.PressureVessel,
+        opti.problems.WeldedBeam1,
+        opti.problems.SpeedReducer,
+    ):
+        problem = _Problem()
+        # sample_and_check_function(problem)
+        optima = problem.get_optima()
+        px = optima[problem.inputs.names]
+        py = optima[problem.outputs.names]
+        assert np.allclose(problem.f(px), py, atol=1e-04)

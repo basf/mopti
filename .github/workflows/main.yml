@@ -17,11 +17,11 @@ jobs:
           python-version: 3.9
       - name: Run black, flake8 and isort
         run: |
-          pip3 install black isort flake8
+          pip3 install black==22.12.0 isort==5.9.3 flake8==3.9.2
           black --check opti test
           flake8 --verbose opti test
           isort . --check-only --verbose
       - name: Run tests
         run: |
-          pip install .[testing]
+          pip install .[tests]
           pytest
