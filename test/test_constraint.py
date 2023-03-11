@@ -67,17 +67,22 @@ def test_nonlinear_equality():
     constraint = NonlinearEquality("x1**2 + x2**2 - 1", jacobian="[2*x1, 2*x2, 0]")
     df = pd.DataFrame(
         {
-            "x1": [0.6, 0.5, 1],
-            "x2": [0.8, 0.5, 1],
-            "x3": [1, 1, 3],
+            "x1": [0.6, 0.5, 1, 1],
+            "x2": [0.8, 0.5, 1, 1],
+            "x3": [1, 1, 3, 3],
         }
     )
 
-    assert np.allclose(constraint(df), [0, -0.5, 1])
-    assert np.allclose(constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0]])
+    assert np.allclose(constraint(df), [0, -0.5, 1, 1])
+    assert np.allclose(
+        constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0], [2, 2, 0]]
+    )
     for i, col in enumerate(constraint.jacobian(df)):
         assert col == f"dg/dx{i}"
-    assert np.allclose(constraint.satisfied(df), [True, False, False])
+    assert np.allclose(constraint.satisfied(df), [True, False, False, False])
+    constraint.names = ["x1", "x2", "x3"]
+    for i, col in enumerate(constraint.jacobian(df)):
+        assert col == f"dg/dx{i+1}"
 
     eval(constraint.__repr__())
     json.dumps(constraint.to_config())
@@ -89,17 +94,22 @@ def test_nonlinear_inequality():
     constraint = NonlinearInequality("x1**2 + x2**2 - 1", jacobian="[2*x1, 2*x2, 0]")
     df = pd.DataFrame(
         {
-            "x1": [0.6, 0.5, 1],
-            "x2": [0.8, 0.5, 1],
-            "x3": [1, 1, 3],
+            "x1": [0.6, 0.5, 1, 1],
+            "x2": [0.8, 0.5, 1, 1],
+            "x3": [1, 1, 3, 3],
         }
     )
 
-    assert np.allclose(constraint(df), [0, -0.5, 1])
-    assert np.allclose(constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0]])
+    assert np.allclose(constraint(df), [0, -0.5, 1, 1])
+    assert np.allclose(
+        constraint.jacobian(df), [[1.2, 1.6, 0], [1, 1, 0], [2, 2, 0], [2, 2, 0]]
+    )
     for i, col in enumerate(constraint.jacobian(df)):
         assert col == f"dg/dx{i}"
-    assert np.allclose(constraint.satisfied(df), [True, True, False])
+    assert np.allclose(constraint.satisfied(df), [True, True, False, False])
+    constraint.names = ["x1", "x2", "x3"]
+    for i, col in enumerate(constraint.jacobian(df)):
+        assert col == f"dg/dx{i+1}"
 
     eval(constraint.__repr__())
     json.dumps(constraint.to_config())

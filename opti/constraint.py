@@ -201,7 +201,7 @@ class NonlinearEquality(Constraint):
                 ).transpose()
             else:
                 return pd.DataFrame(
-                    res, index=[f"dg/dx{i}" for i in range(data.shape[0])]
+                    res, index=[f"dg/dx{i}" for i in range(data.shape[1])]
                 ).transpose()
 
         return super().jacobian(data)
@@ -270,7 +270,7 @@ class NonlinearInequality(Constraint):
                 ).transpose()
             else:
                 return pd.DataFrame(
-                    res, index=[f"dg/dx{i}" for i in range(data.shape[0])]
+                    res, index=[f"dg/dx{i}" for i in range(data.shape[1])]
                 ).transpose()
 
         return super().jacobian(data)
