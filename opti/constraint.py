@@ -1,5 +1,5 @@
 import pprint
-from typing import Dict, List, Sequence, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -10,6 +10,10 @@ class Constraint:
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
         """Numerically evaluate the constraint g(x)."""
+        raise NotImplementedError
+
+    def jacobian(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Numerically evaluate the jacobian of the constraint J_g(x)"""
         raise NotImplementedError
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
@@ -56,6 +60,12 @@ class LinearEquality(Constraint):
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
         return (data[self.names] @ self.lhs - self.rhs) / np.linalg.norm(self.lhs)
+
+    def jacobian(self, data: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(
+            np.tile(self.lhs / np.linalg.norm(self.lhs), [data.shape[0], 1]),
+            columns=["dg/d" + name for name in self.names],
+        )
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return pd.Series(np.isclose(self(data), 0), index=data.index)
@@ -116,6 +126,12 @@ class LinearInequality(Constraint):
     def __call__(self, data: pd.DataFrame) -> pd.Series:
         return (data[self.names] @ self.lhs - self.rhs) / np.linalg.norm(self.lhs)
 
+    def jacobian(self, data: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(
+            np.tile(self.lhs / np.linalg.norm(self.lhs), [data.shape[0], 1]),
+            columns=["dg/d" + name for name in self.names],
+        )
+
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return self(data) <= 0
 
@@ -132,11 +148,21 @@ class LinearInequality(Constraint):
 
 
 class NonlinearEquality(Constraint):
-    def __init__(self, expression: str):
+    def __init__(
+        self,
+        expression: str,
+        jacobian: Optional[str] = None,
+        names: Optional[List[str]] = None,
+    ):
         """Equality of the form 'expression == 0'.
 
         Args:
             expression: Mathematical expression that can be evaluated by `pandas.eval`.
+            jacobian: List of mathematical expressions that can be evaluated by `pandas.eval`.
+                The i-th expression should correspond to the partial derivative with respect to
+                the i-th variable. If `names` attribute is provided, the order of the variables should
+                correspond to the order of the variables in `names`. Optional.
+            names: List of variable names present in `expression`. Optional.
 
         Examples:
             You can pass any expression that can be evaluated by `pd.eval`.
@@ -155,9 +181,30 @@ class NonlinearEquality(Constraint):
         """
         self.expression = expression
         self.is_equality = True
+        self.jacobian_expression = jacobian
+        self.names = names
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
         return data.eval(self.expression)
+
+    def jacobian(self, data: pd.DataFrame) -> pd.DataFrame:
+
+        if self.jacobian_expression is not None:
+            res = data.eval(self.jacobian_expression)
+            for i, col in enumerate(res):
+                if not hasattr(col, "__iter__"):
+                    res[i] = pd.Series(np.repeat(col, data.shape[0]))
+
+            if self.names is not None:
+                return pd.DataFrame(
+                    res, index=["dg/d" + name for name in self.names]
+                ).transpose()
+            else:
+                return pd.DataFrame(
+                    res, index=[f"dg/dx{i}" for i in range(data.shape[1])]
+                ).transpose()
+
+        return super().jacobian(data)
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return pd.Series(np.isclose(self(data), 0), index=data.index)
@@ -170,11 +217,21 @@ class NonlinearEquality(Constraint):
 
 
 class NonlinearInequality(Constraint):
-    def __init__(self, expression: str):
+    def __init__(
+        self,
+        expression: str,
+        jacobian: Optional[str] = None,
+        names: Optional[List[str]] = None,
+    ):
         """Inequality of the form 'expression <= 0'.
 
         Args:
             expression: Mathematical expression that can be evaluated by `pandas.eval`.
+            jacobian: List of mathematical expressions that can be evaluated by `pandas.eval`.
+                The i-th expression should correspond to the partial derivative with respect to
+                the i-th variable. If `names` attribute is provided, the order of the variables should
+                correspond to the order of the variables in `names`. Optional.
+            names: List of variable names present in `expression`. Optional.
 
         Examples:
             You can pass any expression that can be evaluated by `pd.eval`.
@@ -193,9 +250,30 @@ class NonlinearInequality(Constraint):
         """
         self.expression = expression
         self.is_equality = False
+        self.jacobian_expression = jacobian
+        self.names = names
 
     def __call__(self, data: pd.DataFrame) -> pd.Series:
         return data.eval(self.expression)
+
+    def jacobian(self, data: pd.DataFrame) -> pd.DataFrame:
+
+        if self.jacobian_expression is not None:
+            res = data.eval(self.jacobian_expression)
+            for i, col in enumerate(res):
+                if not hasattr(col, "__iter__"):
+                    res[i] = pd.Series(np.repeat(col, data.shape[0]))
+
+            if self.names is not None:
+                return pd.DataFrame(
+                    res, index=["dg/d" + name for name in self.names]
+                ).transpose()
+            else:
+                return pd.DataFrame(
+                    res, index=[f"dg/dx{i}" for i in range(data.shape[1])]
+                ).transpose()
+
+        return super().jacobian(data)
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         return self(data) <= 0
@@ -277,6 +355,17 @@ class Constraints:
             Constraint evaluation g(x) for each of the constraints.
         """
         return pd.concat([c(data) for c in self.constraints], axis=1)
+
+    def jacobian(self, data: pd.DataFrame) -> List:
+        """Numerically evaluate all constraint gradients.
+
+        Args:
+            data: Data to evaluate the constraint gradients on.
+
+        Returns:
+            Jacobian evaluation J_g(x) for each of the constraints as a list of dataframes.
+        """
+        return [c.jacobian(data) for c in self.constraints]
 
     def satisfied(self, data: pd.DataFrame) -> pd.Series:
         """Check if all constraints are satisfied.
