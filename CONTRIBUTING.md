@@ -26,12 +26,16 @@ pre-commit install
 We have a github action set up to publish on PyPI.
 The action is triggered on tagged commits to the main branch, where the tag starts with a "v".
 
-Example:
-```
-git commit -m "Release v0.10.1: stuff"
-git tag -a "v0.10.1" -m "Release v0.10.1"
-git push --follow-tags
-```
+Example: For publishing 0.10.1
+1. Bump the package version number `opti.__version__ == 0.10.1` and commit.
+    ```
+    git commit -m "Release v0.10.1: ..."
+    ```
+2. Tag and push the commit.
+    ```
+    git tag -a "v0.10.1" -m "Release v0.10.1"
+    git push --follow-tags
+    ```
 
 
 ## Documentation
