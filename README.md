@@ -20,4 +20,3 @@ Opti ...
 * provides a range of benchmark problems for (multi-objective) optimization and Bayesian optimization.
 
 **Note:** We are developing a successor of opti called [BoFire](https://github.com/experimental-design/bofire).
-
