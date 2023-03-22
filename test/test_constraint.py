@@ -89,6 +89,20 @@ def test_nonlinear_equality():
     constraint2 = make_constraint(**constraint.to_config())
     assert np.allclose(constraint2(df), constraint(df))
 
+    # with jacobian and names
+    constraint = NonlinearEquality(
+        "x1**2 + x2**2 - 1", jacobian="[2*x1, 2*x2]", names=["x1", "x2"]
+    )
+    dgdx = constraint.jacobian(df)
+    assert np.allclose(dgdx["dg/dx1"], [1.2, 1.0, 2.0, 2.0])
+    assert np.allclose(dgdx["dg/dx2"], [1.6, 1.0, 2.0, 2.0])
+    assert "dg/dx3" not in dgdx.columns
+
+    # without jacobian
+    constraint = NonlinearEquality("x1**2 + x2**2 - 1")
+    with pytest.raises(NotImplementedError):
+        constraint.jacobian(df)
+
 
 def test_nonlinear_inequality():
     constraint = NonlinearInequality("x1**2 + x2**2 - 1", jacobian="[2*x1, 2*x2, 0]")
@@ -115,6 +129,20 @@ def test_nonlinear_inequality():
     json.dumps(constraint.to_config())
     constraint2 = make_constraint(**constraint.to_config())
     assert np.allclose(constraint2(df), constraint(df))
+
+    # with jacobian and names
+    constraint = NonlinearInequality(
+        "x1**2 + x2**2 - 1", jacobian="[2*x1, 2*x2]", names=["x1", "x2"]
+    )
+    dgdx = constraint.jacobian(df)
+    assert np.allclose(dgdx["dg/dx1"], [1.2, 1.0, 2.0, 2.0])
+    assert np.allclose(dgdx["dg/dx2"], [1.6, 1.0, 2.0, 2.0])
+    assert "dg/dx3" not in dgdx.columns
+
+    # without jacobian
+    constraint = NonlinearInequality("x1**2 + x2**2 - 1")
+    with pytest.raises(NotImplementedError):
+        constraint.jacobian(df)
 
 
 def test_nchoosek():
