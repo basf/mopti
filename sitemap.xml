@@ -2,122 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://basf.github.io/mopti/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/install/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/problem/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-constraint/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-metric/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-model/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-objective/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-parameter/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-problem/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-problems/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-sampling/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/ref-tools/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/alkox/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/baumgartner-aniline/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/baumgartner-benzamide/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/benzylation/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/cake/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/fullerenes/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/hplc/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/photodegradation/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/reizmann-suzuki/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/snar/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/datasets/suzuki/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://basf.github.io/mopti/examples/problem_reduction/</loc>
-         <lastmod>2023-03-22</lastmod>
+         <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
