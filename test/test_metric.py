@@ -39,7 +39,7 @@ def test_pareto_efficient():
     )
     efficient = opti.metric.is_pareto_efficient(A)
     assert len(A[efficient]) == 4
-    assert np.alltrue(pareto_front(A) == A[efficient])
+    assert np.all(pareto_front(A) == A[efficient])
 
 
 def test_crowding_distance():
