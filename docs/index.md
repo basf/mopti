@@ -1,5 +1,8 @@
 # Introduction
 
+!!! warning
+    Opti is deprecated. Consider using [BoFire](https://github.com/experimental-design/bofire) instead.
+
 The primary purpose of opti is to define tasks or problems in a number of closely related fields, including experimental design, multiobjective optimization and decision making and Bayesian optimization.
 
 Opti specifications are json serializable for use in RESTful APIs and are to a large extent agnostic to the specific methods and frameworks in which the problems are solved.

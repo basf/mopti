@@ -4,6 +4,7 @@
 [![Docs](https://github.com/basf/mopti/actions/workflows/docs.yml/badge.svg)](https://basf.github.io/mopti/)
 [![PyPI](https://img.shields.io/pypi/v/mopti.svg?color=%2334D058)](https://pypi.org/project/mopti)
 
+**Opti is deprecated. Consider using [BoFire](https://github.com/experimental-design/bofire) instead.**
 
 Opti is a Python package for specifying problems in a number of closely related fields, including experimental design, multiobjective optimization, decision making and Bayesian optimization.
 
