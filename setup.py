@@ -48,8 +48,7 @@ setup(
         "docs": [
             "mkdocs",
             "mkdocs-material",
-            "mkdocstrings>=0.18",
-            "mkdocstrings-python-legacy",
+            "mkdocstrings[python]",
         ],
     },
 )
