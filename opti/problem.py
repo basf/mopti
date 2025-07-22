@@ -1,5 +1,6 @@
 import json
 import os
+from io import StringIO
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -87,10 +88,10 @@ class Problem:
             self.f = f
 
         if isinstance(data, dict):
-            data = pd.read_json(json.dumps(data), orient="split")
+            data = pd.read_json(StringIO(json.dumps(data)), orient="split")
 
         if isinstance(optima, dict):
-            optima = pd.read_json(json.dumps(optima), orient="split")
+            optima = pd.read_json(StringIO(json.dumps(optima)), orient="split")
 
         self.set_data(data)
         self.set_optima(optima)

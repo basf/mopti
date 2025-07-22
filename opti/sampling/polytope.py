@@ -116,7 +116,7 @@ def _get_AbNx(parameters, constraints):
     # add the inequality constraints corresponding to the box bounds
     lower = parameters.bounds.loc["min"]
     upper = parameters.bounds.loc["max"]
-    A_ineq = np.row_stack([-np.eye(nD), np.eye(nD)])
+    A_ineq = np.vstack([-np.eye(nD), np.eye(nD)])
     b_ineq = np.r_[-np.array(lower), np.array(upper)]
 
     if sum(~is_eq) > 0:
