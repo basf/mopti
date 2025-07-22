@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mopti"
+dynamic = ["version"]
+description = "Tools for experimental design and multi-objective optimization"
+authors = [
+    {name = "BASF SE"}
+]
+license = {text = "BSD-3-Clause"}
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [
+    "Bayesian optimization",
+    "Multi-objective optimization",
+    "Experimental design",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy>=1.7",
+]
+
+[dependency-groups]
+tests = [
+    "pytest",
+    "scikit-learn",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+]
+dev = [
+    "pytest",
+    "scikit-learn",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "pre-commit",
+]
+
+[tool.setuptools]
+packages = ["opti"]
+
+[tool.setuptools.package-data]
+"*" = ["problems/data/*"]
+
+[tool.setuptools_scm]
+write_to = "opti/_version.py"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+    "E501", # don't enforce for comments and docstrings
+]
+select = ["B", "C", "E", "F", "W", "I"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "scikit-learn", 
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "pre-commit",
+]
+package = true
