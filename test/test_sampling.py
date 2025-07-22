@@ -46,7 +46,7 @@ def test_sphere_sampling():
 
 
 def test_polytope_chebyshev_center():
-    A = np.row_stack([-np.eye(3), np.eye(3)])
+    A = np.vstack([-np.eye(3), np.eye(3)])
     b = np.r_[-np.zeros(3), np.ones(3)]
     x0 = polytope._chebyshev_center(A, b)
     assert np.allclose(x0, [0.5, 0.5, 0.5])
