@@ -12,16 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.12
-      - name: Run black, flake8 and isort
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --all-extras
+      - name: Run ruff
         run: |
-          pip3 install black==22.12.0 isort==5.9.3 flake8==3.9.2
-          black --check opti test
-          flake8 --verbose opti test
-          isort . --check-only --verbose
+          uv pip install ruff
+          uv run ruff check opti test
+          uv run ruff format --check opti test
       - name: Run tests
-        run: |
-          pip install .[tests]
-          pytest
+        run: uv run pytest

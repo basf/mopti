@@ -1,5 +1,5 @@
-"""Single objective benchmark problems.
-"""
+"""Single objective benchmark problems."""
+
 import numpy as np
 import pandas as pd
 
@@ -14,7 +14,9 @@ class Ackley(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Ackley problem",
-            inputs=[Continuous(f"x{i+1}", [-32.768, +32.768]) for i in range(n_inputs)],
+            inputs=[
+                Continuous(f"x{i + 1}", [-32.768, +32.768]) for i in range(n_inputs)
+            ],
             outputs=[Continuous("y")],
         )
 
@@ -77,7 +79,7 @@ class Himmelblau(Problem):
     def __init__(self):
         super().__init__(
             name="Himmelblau function",
-            inputs=[Continuous(f"x{i+1}", [-6, 6]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [-6, 6]) for i in range(2)],
             outputs=[Continuous("y")],
         )
 
@@ -109,7 +111,7 @@ class Michalewicz(Problem):
     def __init__(self, n_inputs: int = 2):
         super().__init__(
             name="Michalewicz function",
-            inputs=[Continuous(f"x{i+1}", [0, np.pi]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [0, np.pi]) for i in range(n_inputs)],
             outputs=[Continuous("y")],
         )
 
@@ -131,7 +133,7 @@ class Rosenbrock(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rosenbrock function",
-            inputs=[Continuous(f"x{i+1}", [-2.048, 2.048]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [-2.048, 2.048]) for i in range(n_inputs)],
             outputs=[Continuous("y")],
         )
 
@@ -152,7 +154,7 @@ class Schwefel(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Schwefel function",
-            inputs=[Continuous(f"x{i+1}", [-500, 500]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [-500, 500]) for i in range(n_inputs)],
             outputs=[Continuous("y")],
         )
 
@@ -173,7 +175,7 @@ class Sphere(Problem):
     def __init__(self, n_inputs=10):
         super().__init__(
             name="Sphere function",
-            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [0, 1]) for i in range(n_inputs)],
             outputs=[Continuous("y", [0, 2])],
         )
 
@@ -194,7 +196,7 @@ class Rastrigin(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Rastrigin function",
-            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [-5, 5]) for i in range(n_inputs)],
             outputs=[Continuous("y")],
         )
 
@@ -216,7 +218,7 @@ class ThreeHumpCamel(Problem):
     def __init__(self):
         super().__init__(
             name="Three-hump camel function",
-            inputs=[Continuous(f"x{i+1}", [-5, 5]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [-5, 5]) for i in range(2)],
             outputs=[Continuous("y")],
         )
 
@@ -237,7 +239,7 @@ class Zakharov(Problem):
     def __init__(self, n_inputs=2):
         super().__init__(
             name="Zakharov function",
-            inputs=[Continuous(f"x{i+1}", [-10, 10]) for i in range(n_inputs)],
+            inputs=[Continuous(f"x{i + 1}", [-10, 10]) for i in range(n_inputs)],
             outputs=[Continuous("y")],
         )
 

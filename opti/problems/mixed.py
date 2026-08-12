@@ -26,7 +26,7 @@ class DiscreteVLMOP2(Problem):
         super().__init__(
             name="Discrete VLMOP2 test problem",
             inputs=[Categorical("x1", ["a", "b"])]
-            + [Continuous(f"x{i+1}", [-2, 2]) for i in range(1, n_inputs)],
+            + [Continuous(f"x{i + 1}", [-2, 2]) for i in range(1, n_inputs)],
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 
@@ -61,7 +61,7 @@ class DiscreteFuelInjector(Problem):
                 Continuous("x3", [-2, 2]),
                 Continuous("x4", [-2, 2]),
             ],
-            outputs=[Continuous(f"y{i+1}") for i in range(4)],
+            outputs=[Continuous(f"y{i + 1}") for i in range(4)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:

@@ -5,6 +5,7 @@ All problems are bi-objective, have D continuous inputs and are unconstrained.
 Zitzler, Deb, Thiele 2000 - Comparison of Multiobjective Evolutionary Algorithms: Empirical Results
 http://dx.doi.org/10.1162/106365600568202
 """
+
 import numpy as np
 import pandas as pd
 
@@ -18,8 +19,8 @@ class ZDT1(Problem):
     def __init__(self, n_inputs=30):
         super().__init__(
             name="ZDT-1 problem",
-            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
-            outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [0, 1]) for i in range(n_inputs)],
+            outputs=[Continuous(f"y{i + 1}", [0, np.inf]) for i in range(2)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -41,8 +42,8 @@ class ZDT2(Problem):
     def __init__(self, n_inputs=30):
         super().__init__(
             name="ZDT-2 problem",
-            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
-            outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [0, 1]) for i in range(n_inputs)],
+            outputs=[Continuous(f"y{i + 1}", [0, np.inf]) for i in range(2)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -64,8 +65,8 @@ class ZDT3(Problem):
     def __init__(self, n_inputs=30):
         super().__init__(
             name="ZDT-3 problem",
-            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
-            outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [0, 1]) for i in range(n_inputs)],
+            outputs=[Continuous(f"y{i + 1}", [-np.inf, np.inf]) for i in range(2)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -101,8 +102,8 @@ class ZDT4(Problem):
         super().__init__(
             name="ZDT-4 problem",
             inputs=[Continuous("x1", [0, 1])]
-            + [Continuous(f"x{i+1}", [-5, 5]) for i in range(1, n_inputs)],
-            outputs=[Continuous(f"y{i+1}", [0, np.inf]) for i in range(2)],
+            + [Continuous(f"x{i + 1}", [-5, 5]) for i in range(1, n_inputs)],
+            outputs=[Continuous(f"y{i + 1}", [0, np.inf]) for i in range(2)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -126,8 +127,8 @@ class ZDT6(Problem):
     def __init__(self, n_inputs=30):
         super().__init__(
             name="ZDT-6 problem",
-            inputs=[Continuous(f"x{i+1}", [0, 1]) for i in range(n_inputs)],
-            outputs=[Continuous(f"y{i+1}", [-np.inf, np.inf]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [0, 1]) for i in range(n_inputs)],
+            outputs=[Continuous(f"y{i + 1}", [-np.inf, np.inf]) for i in range(2)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:

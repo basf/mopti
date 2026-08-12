@@ -82,7 +82,7 @@ def test_nonlinear_equality():
     assert np.allclose(constraint.satisfied(df), [True, False, False, False])
     constraint.names = ["x1", "x2", "x3"]
     for i, col in enumerate(constraint.jacobian(df)):
-        assert col == f"dg/dx{i+1}"
+        assert col == f"dg/dx{i + 1}"
 
     eval(constraint.__repr__())
     json.dumps(constraint.to_config())
@@ -123,7 +123,7 @@ def test_nonlinear_inequality():
     assert np.allclose(constraint.satisfied(df), [True, True, False, False])
     constraint.names = ["x1", "x2", "x3"]
     for i, col in enumerate(constraint.jacobian(df)):
-        assert col == f"dg/dx{i+1}"
+        assert col == f"dg/dx{i + 1}"
 
     eval(constraint.__repr__())
     json.dumps(constraint.to_config())

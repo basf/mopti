@@ -1,4 +1,5 @@
 """Constrained, single-objective benchmark problems from the Bayesian optimization literature."""
+
 import numpy as np
 import pandas as pd
 
@@ -216,7 +217,7 @@ class G7(Problem):
     def __init__(self):
         super().__init__(
             name="G7 (d=10, p=8)",
-            inputs=[Continuous(f"x{i+1}", domain=[-10.0, 10.0]) for i in range(10)],
+            inputs=[Continuous(f"x{i + 1}", domain=[-10.0, 10.0]) for i in range(10)],
             outputs=[Continuous("y0")],
             objectives=[Minimize("y0")],
             constraints=[
@@ -324,7 +325,7 @@ class G9(Problem):
     def __init__(self):
         super().__init__(
             name="G9 (d=7, p=4)",
-            inputs=[Continuous(f"x{i+1}", domain=[-10.0, 10.0]) for i in range(7)],
+            inputs=[Continuous(f"x{i + 1}", domain=[-10.0, 10.0]) for i in range(7)],
             outputs=[Continuous("y0")],
             objectives=[Minimize("y0")],
             constraints=[

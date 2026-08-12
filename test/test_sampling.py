@@ -166,7 +166,7 @@ def test_constrained_sampling():
 
 def test_constrained_nchoosek():
     # two n-choose-k constraints
-    parameters = Parameters([Continuous(f"x{i+1}", domain=[0, 1]) for i in range(10)])
+    parameters = Parameters([Continuous(f"x{i + 1}", domain=[0, 1]) for i in range(10)])
     constraints = Constraints(
         [
             NChooseK(["x1", "x2", "x3", "x4", "x5"], max_active=3),
@@ -177,7 +177,7 @@ def test_constrained_nchoosek():
     assert constraints.satisfied(X).all()
 
     # n-choose-k constraint + a particular inequality constraint
-    parameters = Parameters([Continuous(f"x{i+1}", domain=[0, 1]) for i in range(3)])
+    parameters = Parameters([Continuous(f"x{i + 1}", domain=[0, 1]) for i in range(3)])
     constraints = Constraints(
         [
             NChooseK(["x1", "x2", "x3"], max_active=2),

@@ -14,3 +14,4 @@ dist
 # uv
 .venv/
 uv.lock
+.env

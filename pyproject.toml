@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mopti"
+description = "Tools for experimental design and multi-objective optimization"
+authors = [{ name = "BASF SE" }]
+license = { text = "BSD-3" }
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [
+    "Bayesian optimization",
+    "Multi-objective optimization",
+    "Experimental design",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy>=1.7",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = ["pytest", "scikit-learn"]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+]
+
+[project.urls]
+Homepage = "https://github.com/basf/mopti"
+
+[tool.setuptools]
+packages = { find = {} }
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["problems/data/*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "opti.__init__.__version__" }
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["B", "C", "E", "F", "W", "T20"]
+ignore = [
+    "E203",  # whitespace before punctuation (formatter handles this)
+    "E266",  # too many leading '#' for block comment
+    "E501",  # line too long (formatter handles this)
+    # Rules below are new checks not covered by the old flake8 setup;
+    # they flag pre-existing code and are disabled for now.
+    "B007",  # unused-loop-control-variable
+    "B015",  # useless-comparison
+    "B017",  # assert-raises-exception
+    "B018",  # useless-expression
+    "B028",  # no-explicit-stacklevel
+    "B904",  # raise-without-from-inside-except
+    "C405",  # unnecessary-literal-set
+    "C408",  # unnecessary-collection-call
+    "C416",  # unnecessary-comprehension
+    "C419",  # unnecessary-comprehension-in-call
+    "E721",  # type-comparison
+    "T201",  # print
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 18
+
+[tool.ruff.lint.isort]
+force-single-line = false
+combine-as-imports = true
+
+[tool.mypy]
+files = ["opti", "test"]
+ignore_missing_imports = true

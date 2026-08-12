@@ -18,6 +18,7 @@ References
     www.jstor.org/stable/170949
 .. _`hitandrun`: https://cran.r-project.org/web/packages/hitandrun/index.html
 """
+
 from typing import Generator, Tuple
 
 import numpy as np

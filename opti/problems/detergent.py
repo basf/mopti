@@ -63,8 +63,8 @@ class Detergent(Problem):
                 Continuous("x4", domain=[0.0, 0.06]),
                 Continuous("x5", domain=[0.0, 0.04]),
             ],
-            outputs=[Continuous(f"y{i+1}", domain=[0, 3]) for i in range(5)],
-            objectives=[Maximize(f"y{i+1}") for i in range(5)],
+            outputs=[Continuous(f"y{i + 1}", domain=[0, 3]) for i in range(5)],
+            objectives=[Maximize(f"y{i + 1}") for i in range(5)],
             constraints=[
                 LinearInequality(["x1", "x2", "x3", "x4", "x5"], lhs=-1, rhs=-0.2),
                 LinearInequality(["x1", "x2", "x3", "x4", "x5"], lhs=1, rhs=0.4),

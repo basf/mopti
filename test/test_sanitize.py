@@ -39,7 +39,7 @@ def test_sanitize_problem():
             assert p2.name.startswith("output")
 
         # check objectives
-        for (p1, p2) in zip(original.objectives, sanitized.objectives):
+        for p1, p2 in zip(original.objectives, sanitized.objectives):
             assert type(p1) == type(p2)
             assert p2.name.startswith("output")
             assert np.isfinite(p2.target)

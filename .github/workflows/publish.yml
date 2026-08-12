@@ -10,25 +10,14 @@ jobs:
   build-n-publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v7
+    - uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v6
       with:
-        python-version: 3.12
-    - name: Install pypa/build
-      run: >-
-        python -m
-        pip install
-        build
-        --user
+        enable-cache: true
+    - name: Set up Python
+      run: uv python install 3.12
     - name: Build a binary wheel and a source tarball
-      run: >-
-        python -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
-        .
+      run: uv build
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:

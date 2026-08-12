@@ -68,18 +68,18 @@ class Hyperellipsoid(Problem):
     def __init__(self, n: int = 5, a: Optional[Union[list, np.ndarray]] = None):
         if a is None:
             a = np.ones(n)
-            constr = " + ".join([f"x{i+1}**2" for i in range(n)]) + " - 1"
+            constr = " + ".join([f"x{i + 1}**2" for i in range(n)]) + " - 1"
         else:
             a = np.array(a).squeeze()
             if len(a) != n:
                 raise ValueError("Dimension of half axes doesn't match input dimension")
-            constr = " + ".join([f"(x{i+1}/{a[i]})**2" for i in range(n)]) + " - 1"
+            constr = " + ".join([f"(x{i + 1}/{a[i]})**2" for i in range(n)]) + " - 1"
         self.a = a
 
         super().__init__(
             name="Hyperellipsoid",
-            inputs=[Continuous(f"x{i+1}", [-a[i], a[i]]) for i in range(n)],
-            outputs=[Continuous(f"y{i+1}", [-a[i], a[i]]) for i in range(n)],
+            inputs=[Continuous(f"x{i + 1}", [-a[i], a[i]]) for i in range(n)],
+            outputs=[Continuous(f"y{i + 1}", [-a[i], a[i]]) for i in range(n)],
             constraints=[NonlinearInequality(constr)],
         )
 
@@ -114,12 +114,12 @@ class Daechert1(Problem):
                 Continuous("x2", domain=[0, 10]),
                 Continuous("x3", domain=[1.2, 10]),
             ],
-            outputs=[Continuous(f"y{i+1}") for i in range(3)],
+            outputs=[Continuous(f"y{i + 1}") for i in range(3)],
             constraints=[NonlinearInequality("- cos(x1) - exp(-x2) + x3")],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame({"y1": -X["x1"], "y2": -X["x2"], "y3": -X["x3"] ** 2})
+        return pd.DataFrame({"y1": -X["x1"], "y2": -X["x2"], "y3": -(X["x3"] ** 2)})
 
 
 class Daechert2(Problem):
@@ -171,8 +171,8 @@ class Daechert3(Problem):
     def __init__(self):
         super().__init__(
             name="Daechert-3",
-            inputs=[Continuous(f"x{i+1}", domain=[0, 1]) for i in range(2)],
-            outputs=[Continuous(f"y{i+1}") for i in range(3)],
+            inputs=[Continuous(f"x{i + 1}", domain=[0, 1]) for i in range(2)],
+            outputs=[Continuous(f"y{i + 1}") for i in range(3)],
         )
 
     def f(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -198,7 +198,7 @@ class OmniTest(Problem):
     def __init__(self, n_inputs: int = 2):
         super().__init__(
             name="Omni",
-            inputs=[Continuous(f"x{i+1}", domain=[0, 6]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", domain=[0, 6]) for i in range(2)],
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 
@@ -235,7 +235,7 @@ class Poloni(Problem):
     def __init__(self):
         super().__init__(
             name="Poloni function",
-            inputs=[Continuous(f"x{i+1}", [-np.pi, np.pi]) for i in range(2)],
+            inputs=[Continuous(f"x{i + 1}", [-np.pi, np.pi]) for i in range(2)],
             outputs=[Continuous("y1"), Continuous("y2")],
         )
 

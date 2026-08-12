@@ -106,7 +106,7 @@ def test_detergent():
     X = problem.sample_inputs(1000)
     Y = problem.f(X)
     # test that y1 - y5 is only available if stability 1 = 1
-    cols = [f"y{i+1}" for i in range(5)]
+    cols = [f"y{i + 1}" for i in range(5)]
     assert np.all(Y[cols][Y["stability 1"] == 0].isna())
     assert np.all(Y[cols][Y["stability 1"] == 1].notna())
 

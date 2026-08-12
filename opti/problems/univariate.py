@@ -10,6 +10,7 @@ problem = opti.problems.noisify_problem_with_gaussian(
 )
 ```
 """
+
 import pandas as pd
 
 from opti.parameter import Continuous, Discrete
