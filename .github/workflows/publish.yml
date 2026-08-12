@@ -1,4 +1,4 @@
-name: Publish to PyPI and TestPyPI
+name: Publish to PyPI
 
 # only trigger on tagged commits starting with "v"
 on: 
@@ -22,9 +22,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-    - name: Publish to Test PyPI
-      # this step may fail if the version number was already manually published to test.pypi
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+    
