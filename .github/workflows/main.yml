@@ -11,10 +11,10 @@ jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7
         with:
-          python-version: 3.9
+          python-version: 3.12
       - name: Run black, flake8 and isort
         run: |
           pip3 install black==22.12.0 isort==5.9.3 flake8==3.9.2
